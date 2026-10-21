@@ -16,7 +16,7 @@ export const kitchenMission: CleaningMission = {
     "Clear before you clean, and clean before you sanitise",
     "Leave the sink until last, then the floor",
   ],
-  requires: ["bathroom-basics", "chemical-safety"],
+  requires: ["final-inspection"],
   estimatedMinutes: 9,
   whyItMatters: "Kitchens are where cleaning protects people's food. The wrong cloth or a product that isn't food-safe can make someone ill, even if the kitchen looks spotless.",
   sceneId: "kitchen",

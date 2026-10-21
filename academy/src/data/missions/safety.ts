@@ -15,7 +15,7 @@ export const safetyMission: ScenarioMission = {
     "Choose PPE from the label",
     "Store chemicals and use equipment safely",
   ],
-  requires: [],
+  requires: ["bathroom-basics"],
   estimatedMinutes: 6,
   whyItMatters: "Most serious cleaning injuries come from chemicals and equipment, not from the dirt. These rules protect you, your clients and their families.",
   scenarios: [

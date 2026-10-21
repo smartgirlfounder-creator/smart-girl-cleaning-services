@@ -51,7 +51,7 @@ try {
   await page.waitForSelector(".account-card");
   await page.click('[data-action="home"]');
   await page.click('[data-action="rooms"] >> nth=0');
-  await page.click('[data-action="briefing"][data-id="professional-judgement"]');
+  await page.click('[data-action="briefing"][data-id="hotel-turnover"]');
   await page.click('[data-action="buy-pass"]');
   await page.waitForSelector("text=Your Expert Pass is active");
   check(true, "returning from checkout confirms the payment");

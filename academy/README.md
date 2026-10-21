@@ -7,11 +7,11 @@ A mobile-first browser game that teaches professional cleaning through interacti
 | Mission | Level | Type | What the player does |
 |---|---|---|---|
 | Professional Bathroom Cleaning | Beginner | Hands-on room | Inspect the room, choose PPE, pick tools and products from a trolley, clean in a professional order, final walk-through |
-| Chemical and Equipment Safety | Beginner | Safety decisions | 10 real-job situations: labels, dilution, never-mix rules, surfaces, PPE, storage, equipment, first aid |
-| Final Inspection and Quality Control | Professional (unlocks after both Beginner missions) | Quality control | Find 8 problems a colleague missed (including a safety hazard) without flagging good work |
-| Professional Kitchen Cleaning | Professional (unlocks after both Beginner missions) | Hands-on room | Green-coded tools, food-safe products, degreaser dwell time, clear before clean, sink last |
-| Hotel Turnover Rush | Expert (unlocks after both Professional missions) | Shift planning | Build an ordered plan for a 55-minute turnover: hazard first, every essential, right order, best extras |
-| Professional Judgement | Expert (unlocks after both Professional missions) | Decisions | Body-fluid spills, unsafe client requests, colleagues without PPE, prioritising, damage, DND, mould |
+| Chemical and Equipment Safety | Beginner (after Bathroom) | Safety decisions | 10 real-job situations: labels, dilution, never-mix rules, surfaces, PPE, storage, equipment, first aid |
+| Final Inspection and Quality Control | Professional (after Chemical Safety) | Quality control | Find 8 problems a colleague missed (including a safety hazard) without flagging good work |
+| Professional Kitchen Cleaning | Professional (after Final Inspection) | Hands-on room | Green-coded tools, food-safe products, degreaser dwell time, clear before clean, sink last |
+| Hotel Turnover Rush | Expert (after Kitchen) | Shift planning | Build an ordered plan for a 55-minute turnover: hazard first, every essential, right order, best extras |
+| Professional Judgement | Expert (after Hotel Turnover) | Decisions | Body-fluid spills, unsafe client requests, colleagues without PPE, prioritising, damage, DND, mould |
 
 Also included: main menu, room chooser with locked previews and planned rooms, equipment and chemical safety reference, progress page, 10 achievement badges, and a training-completion certificate for each completed level (clearly labelled as not accredited).
 

@@ -14,7 +14,7 @@ export const shiftPlannerMission: PlanningMission = {
     "Use spare time on the extras that matter most",
     "Report problems you can't fix",
   ],
-  requires: ["final-inspection", "kitchen-pro"],
+  requires: ["kitchen-pro"],
   estimatedMinutes: 5,
   whyItMatters: "Real shifts never have enough time. Professionals protect safety and the essentials first, then use spare minutes wisely, instead of rushing everything or polishing one thing.",
   brief: "Room 214 has checked out. The next guest checks in in 55 minutes. On your way in you notice spilled coffee on the corridor floor outside the door. Tap jobs to add them to your plan in the order you'll do them. Use the arrows to reorder.",
@@ -53,7 +53,7 @@ export const judgementMission: ScenarioMission = {
     "Prioritise when time runs out",
     "Be honest about damage and problems",
   ],
-  requires: ["final-inspection", "kitchen-pro"],
+  requires: ["hotel-turnover"],
   estimatedMinutes: 6,
   whyItMatters: "Technical skill gets a room clean. Judgement keeps people safe, keeps clients' trust, and is what makes someone ready to lead a team.",
   scenarios: [

@@ -123,6 +123,17 @@ async function run(label, viewport) {
   await page.waitForSelector(".assign");
   check((await page.textContent(".assign")).includes("To do"), "staff sees the assigned mission");
   await page.click('.assign [data-action="briefing"]');
+  check(await page.isVisible("text=Pass Professional Bathroom Cleaning to unlock"), "an assigned mission stays locked until the mission before it is passed");
+  await page.evaluate(() => {
+    const key = "smart-cleaners-academy:v1";
+    const d = JSON.parse(localStorage.getItem(key) ?? '{"version":1,"missions":{},"achievements":{},"playerName":""}');
+    d.missions["bathroom-basics"] = { attempts: 1, bestScore: 90, bestStars: 3, passed: true, lastPlayed: new Date().toISOString() };
+    localStorage.setItem(key, JSON.stringify(d));
+  });
+  await page.reload();
+  await page.click('[data-action="team"]');
+  await page.waitForSelector(".assign");
+  await page.click('.assign [data-action="briefing"]');
   await page.click('[data-action="start"]');
   const answers = [["choose", "set-aside"], ["choose", "100"], ["choose", "one"], ["multi", ["bleach-ammonia", "bleach-acid", "bleach-vinegar"]],
     ["match", { mirror: "glass-cleaner", marble: "neutral", screen: "limescale", handle: "disinfectant" }], ["multi", ["gloves", "eyes"]],

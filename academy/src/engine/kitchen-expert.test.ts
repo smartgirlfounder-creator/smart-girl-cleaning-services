@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ACHIEVEMENTS } from "../data/achievements";
 import { judgementMission, shiftPlannerMission } from "../data/missions/expert";
+import { MISSIONS } from "../data/missions";
 import { kitchenMission } from "../data/missions/kitchen";
 import { CleaningRun } from "./cleaning";
 import { PlanningRun } from "./planning";
@@ -136,17 +137,26 @@ describe("professional judgement", () => {
 });
 
 describe("progression", () => {
-  it("unlocks Expert only after both Professional missions", () => {
+  it("unlocks each mission only after the one before it is passed", () => {
     const p = new Progress(memoryStore(), ACHIEVEMENTS);
     const pass = (missionId: string) => p.addResult({ missionId, score: 90, stars: 3, passed: true, lines: [], mistakes: [], criticalErrors: [], missed: [], stats: {} });
+    const fail = (missionId: string) => p.addResult({ missionId, score: 30, stars: 0, passed: false, lines: [], mistakes: [], criticalErrors: [], missed: [], stats: {} });
+    const unlocked = () => MISSIONS.filter((m) => p.isUnlocked(m)).map((m) => m.id);
+    expect(unlocked()).toEqual(["bathroom-basics"]);
+    fail("bathroom-basics");
+    expect(unlocked()).toEqual(["bathroom-basics"]);
     pass("bathroom-basics");
+    expect(unlocked()).toEqual(["bathroom-basics", "chemical-safety"]);
     pass("chemical-safety");
-    expect(p.isUnlocked(kitchenMission)).toBe(true);
+    expect(p.isUnlocked(kitchenMission)).toBe(false);
     pass("final-inspection");
+    expect(p.isUnlocked(kitchenMission)).toBe(true);
     expect(p.isUnlocked(shiftPlannerMission)).toBe(false);
     pass("kitchen-pro");
     expect(p.isUnlocked(shiftPlannerMission)).toBe(true);
+    expect(p.isUnlocked(judgementMission)).toBe(false);
     pass("hotel-turnover");
+    expect(p.isUnlocked(judgementMission)).toBe(true);
     expect(p.data.achievements["graduate"]).toBeUndefined();
     pass("professional-judgement");
     expect(p.data.achievements["graduate"]).toBeTruthy();

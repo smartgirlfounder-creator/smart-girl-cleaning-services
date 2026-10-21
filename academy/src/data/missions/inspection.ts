@@ -14,7 +14,7 @@ export const inspectionMission: InspectionMission = {
     "Find safety hazards left behind",
     "Avoid flagging work that meets the standard",
   ],
-  requires: ["bathroom-basics", "chemical-safety"],
+  requires: ["chemical-safety"],
   estimatedMinutes: 5,
   whyItMatters: "Clients judge the whole job by the one thing that was missed. A final inspection catches problems while you can still fix them, and protects your reputation.",
   sceneId: "bathroom",
