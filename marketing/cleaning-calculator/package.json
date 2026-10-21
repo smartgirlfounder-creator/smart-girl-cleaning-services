@@ -1,0 +1,12 @@
+{
+  "name": "cleaning-calculator-walkthrough",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "render": "node render.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

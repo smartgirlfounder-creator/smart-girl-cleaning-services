@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cleaning Calculator Pro walkthrough stage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Inter:wght@400;600;700&display=swap">
+<style>
+/* 1080×1920 stage driven entirely by renderAt(t), so every frame is deterministic.
+   Palette follows the calculator: indigo #667eea → purple #764ba2, with amber and teal accents. */
+:root {
+  --ink: #0b0a24;
+  --indigo: #667eea;
+  --purple: #764ba2;
+  --amber: #FFC857;
+  --teal: #1abc9c;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+body { font-family: "Inter", system-ui, sans-serif; color: #fff; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+.layer { position: absolute; inset: 0; }
+#bg { background: radial-gradient(80% 50% at 50% 48%, #2a2479 0%, #15123f 48%, var(--ink) 85%); }
+#glowA, #glowB { filter: blur(70px); mix-blend-mode: screen; }
+#glowA { background: radial-gradient(34% 22% at 22% 30%, rgba(102, 126, 234, 0.55), transparent 70%); }
+#glowB { background: radial-gradient(30% 20% at 80% 72%, rgba(118, 75, 162, 0.6), transparent 70%); }
+#grid { background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(70% 60% at 50% 55%, #000 30%, transparent 80%); }
+#rings { mix-blend-mode: screen; }
+#vignette { background: radial-gradient(90% 65% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.7) 100%); pointer-events: none; }
+#fade { background: #000; }
+#sweep { background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.16) 50%, transparent 65%); mix-blend-mode: screen; }
+
+/* Phone */
+#rig { position: absolute; inset: 0; perspective: 2600px; perspective-origin: 50% 50%; }
+#shadow { position: absolute; width: 480px; height: 64px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.8), transparent); filter: blur(8px); }
+#phone { position: absolute; left: 0; top: 0; width: 520px; height: 1060px; transform-style: preserve-3d; }
+.body { position: absolute; inset: 0; border-radius: 80px; background: linear-gradient(140deg, #5b5a6c 0%, #1a1922 22%, #0b0b10 50%, #2c2b38 78%, #6a6979 100%); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.3), inset 0 0 0 10px #06060a, 0 60px 110px rgba(0,0,0,.75); }
+.btn-side { position: absolute; width: 5px; border-radius: 3px; background: linear-gradient(90deg, #6c6b7a, #24232c); }
+#screen { position: absolute; left: 14px; top: 14px; width: 492px; height: 1032px; border-radius: 66px; overflow: hidden; background: #667eea; }
+.page { position: absolute; left: 0; top: 0; width: 492px; will-change: transform, opacity; }
+#statusbar { position: absolute; left: 0; right: 0; top: 0; height: 62px; display: flex; justify-content: space-between; align-items: center; padding: 8px 46px 0 54px; font: 600 19px/1 "Inter", sans-serif; color: #fff; background: #6b7ce8; z-index: 3; }
+#nav { position: absolute; left: 0; bottom: 0; width: 492px; z-index: 3; }
+#island { position: absolute; top: 18px; left: 50%; width: 130px; height: 36px; margin-left: -65px; border-radius: 20px; background: #000; z-index: 4; }
+#glass { position: absolute; inset: 0; border-radius: 66px; background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,.14) 46%, rgba(255,255,255,.03) 52%, transparent 60%); background-size: 300% 300%; mix-blend-mode: screen; z-index: 5; pointer-events: none; }
+#hl { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.hl { position: absolute; border-radius: 14px; border: 4px solid var(--amber); box-shadow: 0 0 0 6px rgba(255, 200, 87, .25), 0 0 30px rgba(255, 200, 87, .7); }
+.tap { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: rgba(255,255,255,.55); border: 3px solid #fff; }
+
+/* Overlay text and cards */
+#overlay { position: absolute; inset: 0; pointer-events: none; }
+.heading { position: absolute; left: 60px; right: 60px; top: 150px; text-align: center; }
+.heading .pill { display: inline-block; padding: 10px 22px; border-radius: 999px; background: var(--amber); color: #2a1d00; font: 800 26px/1 "Montserrat", sans-serif; letter-spacing: .16em; }
+.heading .title { margin-top: 18px; font: 900 72px/1.02 "Montserrat", sans-serif; letter-spacing: -.01em; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+.heading .title em { font-style: normal; color: var(--amber); }
+.caption { position: absolute; left: 70px; right: 70px; text-align: center; font: 700 36px/1.25 "Montserrat", sans-serif; text-shadow: 0 4px 20px rgba(0,0,0,.85); }
+.caption small { display: block; margin-top: 8px; font: 600 26px/1.3 "Inter", sans-serif; color: #d9dcff; }
+.card { position: absolute; border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 0 3px rgba(255,255,255,.85), 0 0 40px rgba(102,126,234,.6); transform-style: preserve-3d; }
+.card img { position: absolute; left: 0; top: 0; }
+.card .tag { position: absolute; left: 14px; top: 14px; padding: 8px 14px; border-radius: 999px; font: 800 20px/1 "Montserrat", sans-serif; letter-spacing: .08em; color: #2a1d00; background: var(--amber); z-index: 2; }
+.call { position: absolute; padding: 18px 22px; border-radius: 22px; background: rgba(20, 17, 60, .82); border: 2px solid rgba(255,255,255,.22); box-shadow: 0 20px 50px rgba(0,0,0,.5); backdrop-filter: blur(6px); }
+.call b { display: block; font: 800 30px/1.15 "Montserrat", sans-serif; }
+.call span { display: block; margin-top: 6px; font: 600 22px/1.3 "Inter", sans-serif; color: #cfd3ff; }
+.call.big b { font-size: 54px; color: var(--amber); font-variant-numeric: tabular-nums; }
+.chip { position: absolute; padding: 14px 22px; border-radius: 16px; background: #fff; color: #4b3fb0; font: 800 28px/1 "Montserrat", sans-serif; box-shadow: 0 16px 40px rgba(0,0,0,.45); white-space: nowrap; }
+.problem { position: absolute; padding: 20px 26px; border-radius: 20px; background: rgba(255,255,255,.08); border: 2px dashed rgba(255,255,255,.35); font: 700 34px/1.2 "Montserrat", sans-serif; color: #fff; white-space: nowrap; }
+.problem s { text-decoration-color: #ff6b6b; text-decoration-thickness: 5px; }
+#links { position: absolute; inset: 0; pointer-events: none; }
+.demo-note { position: absolute; left: 0; right: 0; bottom: 210px; text-align: center; font: 600 20px/1 "Inter", sans-serif; letter-spacing: .12em; color: rgba(255,255,255,.55); text-transform: uppercase; }
+#hero { position: absolute; left: 0; right: 0; text-align: center; }
+#hero .name { font: 900 84px/1 "Montserrat", sans-serif; letter-spacing: .02em; }
+#hero .name span { display: block; font-size: 56px; letter-spacing: .3em; color: var(--amber); margin-top: 10px; }
+#hero .sub { margin-top: 22px; font: 600 28px/1.4 "Inter", sans-serif; color: #d9dcff; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="bg"></div>
+  <div class="layer" id="grid"></div>
+  <div class="layer" id="glowA"></div>
+  <div class="layer" id="glowB"></div>
+  <canvas class="layer" id="rings" width="1080" height="1920"></canvas>
+  <svg id="links" width="1080" height="1920"></svg>
+  <div id="rig">
+    <div id="shadow"></div>
+    <div id="phone">
+      <div class="body"></div>
+      <div class="btn-side" style="left:-3px;top:220px;height:70px"></div>
+      <div class="btn-side" style="left:-3px;top:310px;height:110px"></div>
+      <div class="btn-side" style="right:-3px;top:320px;height:150px"></div>
+      <div id="screen">
+        <img class="page" id="pageA" alt="">
+        <img class="page" id="pageB" alt="">
+        <div id="hl"></div>
+        <div id="statusbar"><span>9:41</span><svg viewBox="0 0 70 16" width="70" height="16" aria-hidden="true"><rect x="0" y="10" width="4" height="6" rx="1" fill="#fff"/><rect x="6" y="7" width="4" height="9" rx="1" fill="#fff"/><rect x="12" y="4" width="4" height="12" rx="1" fill="#fff"/><rect x="18" y="1" width="4" height="15" rx="1" fill="#fff"/><rect x="34" y="2" width="28" height="13" rx="4" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/><rect x="36.5" y="4.5" width="21" height="8" rx="2" fill="#fff"/></svg></div>
+        <img id="nav" alt="">
+        <div id="island"></div>
+        <div id="glass"></div>
+      </div>
+    </div>
+  </div>
+  <div id="overlay"></div>
+  <div class="layer" id="sweep"></div>
+  <div class="layer" id="vignette"></div>
+  <div class="layer" id="fade"></div>
+</div>
+
+<script>
+// ---------- Helpers ----------
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+const out = (k) => 1 - Math.pow(1 - k, 3);
+const back = (k) => { const c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+const seg = (t, a, b, f = ease) => f(clamp((t - a) / (b - a)));
+const win = (t, a, b, c, d) => Math.min(seg(t, a, b, out), 1 - seg(t, c, d));
+
+const TL = window.TIMELINE;
+const M = window.MANIFEST;
+const S = 492 / 390;            // app CSS px → screen px
+const STATUS = 62;              // status bar height (screen px), clear of the camera island
+const NAVH = 59 * S;            // real bottom menu height (screen px)
+const PHONE_W = 520, PHONE_H = 1060, INSET = 14;
+
+const anchor = (shot, name) => M.shots[shot]?.anchors?.[name];
+const imgSrc = (shot) => `capture/${M.shots[shot].file}`;
+
+// ---------- Phone pose ----------
+function pose(t) {
+  const ks = TL.phone;
+  let i = ks.findIndex((k) => k.t > t);
+  if (i === -1) return { ...ks[ks.length - 1] };
+  if (i === 0) return { ...ks[0] };
+  const a = ks[i - 1], b = ks[i];
+  const k = ease(clamp((t - a.t) / (b.t - a.t)));
+  const p = {};
+  for (const key of ["cx", "cy", "s", "ry", "rx", "blur", "dim"]) p[key] = lerp(a[key] ?? 0, b[key] ?? 0, k);
+  return p;
+}
+function screenOrigin(p) {
+  // Top-left of the screen on the stage, assuming the phone is near front-facing.
+  return { x: p.cx - (PHONE_W / 2 - INSET) * p.s, y: p.cy - (PHONE_H / 2 - INSET) * p.s };
+}
+
+// ---------- Screen content ----------
+function segAt(t) {
+  const list = TL.screens;
+  let idx = list.findIndex((s) => t >= s.t0 && t < s.t1);
+  if (idx === -1) idx = t < list[0].t0 ? 0 : list.length - 1;
+  return { s: list[idx], prev: list[idx - 1] };
+}
+function scrollOf(s, t) {
+  const k = s.scroll.length === 1 ? 0 : seg(t, s.st0 ?? s.t0, s.st1 ?? s.t1);
+  return lerp(s.scroll[0], s.scroll[s.scroll.length - 1], k);
+}
+function setPage(img, shot, scroll, opacity) {
+  if (img.dataset.shot !== shot) { img.src = imgSrc(shot); img.dataset.shot = shot; }
+  img.style.transform = `translateY(${STATUS - scroll * S}px)`;
+  img.style.opacity = opacity;
+}
+
+// ---------- Overlay builders (DOM rebuilt per frame; cheap at this size) ----------
+function cropCard(c, t) {
+  const sh = M.shots[c.shot];
+  const a = c.anchor ? anchor(c.shot, c.anchor) : null;
+  const x = c.x ?? 0, y = (c.y ?? 0) + (a ? a.y : 0), w = c.w ?? 390, h = c.h;
+  const k = c.width / w;
+  const appear = seg(t, c.t0, c.t0 + 0.55, back);
+  const vis = win(t, c.t0, c.t0 + 0.3, c.t1 - 0.3, c.t1);
+  const bob = Math.sin((t - c.t0) * 2) * 6;
+  const fromX = c.from?.x ?? 0, fromY = c.from?.y ?? 0;
+  const el = document.createElement("div");
+  el.className = "card";
+  el.style.cssText = `left:${c.left}px;top:${c.top}px;width:${c.width}px;height:${h * k}px;opacity:${vis};transform:translate(${lerp(fromX, 0, appear)}px,${lerp(fromY, 0, appear) + bob}px) scale(${lerp(0.4, 1, appear)}) rotateY(${c.tilt ?? 0}deg)`;
+  el.innerHTML = `<img src="capture/${sh.file}" style="width:${390 * k}px;left:${-x * k}px;top:${-y * k}px">${c.tag ? `<span class="tag" style="${c.tagStyle ?? ""}">${c.tag}</span>` : ""}`;
+  return el;
+}
+
+function callout(c, t) {
+  const vis = win(t, c.t0, c.t0 + 0.35, c.t1 - 0.3, c.t1);
+  const pop = seg(t, c.t0, c.t0 + 0.45, back);
+  const el = document.createElement("div");
+  el.className = `call ${c.big ? "big" : ""}`;
+  let main = c.text;
+  if (c.values) { const v = [...c.values].reverse().find((x) => t >= x.t); main = v ? v.text : c.values[0].text; }
+  el.style.cssText = `left:${c.left}px;top:${c.top}px;${c.width ? `width:${c.width}px;` : ""}opacity:${vis};transform:scale(${lerp(0.7, 1, pop)}) translateY(${Math.sin((t - c.t0) * 1.8) * 5}px);transform-origin:${c.origin ?? "center"}`;
+  el.innerHTML = `<b>${main}</b>${c.sub ? `<span>${c.sub}</span>` : ""}`;
+  if (c.values) {
+    const changed = [...c.values].reverse().find((x) => t >= x.t);
+    const flash = changed ? win(t, changed.t, changed.t + 0.08, changed.t + 0.15, changed.t + 0.6) : 0;
+    el.style.boxShadow = `0 20px 50px rgba(0,0,0,.5), 0 0 ${40 * flash}px rgba(255,200,87,${0.9 * flash})`;
+  }
+  return el;
+}
+
+function link(l, t, p) {
+  const vis = win(t, l.t0, l.t0 + 0.4, l.t1 - 0.3, l.t1);
+  if (vis <= 0) return "";
+  const o = screenOrigin(p);
+  const s = M.shots[l.shot];
+  const a = anchor(l.shot, l.anchor);
+  if (!a) return "";
+  const sc = currentScroll;
+  const tx = o.x + (a.x + (l.ax ?? a.w)) * S * p.s;
+  const ty = o.y + (STATUS + (a.y - sc + a.h / 2) * S) * p.s;
+  const fx = l.fx, fy = l.fy;
+  const mx = (tx + fx) / 2;
+  const draw = seg(t, l.t0, l.t0 + 0.5);
+  return `<path d="M${fx} ${fy} C ${mx} ${fy}, ${mx} ${ty}, ${tx} ${ty}" fill="none" stroke="rgba(255,200,87,${0.9 * vis})" stroke-width="4" stroke-dasharray="10 9" pathLength="1000" stroke-dashoffset="${1000 * (1 - draw)}"/><circle cx="${tx}" cy="${ty}" r="${9 * vis}" fill="#FFC857"/><circle cx="${fx}" cy="${fy}" r="${7 * vis}" fill="#FFC857"/>`;
+}
+
+let currentScroll = 0;
+
+function renderAt(t) {
+  const p = pose(t);
+
+  // Phone transform
+  const phone = $("phone");
+  phone.style.transform = `translate(${p.cx - PHONE_W / 2}px, ${p.cy - PHONE_H / 2}px) rotateX(${p.rx}deg) rotateY(${p.ry}deg) scale(${p.s})`;
+  phone.style.filter = `${p.blur ? `blur(${p.blur}px) ` : ""}brightness(${1 - (p.dim ?? 0)})`;
+  const sh = $("shadow");
+  sh.style.left = `${p.cx - 240 * p.s}px`;
+  sh.style.top = `${p.cy + (PHONE_H / 2) * p.s - 16}px`;
+  sh.style.transform = `scaleX(${p.s})`;
+  sh.style.opacity = 0.85 * (1 - (p.dim ?? 0));
+
+  // Screen pages with crossfades between shots
+  const { s, prev } = segAt(t);
+  const scroll = scrollOf(s, t);
+  currentScroll = scroll;
+  const xf = s.fade ?? 0.3;
+  const kx = prev ? seg(t, s.t0, s.t0 + xf, (x) => x) : 1;
+  if (prev && kx < 1) {
+    setPage($("pageA"), prev.shot, scrollOf(prev, prev.t1), 1);
+    setPage($("pageB"), s.shot, scroll, kx);
+  } else {
+    setPage($("pageA"), s.shot, scroll, 1);
+    $("pageB").style.opacity = 0;
+  }
+  const navShot = kx < 0.5 && prev ? prev.shot : s.shot;
+  const navEl = $("nav");
+  if (navEl.dataset.shot !== navShot) { navEl.src = `capture/${M.shots[navShot].nav}`; navEl.dataset.shot = navShot; }
+  $("screen").style.opacity = TL.screenOn ? seg(t, TL.screenOn[0], TL.screenOn[1], out) : 1;
+
+  // Highlights inside the screen
+  const hl = $("hl");
+  hl.innerHTML = "";
+  for (const h of TL.highlights) {
+    if (t < h.t0 || t > h.t1) continue;
+    const a = anchor(s.shot, h.anchor) ?? anchor(h.shot ?? s.shot, h.anchor);
+    if (!a) continue;
+    const pad = h.pad ?? 8;
+    const vis = win(t, h.t0, h.t0 + 0.2, h.t1 - 0.2, h.t1);
+    const pulse = 1 + 0.03 * Math.sin((t - h.t0) * 9);
+    const d = document.createElement("div");
+    d.className = "hl";
+    const w = (h.w ?? a.w) + pad * 2, hh = (h.h ?? a.h) + pad * 2;
+    d.style.cssText = `left:${(a.x - pad + (h.dx ?? 0)) * S}px;top:${STATUS + (a.y - pad + (h.dy ?? 0) - scroll) * S}px;width:${w * S}px;height:${hh * S}px;opacity:${vis};transform:scale(${pulse})`;
+    hl.appendChild(d);
+    if (h.tap) {
+      const tp = document.createElement("div");
+      tp.className = "tap";
+      const tk = seg(t, h.t0 + 0.1, h.t0 + 0.6, (x) => x);
+      tp.style.cssText = `left:${(a.x + (h.w ?? a.w) / 2) * S}px;top:${STATUS + (a.y + a.h / 2 - scroll) * S}px;opacity:${(1 - tk) * vis};transform:scale(${lerp(0.5, 1.6, tk)})`;
+      hl.appendChild(tp);
+    }
+  }
+
+  // Glass reflection
+  $("glass").style.backgroundPosition = `${50 + p.ry * 2 + Math.sin(t * 0.4) * 10}% 50%`;
+
+  // Overlay
+  const ov = $("overlay");
+  ov.innerHTML = "";
+  for (const h of TL.headings) {
+    const vis = win(t, h.t0, h.t0 + 0.45, h.t1 - 0.35, h.t1);
+    if (vis <= 0) continue;
+    const el = document.createElement("div");
+    el.className = "heading";
+    const k = seg(t, h.t0, h.t0 + 0.6, out);
+    el.style.cssText = `opacity:${vis};transform:translateY(${lerp(-30, 0, k)}px);filter:blur(${lerp(10, 0, k)}px);${h.top ? `top:${h.top}px` : ""}`;
+    el.innerHTML = `${h.stage ? `<span class="pill">${h.stage}</span>` : ""}<div class="title" style="${h.size ? `font-size:${h.size}px` : ""}">${h.title}</div>`;
+    ov.appendChild(el);
+  }
+  for (const c of TL.captions) {
+    const vis = win(t, c.t0, c.t0 + 0.35, c.t1 - 0.3, c.t1);
+    if (vis <= 0) continue;
+    const el = document.createElement("div");
+    el.className = "caption";
+    el.style.cssText = `top:${c.top ?? 1500}px;opacity:${vis};transform:translateY(${lerp(16, 0, seg(t, c.t0, c.t0 + 0.4, out))}px)`;
+    el.innerHTML = `${c.text}${c.sub ? `<small>${c.sub}</small>` : ""}`;
+    ov.appendChild(el);
+  }
+  for (const c of TL.problems ?? []) {
+    const vis = win(t, c.t0, c.t0 + 0.4, c.t1 - 0.3, c.t1);
+    if (vis <= 0) continue;
+    const el = document.createElement("div");
+    el.className = "problem";
+    const k = seg(t, c.t0, c.t0 + 0.6, back);
+    el.style.cssText = `left:${c.left}px;top:${c.top}px;opacity:${vis};transform:scale(${lerp(0.6, 1, k)}) rotate(${c.rot ?? 0}deg) translateY(${Math.sin((t + c.top) * 1.4) * 8}px)`;
+    el.innerHTML = c.strike && t > c.strike ? `<s>${c.text}</s>` : c.text;
+    ov.appendChild(el);
+  }
+  for (const c of TL.chips ?? []) {
+    const vis = win(t, c.t0, c.t0 + 0.3, c.t1 - 0.3, c.t1);
+    if (vis <= 0) continue;
+    const el = document.createElement("div");
+    el.className = "chip";
+    const k = seg(t, c.t0, c.t0 + 0.5, back);
+    el.style.cssText = `left:${c.left}px;top:${c.top}px;opacity:${vis};transform:translateX(${lerp(c.left < 540 ? 120 : -120, 0, k)}px) scale(${lerp(0.6, 1, k)}) rotate(${c.rot ?? 0}deg)`;
+    el.textContent = c.text;
+    ov.appendChild(el);
+  }
+  for (const c of TL.cards) if (t >= c.t0 && t <= c.t1) ov.appendChild(cropCard(c, t));
+  for (const c of TL.callouts) if (t >= c.t0 && t <= c.t1) ov.appendChild(callout(c, t));
+  if (TL.demoNote && t > TL.demoNote[0] && t < TL.demoNote[1]) {
+    const el = document.createElement("div");
+    el.className = "demo-note";
+    el.style.opacity = win(t, TL.demoNote[0], TL.demoNote[0] + 0.5, TL.demoNote[1] - 0.5, TL.demoNote[1]);
+    el.textContent = "Sample data for demonstration";
+    ov.appendChild(el);
+  }
+  const hero = TL.hero;
+  if (t > hero.t0) {
+    const el = document.createElement("div");
+    el.id = "hero";
+    const k = seg(t, hero.t0, hero.t0 + 0.8, out);
+    el.style.cssText = `top:${hero.top}px;opacity:${k * (1 - seg(t, TL.duration - 0.8, TL.duration))};filter:blur(${lerp(12, 0, k)}px)`;
+    el.innerHTML = `<div class="name">${hero.name}<span>${hero.name2}</span></div><div class="sub">${hero.sub}</div>`;
+    ov.appendChild(el);
+  }
+
+  // Connector lines
+  $("links").innerHTML = (TL.links ?? []).filter((l) => t >= l.t0 && t <= l.t1).map((l) => link(l, t, p)).join("");
+
+  // Atmosphere
+  const rings = $("rings").getContext("2d");
+  rings.clearRect(0, 0, 1080, 1920);
+  const ringOn = TL.rings ? Math.max(...TL.rings.map(([a, b]) => win(t, a, a + 0.8, b - 0.8, b))) : 0;
+  if (ringOn > 0) {
+    for (let i = 0; i < 3; i++) {
+      rings.save();
+      rings.translate(p.cx, p.cy);
+      rings.rotate(t * (0.25 + i * 0.12) * (i % 2 ? -1 : 1));
+      rings.scale(1, 0.32);
+      rings.strokeStyle = `rgba(${i === 1 ? "255,200,87" : "150,160,255"},${0.35 * ringOn})`;
+      rings.lineWidth = 3;
+      rings.setLineDash([18, 14]);
+      rings.beginPath();
+      rings.arc(0, 0, 430 + i * 70, 0, Math.PI * 2);
+      rings.stroke();
+      const dotA = t * (0.6 + i * 0.2);
+      rings.fillStyle = `rgba(255,200,87,${0.9 * ringOn})`;
+      rings.beginPath();
+      rings.arc(Math.cos(dotA) * (430 + i * 70), Math.sin(dotA) * (430 + i * 70), 10 / 0.32 * 0.32 * 1.4, 0, Math.PI * 2);
+      rings.fill();
+      rings.restore();
+    }
+  }
+  $("glowA").style.transform = `translate(${Math.sin(t * 0.3) * 50}px, ${Math.cos(t * 0.25) * 40}px)`;
+  $("glowB").style.transform = `translate(${Math.cos(t * 0.28) * 50}px, ${Math.sin(t * 0.21) * 40}px)`;
+  const sweepK = TL.sweeps.map((x) => seg(t, x, x + 0.7, (k) => k)).find((k) => k > 0 && k < 1);
+  $("sweep").style.opacity = sweepK ? Math.sin(sweepK * Math.PI) : 0;
+  $("sweep").style.transform = `translateX(${sweepK ? lerp(-900, 900, sweepK) : 0}px)`;
+  $("fade").style.opacity = Math.max(1 - seg(t, 0, 0.6, out), seg(t, TL.duration - 0.6, TL.duration));
+}
+
+window.renderAt = renderAt;
+window.ready = (async () => {
+  await document.fonts.ready;
+  // Preload every capture so frames never show a half-loaded image.
+  await Promise.all(Object.values(M.shots).flatMap((s) => [s.file, s.nav]).map((f) => new Promise((r) => { const i = new Image(); i.onload = i.onerror = r; i.src = `capture/${f}`; })));
+})();
+renderAt(0);
+</script>
+</body>
+</html>
