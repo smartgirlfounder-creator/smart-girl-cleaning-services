@@ -74,7 +74,7 @@ async function run(label, viewport) {
   // 1. Open the app
   await page.goto(APP_URL);
   await page.waitForSelector(".home");
-  check(await page.isVisible("text=Learn to clean like a"), "home screen opens");
+  check(await page.isVisible("text=Learn cleaning by"), "home screen opens");
   await noOverflow("home");
   await shot("01-home");
 

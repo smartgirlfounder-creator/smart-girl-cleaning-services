@@ -18,6 +18,7 @@ interface MockDb {
   memberships: Membership[];
   assignments: Assignment[];
   attempts: AttemptRow[];
+  passes: Record<string, string>;
   session: string | null;
 }
 
@@ -29,11 +30,14 @@ const now = () => new Date().toISOString();
 function load(): MockDb {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw) as MockDb;
+    if (raw) {
+      const d = JSON.parse(raw) as MockDb;
+      return { ...d, passes: d.passes ?? {} };
+    }
   } catch {
     /* fall through */
   }
-  return { users: [], profiles: [], orgs: [], memberships: [], assignments: [], attempts: [], session: null };
+  return { users: [], profiles: [], orgs: [], memberships: [], assignments: [], attempts: [], passes: {}, session: null };
 }
 
 export function createMockCloud(): CloudApi {
@@ -170,6 +174,23 @@ export function createMockCloud(): CloudApi {
     async myAssignments() {
       const org = myOrg();
       return db.assignments.filter((a) => a.org_id === org && (a.assigned_to === null || a.assigned_to === db.session));
+    },
+    async expertPass() {
+      const until = db.session ? db.passes[db.session] : undefined;
+      return { active: !!until && new Date(until) > new Date(), expiresAt: until ?? null };
+    },
+    async startCheckout(currency, returnUrl) {
+      me();
+      // Stands in for Paystack: comes straight back with a reference.
+      return `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}reference=mock_${currency}_${Date.now()}`;
+    },
+    async confirmPayment(reference) {
+      const user = me();
+      if (!reference.startsWith("mock_")) throw new Error("We couldn't confirm your payment yet.");
+      const base = Math.max(Date.now(), new Date(db.passes[user] ?? 0).getTime());
+      db.passes[user] = new Date(base + 365 * 86400000).toISOString();
+      save();
+      return { active: true, expiresAt: db.passes[user] };
     },
     async adminOverview(): Promise<AdminData> {
       const u = db.users.find((x) => x.id === db.session);

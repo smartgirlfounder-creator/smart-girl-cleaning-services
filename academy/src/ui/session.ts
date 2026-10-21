@@ -1,4 +1,4 @@
-import type { Account, AdminData, Assignment, AttemptRow, TeamData } from "../cloud/types";
+import type { Account, AdminData, Assignment, AttemptRow, PassStatus, TeamData } from "../cloud/types";
 import type { CleaningRun } from "../engine/cleaning";
 import type { InspectionRun } from "../engine/inspection";
 import type { PlanningRun } from "../engine/planning";
@@ -68,4 +68,7 @@ export interface CloudState {
   copied: boolean;
   /** What happened to the latest mission result. */
   lastSave: "saved" | "queued" | "none" | null;
+  /** Expert Pass status, loaded only when payments are switched on. */
+  pass: PassStatus | null;
+  currency: "NGN" | "USD";
 }

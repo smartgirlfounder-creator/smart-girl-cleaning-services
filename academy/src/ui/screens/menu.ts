@@ -1,3 +1,4 @@
+import { APP_NAME, FULL_NAME } from "../../brand";
 import { ACHIEVEMENTS } from "../../data/achievements";
 import { NEVER_MIX, PPE, PRODUCTS, TOOLS } from "../../data/equipment";
 import { LEVELS } from "../../data/levels";
@@ -20,7 +21,7 @@ export function nextMission(p: Progress): Mission | undefined {
   return MISSIONS.find((m) => p.isUnlocked(m) && !p.isPassed(m.id));
 }
 
-export function homeScreen(p: Progress, c: CloudState, accountChip: string): string {
+export function homeScreen(p: Progress, c: CloudState, accountChip: string, install = ""): string {
   const next = nextMission(p);
   const passed = MISSIONS.filter((m) => p.isPassed(m.id)).length;
   const cta = next
@@ -38,10 +39,10 @@ export function homeScreen(p: Progress, c: CloudState, accountChip: string): str
   if (c.account?.isAdmin) tiles.push(["admin", "Admin Dashboard", "Everyone using the Academy, and how they're doing"]);
   return `
   <div class="home">
-    <header class="brand">${crest(44)}<div><span class="eyebrow">Professional cleaning training</span><strong class="brand-name">Smart Cleaners Academy</strong></div>${accountChip}</header>
+    <header class="brand">${crest(44)}<div><span class="eyebrow">Cleaning Academy</span><strong class="brand-name">${APP_NAME}</strong></div>${accountChip}</header>
     <section class="hero">
       <div class="hero-copy">
-        <h1>Learn to clean like a <em>professional</em></h1>
+        <h1>Learn cleaning by <em>playing games</em></h1>
         <p class="lede">Hands-on missions in virtual rooms. Choose your PPE, pick the right tools and products, work in the right order, and get feedback on every decision.</p>
         <div class="hero-cta">${cta}</div>
         <div class="meter" aria-label="${passed} of ${MISSIONS.length} missions passed"><span style="width:${(passed / MISSIONS.length) * 100}%"></span></div>
@@ -52,6 +53,7 @@ export function homeScreen(p: Progress, c: CloudState, accountChip: string): str
         <figcaption>Mission 1: this bathroom needs a professional.</figcaption>
       </figure>
     </section>
+    ${install}
     <nav class="menu-grid" aria-label="Main menu">
       ${tiles.map(([a, t, d], i) => `<button class="tile ${i === 0 ? "tile-feature" : ""}" data-action="${a}" data-key="tile-${a}"><strong>${esc(t)}</strong><span>${esc(d)}</span></button>`).join("")}
     </nav>
@@ -96,7 +98,7 @@ export function roomsScreen(p: Progress): string {
   }).join("")}`;
 }
 
-export function briefingScreen(p: Progress, m: Mission): string {
+export function briefingScreen(p: Progress, m: Mission, paywallHtml = ""): string {
   const unlocked = p.isUnlocked(m);
   const rec = p.record(m.id);
   const how =
@@ -121,7 +123,9 @@ export function briefingScreen(p: Progress, m: Mission): string {
       <div class="callout callout-safety"><strong>Scoring</strong><p>Scores reward safe practice, the right tools, the right order and thoroughness. Speed is not scored. A safety-critical error means the attempt can't pass, however clean the room looks.</p></div>
     </div>
     <div class="brief-cta">
-      ${unlocked
+      ${unlocked && paywallHtml
+        ? paywallHtml
+        : unlocked
         ? `<button class="btn btn-primary btn-lg" data-action="start" data-id="${m.id}" data-key="start">Start mission</button>`
         : `<div class="locked-note">${lockIcon()}<p>Preview only. Pass ${esc(need.join(" and "))} to unlock this mission.</p></div>`}
     </div>
@@ -183,7 +187,7 @@ function certificates(p: Progress): string {
       const issued = missions.map((m) => p.record(m.id)?.lastPlayed ?? "").sort().pop();
       return `<div class="certificate">
         ${crest(56)}
-        <span class="eyebrow">Smart Cleaners Academy</span>
+        <span class="eyebrow">${FULL_NAME}</span>
         <h3>Certificate of Training Completion</h3>
         <p class="cert-level">${esc(lvl.name)} level</p>
         <p class="cert-name">${name}</p>
@@ -233,7 +237,7 @@ export function achievementsScreen(p: Progress): string {
 export function aboutScreen(): string {
   return `${pageHeader("About the Academy")}
   <div class="prose">
-    <p class="lede">Smart Cleaners Academy teaches professional cleaning by doing it: inside virtual rooms, with real tools, real products and real consequences.</p>
+    <p class="lede">${FULL_NAME} teaches professional cleaning by doing it: inside virtual rooms, with real tools, real products and real consequences.</p>
     <h2>Who it's for</h2>
     <ul class="ticks"><li>Beginners learning professional cleaning</li><li>Working cleaners sharpening their skills</li><li>Cleaning business owners training staff</li><li>Hotels, offices and facility teams that need repeatable training</li></ul>
     <h2>How scoring works</h2>

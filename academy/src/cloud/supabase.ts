@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./config";
-import type { Account, AdminData, AdminUserRow, Assignment, AttemptRow, CloudApi, Membership, NewAttempt, Org, Profile, TeamData } from "./types";
+import type { Account, AdminData, AdminUserRow, Assignment, AttemptRow, CloudApi, Membership, NewAttempt, Org, PassStatus, Profile, TeamData } from "./types";
 
 /** Turns backend errors into messages a learner can act on. */
 export function friendlyError(raw: string): string {
@@ -137,6 +137,25 @@ export function createSupabaseCloud(): CloudApi {
 
     async myAssignments() {
       return check(await db().from("assignments").select("*").order("created_at", { ascending: false })) as Assignment[];
+    },
+
+    async expertPass(): Promise<PassStatus> {
+      const id = await userId();
+      if (!id) return { active: false, expiresAt: null };
+      const row = check(await db().from("entitlements").select("expires_at").eq("user_id", id).eq("plan_id", "expert-pass").maybeSingle()) as { expires_at: string } | null;
+      return { active: !!row && new Date(row.expires_at) > new Date(), expiresAt: row?.expires_at ?? null };
+    },
+
+    async startCheckout(currency, returnUrl) {
+      const { data, error } = await db().functions.invoke("paystack-checkout", { body: { action: "start", currency, returnUrl } });
+      if (error || !data?.url) throw new Error(friendlyError(data?.error ?? error?.message ?? "Payments aren't available right now."));
+      return data.url as string;
+    },
+
+    async confirmPayment(reference) {
+      const { data, error } = await db().functions.invoke("paystack-checkout", { body: { action: "confirm", reference } });
+      if (error || !data?.active) throw new Error(friendlyError(data?.error ?? error?.message ?? "We couldn't confirm your payment yet."));
+      return { active: true, expiresAt: data.expiresAt as string };
     },
 
     async adminOverview(): Promise<AdminData> {

@@ -42,7 +42,8 @@ body {
   margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 16px 48px;
+  padding-top: max(16px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(48px, env(safe-area-inset-bottom, 0px));
 }
 h1, h2, h3 { margin: 0; text-wrap: balance; }
 h1 { font: 400 clamp(30px, 6vw, 46px)/1.08 var(--display); }
@@ -457,3 +458,22 @@ select.input { appearance: auto; }
 .table td.num { font-variant-numeric: tabular-nums; text-align: right; }
 .save-note { font-size: 13.5px; color: var(--muted); text-align: center; }
 .link-btn { background: none; border: 0; padding: 0; color: var(--gold); font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+/* ---------- Install ---------- */
+.install-card { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--r-lg); background: linear-gradient(150deg, rgba(230, 169, 59, 0.16), rgba(74, 63, 166, 0.35)); border: 1px solid rgba(230, 169, 59, 0.45); }
+.install-card > div { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.install-icon { flex: none; border-radius: 13px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4); }
+.install-card .btn-sm { align-self: center; }
+.modal .steps { padding-left: 22px; }
+
+/* ---------- Expert Pass ---------- */
+.paywall { display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: var(--r-lg); background: linear-gradient(160deg, rgba(230, 169, 59, 0.2), rgba(74, 63, 166, 0.45)); border: 1.5px solid rgba(230, 169, 59, 0.6); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
+.paywall h2 { font: 400 24px/1.15 var(--display); }
+.paywall .price { display: flex; align-items: baseline; gap: 8px; }
+.paywall .price strong { font: 400 40px/1 var(--display); color: var(--gold); }
+.paywall .price span { color: var(--muted); }
+.paywall .btn { width: 100%; }
+.brief-cta:has(.paywall) { position: static; }
+.paywall { background-color: var(--violet-deep); }
+.app-icon { display: inline-block; flex: none; overflow: hidden; line-height: 0; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
+.app-icon svg { display: block; }

@@ -1,8 +1,10 @@
+import { FULL_NAME } from "../../brand";
 import { MISSIONS, missionById } from "../../data/missions";
 import type { AdminUserRow, AttemptRow } from "../../cloud";
 import { assignmentStatus, summarise, type MemberLike } from "../../engine/team";
 import { esc, pageHeader } from "../html";
 import { crest, stars } from "../icons";
+import { passStatus } from "./billing";
 import type { CloudState } from "../session";
 
 const missionTitle = (id: string) => missionById(id)?.title ?? id;
@@ -69,6 +71,7 @@ export function accountScreen(c: CloudState): string {
     </div>
   </div>
   ${notice(c)}
+  ${passStatus(c)}
   <div class="btn-row">
     <button class="btn btn-primary" data-action="team" data-key="acc-team">${a.org ? "My Team" : "Set up or join a team"}</button>
     ${a.isAdmin ? `<button class="btn" data-action="admin" data-key="acc-admin">Admin dashboard</button>` : ""}
@@ -230,7 +233,7 @@ function recordList(title: string, records: AttemptRow[]): string {
 // ---------- Admin ----------
 
 export function adminScreen(c: CloudState): string {
-  const head = pageHeader("Admin Dashboard", "Everyone using Smart Cleaners Academy.");
+  const head = pageHeader("Admin Dashboard", `Everyone using ${FULL_NAME}.`);
   if (c.status === "offline") return `${head}${offlineCard()}`;
   if (!c.account) return `${head}${needSignIn("see the admin dashboard")}`;
   if (!c.account.isAdmin) return `${head}<p class="notice">This page is only for the Academy admin.</p>`;

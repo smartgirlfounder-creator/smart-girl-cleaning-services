@@ -10,7 +10,9 @@ const scripts = [...head.matchAll(/<script\b[\s\S]*?<\/script>/g)].map((m) => m[
 const headRest = head
   .replace(/<script\b[\s\S]*?<\/script>/g, "")
   .replace(/<meta charset[^>]*>/i, "")
-  .replace(/<meta name="viewport"[^>]*>/i, "");
+  .replace(/<meta name="viewport"[^>]*>/i, "")
+  // The Artifact viewer can't serve the app's manifest or icon files.
+  .replace(/<link rel="(manifest|icon|apple-touch-icon)"[^>]*>/gi, "");
 const title = headRest.match(/<title>[\s\S]*?<\/title>/)?.[0] ?? "<title>Smart Cleaners Academy</title>";
 const out = [
   title,

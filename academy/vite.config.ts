@@ -5,5 +5,5 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 // (static hosting, an Artifact, or opened straight from disk).
 export default defineConfig({
   plugins: [viteSingleFile()],
-  test: { environment: "node", include: ["src/**/*.test.ts"] },
+  test: { environment: "node", include: ["src/**/*.test.ts", "supabase/functions/_shared/*.test.ts"] },
 });

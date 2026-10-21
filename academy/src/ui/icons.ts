@@ -1,3 +1,4 @@
+import appIconSvg from "../../brand/icon.svg?raw";
 import type { ToolIcon } from "../engine/types";
 
 export function toolIcon(icon: ToolIcon, color: string): string {
@@ -30,12 +31,11 @@ export function bottleIcon(color: string, opts: { unlabelled?: boolean; open?: b
   </svg>`;
 }
 
+/** The Smart Sweep app icon, drawn inline so it shows everywhere (including offline previews). */
+const APP_ICON = appIconSvg.replace(/id="/g, 'id="ai-').replace(/url\(#/g, "url(#ai-").replace("<svg ", '<svg width="100%" height="100%" aria-hidden="true" ');
+
 export function crest(size = 64): string {
-  return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" class="crest" aria-hidden="true">
-    <path d="M32 3 L57 12 V30 C57 46 46 56 32 61 C18 56 7 46 7 30 V12 Z" fill="#2C2560" stroke="#E6A93B" stroke-width="3"/>
-    <path d="M32 15 l3.2 8.6 9 .4 -7 5.6 2.4 8.8 -7.6 -5 -7.6 5 2.4 -8.8 -7 -5.6 9 -.4 z" fill="#E6A93B"/>
-    <path d="M18 44 q14 8 28 0" stroke="#C8B8F2" stroke-width="3" fill="none" stroke-linecap="round"/>
-  </svg>`;
+  return `<span class="app-icon" style="width:${size}px;height:${size}px;border-radius:${Math.round(size * 0.24)}px">${APP_ICON}</span>`;
 }
 
 export function stars(n: number, max = 3): string {

@@ -87,6 +87,11 @@ export interface AdminData {
   recent: (AttemptRow & { name: string })[];
 }
 
+export interface PassStatus {
+  active: boolean;
+  expiresAt: string | null;
+}
+
 /** Everything the app needs from the backend. Swappable for an in-memory fake in tests. */
 export interface CloudApi {
   readonly kind: "supabase" | "mock";
@@ -109,4 +114,8 @@ export interface CloudApi {
   removeMember(userId: string): Promise<void>;
   myAssignments(): Promise<Assignment[]>;
   adminOverview(): Promise<AdminData>;
+  expertPass(): Promise<PassStatus>;
+  /** Returns the Paystack payment page address. */
+  startCheckout(currency: "NGN" | "USD", returnUrl: string): Promise<string>;
+  confirmPayment(reference: string): Promise<PassStatus>;
 }

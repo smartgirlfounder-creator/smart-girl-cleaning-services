@@ -7,9 +7,13 @@ import { PlanningRun } from "../engine/planning";
 import { Progress, browserStore } from "../engine/progress";
 import { ScenarioRun } from "../engine/scenario";
 import { summarise, trainingReportCsv } from "../engine/team";
+import { APP_NAME } from "../brand";
+import { PAYMENTS_ENABLED, isPaidLevel } from "../billing/plans";
 import type { Mission, MissionResult, PpeId } from "../engine/types";
 import { aboutScreen, achievementsScreen, briefingScreen, homeScreen, libraryScreen, nextMission, progressScreen, roomsScreen } from "./screens/menu";
 import { cleaningView, inspectionView, planningView, scenarioView } from "./screens/play";
+import { createInstall, installCard, installHelp } from "./install";
+import { paywall } from "./screens/billing";
 import { accountScreen, adminScreen, signedInChip, teamScreen } from "./screens/business";
 import { resultsScreen } from "./screens/results";
 import type { CloudState, Session, View } from "./session";
@@ -19,10 +23,12 @@ export class App {
   session: Session | null = null;
   readonly progress = new Progress(browserStore(), ACHIEVEMENTS);
   private confirmExit = false;
+  private paymentRef: string | null = null;
+  private readonly installer = createInstall(() => this.render());
   private confirmReset = false;
   readonly cloud: CloudState = {
     status: "checking", account: null, busy: false, notice: null, authTab: "signin",
-    team: null, myRecords: null, myAssignments: null, admin: null, joinCode: "", confirm: null, copied: false, lastSave: null,
+    team: null, myRecords: null, myAssignments: null, admin: null, joinCode: "", confirm: null, copied: false, lastSave: null, pass: null, currency: "NGN",
   };
 
   constructor(private root: HTMLElement) {
@@ -30,7 +36,9 @@ export class App {
     root.addEventListener("keydown", (e) => this.onKey(e));
     root.addEventListener("input", (e) => this.onInput(e));
     root.addEventListener("submit", (e) => this.onSubmit(e));
-    const join = new URLSearchParams(location.search).get("join");
+    const params = new URLSearchParams(location.search);
+    this.paymentRef = params.get("reference") ?? params.get("trxref");
+    const join = params.get("join");
     if (join) this.cloud.joinCode = join.toUpperCase().slice(0, 6);
   }
 
@@ -49,6 +57,7 @@ export class App {
       } else if (this.cloud.joinCode && !this.cloud.account?.org) {
         this.view = { name: "team" };
       }
+      if (this.paymentRef && this.cloud.account) await this.finishPayment(this.paymentRef);
     }
     this.render();
   }
@@ -71,7 +80,9 @@ export class App {
         /* keep local progress */
       }
     }
+    if (a && PAYMENTS_ENABLED) this.cloud.pass = await cloud.expertPass().catch(() => null);
     if (!a) {
+      this.cloud.pass = null;
       this.cloud.team = this.cloud.admin = null;
       this.cloud.myRecords = this.cloud.myAssignments = null;
     }
@@ -109,6 +120,22 @@ export class App {
     await this.busy(async () => {
       this.cloud.admin = await cloud.adminOverview();
     });
+  }
+
+  /** Called when Paystack sends the player back with a payment reference. */
+  private async finishPayment(reference: string): Promise<void> {
+    this.paymentRef = null;
+    history.replaceState(null, "", this.siteUrl());
+    await this.busy(async () => {
+      this.cloud.pass = await cloud.confirmPayment(reference);
+      this.cloud.notice = { tone: "good", text: "Payment received. Your Expert Pass is active. Enjoy the Expert missions!" };
+    });
+    this.view = { name: "account" };
+    this.render();
+  }
+
+  private needsPass(m: Mission): boolean {
+    return isPaidLevel(m.level) && !this.cloud.pass?.active;
   }
 
   private siteUrl(): string {
@@ -192,7 +219,7 @@ export class App {
   private copyInvite(): void {
     const org = this.cloud.account?.org;
     if (!org) return;
-    const text = `Join ${org.name} on Smart Cleaners Academy. Open ${this.siteUrl()}?join=${org.join_code} and create a free account, or enter team code ${org.join_code} under My Team.`;
+    const text = `Join ${org.name} on ${APP_NAME}. Open ${this.siteUrl()}?join=${org.join_code} and create a free account, or enter team code ${org.join_code} under My Team.`;
     const done = () => {
       this.cloud.copied = true;
       this.render();
@@ -229,7 +256,7 @@ export class App {
 
   start(id: string): void {
     const m = this.mission(id);
-    if (!this.progress.isUnlocked(m)) return this.go({ name: "briefing", missionId: id });
+    if (!this.progress.isUnlocked(m) || this.needsPass(m)) return this.go({ name: "briefing", missionId: id });
     if (m.kind === "cleaning") {
       this.session = { kind: "cleaning", run: new CleaningRun(m), feedback: null, ppe: new Set(), tab: "tools", confirmFinish: false, hintObject: null, flash: null };
     } else if (m.kind === "scenario") {
@@ -272,7 +299,7 @@ export class App {
     const v = this.view;
     const p = this.progress;
     switch (v.name) {
-      case "home": return homeScreen(p, this.cloud, signedInChip(this.cloud));
+      case "home": return homeScreen(p, this.cloud, signedInChip(this.cloud), installCard(this.installer.state));
       case "account": return accountScreen(this.cloud);
       case "team": return teamScreen(this.cloud, this.siteUrl());
       case "admin": return adminScreen(this.cloud);
@@ -281,11 +308,14 @@ export class App {
       case "progress": return progressScreen(p, this.confirmReset);
       case "achievements": return achievementsScreen(p);
       case "about": return aboutScreen();
-      case "briefing": return briefingScreen(p, this.mission(v.missionId));
+      case "briefing": {
+        const m = this.mission(v.missionId);
+        return briefingScreen(p, m, this.needsPass(m) ? paywall(this.cloud) : "");
+      }
       case "results": return resultsScreen(p, this.mission(v.missionId), v.result, v.earned, this.cloud.lastSave);
       case "play": {
         const s = this.session;
-        if (!s) return homeScreen(p, this.cloud, signedInChip(this.cloud));
+        if (!s) return homeScreen(p, this.cloud, signedInChip(this.cloud), installCard(this.installer.state));
         if (s.kind === "cleaning") return cleaningView(s);
         if (s.kind === "scenario") return scenarioView(s);
         if (s.kind === "planning") return planningView(s);
@@ -295,7 +325,7 @@ export class App {
   }
 
   private modal(): string {
-    if (!this.confirmExit) return "";
+    if (!this.confirmExit) return installHelp(this.installer.state);
     return `<div class="modal-backdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="exit-title">
       <h2 id="exit-title">Leave this mission?</h2>
       <p>This attempt won't be scored or saved.</p>
@@ -379,6 +409,15 @@ export class App {
       case "reset-yes": this.progress.reset(); this.confirmReset = false; return this.render();
       case "tap": return this.tap(id);
       case "account": return this.go({ name: "account" });
+      case "install": return void this.installer.install();
+      case "currency":
+        this.cloud.currency = id === "USD" ? "USD" : "NGN";
+        return this.render();
+      case "buy-pass":
+        return void this.busy(async () => {
+          location.href = await cloud.startCheckout(this.cloud.currency, this.siteUrl());
+        });
+      case "install-close": return this.installer.closeHelp();
       case "team":
         this.go({ name: "team" });
         return void this.loadTeam();
