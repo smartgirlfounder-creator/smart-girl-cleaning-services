@@ -1,0 +1,229 @@
+// End-to-end check of the core player journey in a real browser.
+// Usage: npm run build && npm run e2e
+// Uses playwright-core with a locally installed Chromium (CHROMIUM_PATH or /opt/pw-browsers).
+import { chromium } from "playwright-core";
+import { spawn } from "node:child_process";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
+const PORT = 4179;
+const APP_URL = `http://localhost:${PORT}/`;
+const SHOTS = new URL("./screenshots/", import.meta.url).pathname;
+mkdirSync(SHOTS, { recursive: true });
+
+function chromiumPath() {
+  if (process.env.CHROMIUM_PATH) return process.env.CHROMIUM_PATH;
+  const base = "/opt/pw-browsers";
+  const dir = existsSync(base) && readdirSync(base).find((d) => /^chromium-\d+$/.test(d));
+  return dir ? join(base, dir, "chrome-linux", "chrome") : undefined;
+}
+
+let failures = 0;
+function check(cond, msg) {
+  if (cond) console.log(`  ✓ ${msg}`);
+  else {
+    failures++;
+    console.log(`  ✗ ${msg}`);
+  }
+}
+
+const server = spawn(join(process.cwd(), "node_modules", ".bin", "vite"), ["preview", "--port", String(PORT), "--strictPort"], { stdio: "pipe" });
+await new Promise((resolve, reject) => {
+  const t = setTimeout(() => reject(new Error("preview server did not start")), 20000);
+  server.stdout.on("data", (d) => {
+    if (String(d).includes(String(PORT))) {
+      clearTimeout(t);
+      resolve();
+    }
+  });
+});
+
+const browser = await chromium.launch({ executablePath: chromiumPath() });
+
+async function run(label, viewport) {
+  console.log(`\n${label} (${viewport.width}×${viewport.height})`);
+  const context = await browser.newContext({ viewport, hasTouch: viewport.width < 600 });
+  const page = await context.newPage();
+  const errors = [];
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  page.on("pageerror", (e) => errors.push(String(e)));
+
+  const fb = () => page.locator(".feedback").first();
+  const noOverflow = async (where) => {
+    const o = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check(o <= 0, `no sideways scrolling on ${where}`);
+  };
+  const shot = (name) => page.screenshot({ path: `${SHOTS}${label}-${name}.png`, fullPage: true });
+  const tapObj = (id) => page.click(`.scene [data-obj="${id}"]`);
+  const holdTool = async (id) => {
+    await page.click('[data-action="tab"][data-id="tools"]');
+    await page.click(`[data-action="hold"][data-id="${id ?? ""}"]`);
+  };
+  const loadProduct = async (id) => {
+    await page.click('[data-action="tab"][data-id="products"]');
+    await page.click(`[data-action="load"][data-id="${id ?? ""}"]`);
+  };
+  const use = async (tool, product, obj) => {
+    await holdTool(tool);
+    await loadProduct(product);
+    await tapObj(obj);
+  };
+  const objects = ["vent", "bin", "mirror", "sink", "shower", "touch", "toilet", "supplies", "floor"];
+
+  // 1. Open the app
+  await page.goto(APP_URL);
+  await page.waitForSelector(".home");
+  check(await page.isVisible("text=Learn to clean like a"), "home screen opens");
+  await noOverflow("home");
+  await shot("01-home");
+
+  // 2. Start mission 1
+  await page.click('[data-action="play-training"] >> nth=0');
+  await page.waitForSelector(".briefing");
+  await noOverflow("briefing");
+  await page.click('[data-action="start"]');
+  await page.waitForSelector(".scene");
+  for (const o of objects) await tapObj(o);
+  check((await page.textContent(".count")).includes("9 of 9"), "every area inspected by tapping the room");
+  await page.click('[data-action="to-ppe"]');
+  await page.click('[data-action="ppe"][data-id="gloves"]');
+  await page.click('[data-action="equip"]');
+  check((await fb().textContent()).includes("safety glasses"), "missing eye protection is refused with an explanation");
+  await page.click('[data-action="ppe"][data-id="eye-protection"]');
+  await page.click('[data-action="equip"]');
+  check(await page.isVisible("text=Step 3: Clean"), "PPE accepted, cleaning starts");
+
+  // 3-6. Tool selection, a correct action, an unsafe action and feedback
+  await use(null, null, "vent");
+  check((await fb().getAttribute("class")).includes("tone-good"), "correct action: ventilating the room succeeds");
+  check((await page.locator(".fan-on").count()) === 1, "room changes visibly: the fan is running");
+  await use("cloth-blue", "glass-cleaner", "mirror");
+  check((await page.textContent(".checklist h3")).includes("2 of"), "job sheet ticks off completed tasks");
+  await use("cloth-red", "bathroom-cleaner", "sink");
+  check((await fb().getAttribute("class")).includes("tone-critical"), "unsafe action: red toilet cloth on the sink is a critical error");
+  check((await fb().textContent()).toLowerCase().includes("cross-contamination"), "feedback explains cross-contamination");
+  await use("mop", "floor-cleaner", "floor");
+  check((await fb().textContent()).includes("wet floor sign"), "mopping without the sign is flagged as a safety step");
+  await use(null, "toilet-cleaner", "toilet");
+  await use(null, "bleach", "toilet");
+  check((await fb().textContent()).includes("Dangerous chemical mix"), "bleach on acid toilet cleaner is stopped");
+  await shot("02-critical-feedback");
+
+  // 7. Complete the mission
+  await use("bin-liner", null, "bin");
+  await use("cloth-yellow", "bathroom-cleaner", "sink");
+  await use("scrub-pad", "bathroom-cleaner", "shower");
+  await use("cloth-blue", "disinfectant", "touch");
+  await use("toilet-brush", null, "toilet");
+  await use("cloth-red", "disinfectant", "toilet");
+  await use("wet-sign", null, "floor");
+  await use("mop", "floor-cleaner", "floor");
+  check(await page.isVisible("text=Step 4: Final walk-through"), "all tasks done, final walk-through starts");
+  for (const o of objects) await tapObj(o);
+  await noOverflow("mission");
+  await shot("03-walkthrough");
+  await page.click('[data-action="finish"]');
+  await page.waitForSelector(".results");
+
+  // 8. View the score
+  check(await page.isVisible(".crit-box"), "results show the safety-critical errors");
+  check(Number(await page.textContent(".score-ring span")) <= 49, "critical errors cap the score below the pass mark");
+  await noOverflow("results");
+  await shot("04-results-fail");
+
+  // 9. Retry and pass
+  await page.click('[data-action="start"][data-key="retry"]');
+  for (const o of objects) await tapObj(o);
+  await page.click('[data-action="to-ppe"]');
+  for (const p of ["gloves", "eye-protection", "apron"]) await page.click(`[data-action="ppe"][data-id="${p}"]`);
+  await page.click('[data-action="equip"]');
+  const perfect = [
+    [null, null, "vent"], ["bin-liner", null, "bin"], [null, "toilet-cleaner", "toilet"], ["cloth-blue", "glass-cleaner", "mirror"],
+    ["cloth-yellow", "bathroom-cleaner", "sink"], ["scrub-pad", "bathroom-cleaner", "shower"], ["cloth-blue", "disinfectant", "touch"],
+    ["toilet-brush", null, "toilet"], ["cloth-red", "disinfectant", "toilet"], ["refill", null, "supplies"], ["wet-sign", null, "floor"],
+  ];
+  for (const [t, p, o] of perfect) await use(t, p, o);
+  await page.click('[data-action="hint"]');
+  check((await fb().textContent()).includes("Mop the floor"), "hint suggests the next job");
+  await use("mop", "floor-cleaner", "floor");
+  for (const o of objects) await tapObj(o);
+  await page.click('[data-action="finish"]');
+  await page.waitForSelector(".results");
+  check((await page.textContent(".score-ring span")) === "100", "a perfect retry scores 100");
+  check(await page.isVisible(".new-badges"), "new badges are awarded");
+  await shot("05-results-pass");
+
+  // Mission 2
+  await page.click('[data-action="briefing"][data-key="next"]');
+  await page.click('[data-action="start"]');
+  await page.waitForSelector(".scenario-card");
+  await noOverflow("safety mission");
+  const answers = {
+    unlabelled: ["choose", "set-aside"], dilution: ["choose", "20"], boost: ["choose", "one"],
+    "never-mix": ["multi", ["bleach-ammonia", "bleach-acid", "bleach-vinegar"]],
+    surfaces: ["match", { mirror: "glass-cleaner", marble: "neutral", screen: "limescale", handle: "disinfectant" }],
+    "ppe-label": ["multi", ["gloves", "eyes"]], storage: ["choose", "locked"], child: ["choose", "move"], cable: ["choose", "report"], splash: ["choose", "rinse"],
+  };
+  for (const [id, [type, a]] of Object.entries(answers)) {
+    if (type === "choose") await page.click(`[data-action="choose"][data-id="${a}"]`);
+    if (type === "multi") {
+      for (const o of a) await page.click(`[data-action="toggle"][data-id="${o}"]`);
+      await page.click('[data-action="submit-answer"]');
+    }
+    if (type === "match") {
+      for (const [row, c] of Object.entries(a)) await page.click(`[data-action="match"][data-id="${row}"][data-choice="${c}"]`);
+      await page.click('[data-action="submit-answer"]');
+    }
+    if (id === "dilution") {
+      check((await page.textContent(".scenario-card .feedback")).includes("too weak"), "a wrong safety answer explains why");
+      await shot("06-scenario-feedback");
+    }
+    await page.click('[data-action="next-scenario"]');
+  }
+  await page.waitForSelector(".results");
+  check(await page.isVisible(".results-head.pass"), "safety mission passed with one non-critical mistake");
+
+  // Mission 3
+  await page.click('[data-action="briefing"][data-key="next"]');
+  await page.click('[data-action="start"]');
+  await page.waitForSelector(".clipboard");
+  await tapObj("shower");
+  check((await fb().textContent()).includes("looks fine"), "flagging a clean area is a false flag with an explanation");
+  for (const o of ["shelf", "mirror", "sink", "sink", "touch", "bottle", "supplies", "floor"]) await tapObj(o);
+  check((await page.textContent(".count")).includes("8 of 8"), "all inspection problems found by tapping");
+  await noOverflow("inspection");
+  await shot("07-inspection");
+  await page.click('[data-action="submit"]');
+  await page.waitForSelector(".results");
+  check(await page.isVisible(".results-head.pass"), "inspection passed despite one false flag");
+
+  // 10. Refresh: progress survives on this device
+  await page.reload();
+  await page.waitForSelector(".home");
+  check((await page.textContent(".home")).includes("3 of 3 training missions passed"), "progress survives a page refresh");
+  await page.click('[data-action="progress"]');
+  check(await page.isVisible(".certificate"), "certificate unlocked after all three missions");
+  check((await page.textContent(".certificate")).includes("not an accredited qualification"), "certificate is labelled as not accredited");
+  await page.fill("#player-name", "Test Player");
+  check((await page.textContent("#cert-name")) === "Test Player", "name appears on the certificate");
+  await noOverflow("progress");
+  await shot("08-progress");
+  for (const v of ["library", "achievements", "about", "rooms"]) {
+    await page.click('[data-action="home"]');
+    await page.click(`[data-action="${v}"]`);
+    await noOverflow(v);
+  }
+  await shot("09-rooms");
+  check(errors.length === 0, `no console errors${errors.length ? `: ${errors.join(" | ")}` : ""}`);
+  await context.close();
+}
+
+try {
+  await run("mobile", { width: 390, height: 844 });
+  await run("desktop", { width: 1280, height: 860 });
+} finally {
+  await browser.close();
+  server.kill();
+}
+console.log(failures ? `\n${failures} check(s) failed` : "\nAll checks passed");
+process.exit(failures ? 1 : 0);
