@@ -5,7 +5,7 @@
 <title>Smart Cleaners Academy teaser stage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@300;400;600;800;900&display=swap">
 <style>
 /* 1080×1920 stage. Every visual is set from renderAt(t) so frames are deterministic. */
 :root {
@@ -68,12 +68,16 @@ body { font-family: "Poppins", system-ui, sans-serif; color: var(--cream); }
 
 /* Type */
 .txt { position: absolute; left: 0; right: 0; text-align: center; opacity: 0; }
-#t1 { top: 180px; font-weight: 300; font-size: 48px; line-height: 1.5; letter-spacing: 0.26em; padding-left: 0.26em; }
-#t1 span { color: var(--lavender); }
-#t3 { top: 1630px; font-weight: 600; font-size: 46px; letter-spacing: 0.22em; display: flex; justify-content: center; gap: 30px; opacity: 1; }
-#t3 b { opacity: 0; font-weight: 600; }
-#t3 b:nth-child(2) { color: var(--lavender); }
-#t3 b:nth-child(3) { color: var(--gold); }
+#headline { position: absolute; left: 0; right: 0; top: 140px; text-align: center; font-weight: 900; line-height: 1.04; text-shadow: 0 6px 30px rgba(0, 0, 0, 0.7); }
+#headline .h { display: block; opacity: 0; }
+#headline .h1 { font-size: 92px; color: #fff; letter-spacing: -0.01em; }
+#headline .h2 { font-size: 80px; color: transparent; background: linear-gradient(180deg, #ffd27a, #E6A93B 60%, #c9871b); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 4px 18px rgba(230, 169, 59, 0.45)); }
+.cap { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; }
+.cap .big { display: inline-block; padding: 18px 34px; border-radius: 22px; background: #E6A93B; color: #17141f; font-weight: 900; font-size: 52px; letter-spacing: 0.01em; line-height: 1; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 0 50px rgba(230, 169, 59, 0.35); white-space: nowrap; }
+.cap .big.alt { background: #fff; }
+.cap .big.lav { background: #C8B8F2; }
+.cap .small { font-weight: 600; font-size: 34px; color: #fff; text-shadow: 0 4px 18px rgba(0, 0, 0, 0.8); }
+#endline { top: 1596px; font-weight: 800; font-size: 40px; letter-spacing: 0.06em; color: #C8B8F2; }
 #crest { position: absolute; left: 50%; top: 1268px; width: 104px; height: 104px; margin-left: -52px; opacity: 0; filter: drop-shadow(0 0 22px rgba(230, 169, 59, 0.55)); }
 #title { top: 1392px; font-family: "DM Serif Display", Georgia, serif; font-size: 78px; line-height: 1.02; letter-spacing: 0.04em; }
 #title .l1 { display: block; color: var(--cream); }
@@ -122,8 +126,12 @@ body { font-family: "Poppins", system-ui, sans-serif; color: var(--cream); }
     </div>
   </div>
 
-  <div class="txt" id="t1">A NEW WAY<br><span>TO LEARN CLEANING…</span></div>
-  <div class="txt" id="t3"><b>LEARN.</b><b>PRACTISE.</b><b>IMPROVE.</b></div>
+  <div id="headline"><span class="h h1">LEARN CLEANING</span><span class="h h2">BY PLAYING GAMES</span></div>
+  <div class="cap" id="c1" style="top:1430px"><span class="big">6 FUN MISSIONS</span><span class="small">From beginner to expert</span></div>
+  <div class="cap" id="c2" style="top:1455px"><span class="big alt">CLEAN ROOMS STEP BY STEP</span><span class="small">Pick the right tools and products</span></div>
+  <div class="cap" id="c3" style="top:1455px"><span class="big lav">MISTAKES BECOME LESSONS</span><span class="small">Real safety rules, explained</span></div>
+  <div class="cap" id="c4" style="top:1455px"><span class="big">SCORE STARS &amp; BADGES</span><span class="small">Track your progress</span></div>
+  <div class="cap" id="c5" style="top:150px"><span class="big alt">TRAIN YOUR CLEANING TEAM</span><span class="small">Staff accounts and training records</span></div>
   <svg id="crest" viewBox="0 0 64 64" aria-hidden="true">
     <path d="M32 3 L57 12 V30 C57 46 46 56 32 61 C18 56 7 46 7 30 V12 Z" fill="#2C2560" stroke="#E6A93B" stroke-width="3"/>
     <path d="M32 15 l3.2 8.6 9 .4 -7 5.6 2.4 8.8 -7.6 -5 -7.6 5 2.4 -8.8 -7 -5.6 9 -.4 z" fill="#E6A93B"/>
@@ -132,6 +140,7 @@ body { font-family: "Poppins", system-ui, sans-serif; color: var(--cream); }
   <div class="txt" id="title"><span class="l1">SMART CLEANERS</span><span class="l2">ACADEMY</span></div>
   <div id="rule"></div>
   <div class="txt" id="t5"></div>
+  <div class="txt" id="endline">LEARN CLEANING BY PLAYING GAMES</div>
 
   <div class="layer" id="flash"></div>
   <div class="layer" id="vignette"></div>
@@ -248,16 +257,27 @@ function renderAt(t) {
   $("flash").style.opacity = 0.55 * Math.max(cut(7), cut(8.6), cut(10.2)) + 0.4 * win(t, 12.95, 13.05, 13.1, 13.6);
 
   // ---- Type ----
-  const t1 = $("t1");
-  t1.style.opacity = win(t, 0.7, 1.7, 2.55, 3.0);
-  t1.style.letterSpacing = `${lerp(0.34, 0.24, seg(t, 0.7, 3))}em`;
-  t1.style.filter = `blur(${lerp(10, 0, seg(t, 0.7, 1.7, out))}px)`;
-
-  const words = document.querySelectorAll("#t3 b");
-  [7.15, 8.75, 10.35].forEach((w, i) => {
-    words[i].style.opacity = win(t, w, w + 0.35, 11.6, 11.95);
-    words[i].style.filter = `blur(${lerp(8, 0, seg(t, w, w + 0.35, out))}px)`;
+  // Bold headline: on screen from the first second until the hero reveal.
+  const pop = (k) => { const x = clamp(k); return x < 1 ? 0.6 + 0.48 * Math.sin(x * Math.PI * 0.75) / Math.sin(Math.PI * 0.75) * x : 1; };
+  document.querySelectorAll("#headline .h").forEach((el, i) => {
+    const a = 0.2 + i * 0.3;
+    const k = seg(t, a, a + 0.35, (x) => x);
+    const gone = seg(t, 11.85, 12.3);
+    el.style.opacity = Math.min(1, k * 2) * (1 - gone);
+    el.style.transform = `scale(${pop(k) * lerp(1, 0.9, gone)}) translateY(${-gone * 40}px)`;
   });
+
+  // Pop-up stickers, each matched to what the phone is showing.
+  const caps = [["c1", 3.55, 6.85], ["c2", 7.05, 8.5], ["c3", 8.65, 10.1], ["c4", 10.25, 11.85], ["c5", 13.85, 15.85]];
+  for (const [id, a, b] of caps) {
+    const el = $(id);
+    const k = seg(t, a, a + 0.3, (x) => x);
+    const outK = seg(t, b - 0.18, b);
+    el.style.opacity = Math.min(1, k * 2.5) * (1 - outK);
+    el.style.transform = `scale(${pop(k)}) translateY(${outK * -18}px)`;
+  }
+  $("endline").style.opacity = seg(t, 16.3, 16.9, out) * (1 - seg(t, 18.0, 18.5));
+  $("endline").style.transform = `translateY(${lerp(16, 0, seg(t, 16.3, 16.9, out))}px)`;
 
   const crest = $("crest");
   crest.style.opacity = seg(t, 12.7, 13.3, out) * (1 - seg(t, 18.0, 18.5));
@@ -268,6 +288,7 @@ function renderAt(t) {
   title.style.letterSpacing = `${lerp(0.14, 0.04, seg(t, 12.95, 14.2, out))}em`;
   title.querySelector(".l2").style.backgroundPosition = `${lerp(120, -20, seg(t, 13.2, 15.2))}% 0`;
   $("rule").style.width = `${lerp(0, 520, seg(t, 13.4, 14.4))}px`;
+  $("rule").style.opacity = 1 - seg(t, 16.1, 16.4);
 
   const t5 = $("t5");
   t5.style.opacity = seg(t, 16.0, 16.7, out);
