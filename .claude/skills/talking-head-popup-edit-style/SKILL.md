@@ -99,12 +99,40 @@ Edit like a cinematic director, motion designer and social-media editor. Before 
 4. **Preview:** render a few stills or a short clip and check that the message is clear in the first second, the text is readable, the safe zones are respected and her face isn't covered.
 5. **Deliver:** export 9:16 1080×1920 H.264 MP4 at about -14 LUFS.
 
+### Named effects catalogue
+Olaitan can ask for these by name ("add Snap Zoom and Checklist Pop"). They come from the effect list spoken in reference 1 (see the reference library). The descriptions below are the standard professional meaning of each name, not yet confirmed against the reference's visuals. Refine them when screenshots or the video arrive. Pick effects that fit the message (see "Choosing by video type"), never all of them.
+
+| Effect | What it is | How to build it | Best for in her content |
+|---|---|---|---|
+| **Orbit** | The camera swings around the subject or product in 3D | Cut her out (background removal) or use a device mock-up on a 3D plane, rotate 20–40° with parallax background | Product and app reveals, the hero moment of a promo |
+| **Chat Takeover** | Chat bubbles (WhatsApp/DM style) pop in one by one until they fill the screen around her | Animated rounded bubbles with a pop and a soft "message" sound, real or clearly recreated messages | Client enquiries, "my DMs after I posted this", testimonials |
+| **Frame Escape** | She appears inside a framed card or photo, then part of her (head, hand, product) pushes out over the border | Put the cut-out of her on a layer above the frame border, with a slight 3D tilt and shadow | Hooks, "breaking out" moments, introducing a topic |
+| **Snap Zoom** | An instant punch-in (about 100→130% in 2–3 frames) on a key word, with a whoosh or hit | Fast scale keyframes, slight motion blur, synced to speech | Emphasis on punchlines, numbers, "this is the mistake" |
+| **Checklist Pop** | Checklist items pop in and tick off one by one as she says them | White card, coral or brand check icons, pop sound per tick | Steps, products needed, "what's included" |
+| **Headline Storm** | Lots of headline, quote or text cards fly in rapidly around her, overlapping | Staggered cards with random angles and depth, quick in, quick out | Social proof, "everyone is talking about…", trends |
+| **Zoom Portal** | The camera zooms into an object (a phone screen, door or window) and comes out into the next scene | Scale into the object until it fills the frame, cross to the new clip, motion blur | Moving from her talking into an app demo or a job site |
+| **Growth Curve** | An animated chart line or bars draw upward with a counting number | Animated SVG path plus number counter, brand colours | Business growth, earnings, bookings, before/after numbers (real figures only) |
+| **Studio Reveal** | The camera pulls back or lights switch on to reveal her in a set or studio | Start tight or dark, pull back with a light sweep and a riser, then an impact | Episode intros, launches, the big reveal |
+| **B-roll Overlay** | Supporting footage plays over or beside her while her voice continues | Full-screen cutaway or rounded picture-in-picture card | Showing the actual cleaning steps, results, products |
+| **Paper Cutout** | She (or an object) becomes a sticker with a white paper border, on a textured or collage background | Background removal plus a thick white outline, a drop shadow and a slight stop-motion jitter | Playful, storytelling and kids' or Academy content |
+| **Dolly Zoom** | The "vertigo" effect: she stays the same size while the background stretches or shrinks behind her | Cut-out of her on top; scale the background up while keeping her scale fixed | A realisation or shock moment ("then I found out…") |
+| **Magazine Cover** | A freeze frame styled as a magazine cover, with masthead, cover lines and her overlapping the title | Freeze frame, big serif masthead behind her cut-out, small headlines | Wins, milestones, "featured" moments, personal brand |
+| **Liquid Glass** | Frosted, refractive glass panels holding text or cards (glassmorphism) | Blurred, slightly distorted panel with a light edge highlight over the footage | Premium titles and info cards, app and tech promos |
+| **Zoom Throughcut** | A transition that zooms fast through the current shot into the next one | Fast scale-in with motion blur on clip A, scale-out on clip B, whoosh | Energetic topic changes |
+| **Green Screen** | She is placed in front of new content: a website, screenshot, app or photo | Background removal, then composite her over the content (her look unchanged) | Reacting to or explaining something on screen |
+| **Frame Break** | The video frame cracks, shatters or splits apart to reveal what's next | Split the frame into shards or panels that fly apart, with an impact sound | A big "breakthrough" moment or a chapter change (use rarely) |
+| **Digital Zoom** | A slow, smooth crop push-in (about 100→115%) over a sentence | Gradual scale on a still shot | Building tension, emotional or important lines |
+| **Phone Mockup** | Footage or an app screen shown inside a realistic phone | A device frame with real screen captures, an optional orbit | App demos, Smart Cleaners Academy, Sparkle Sweep |
+| **Checklist** | A complete recap checklist on one card | A static white card with all items, shown for 2–3 seconds | Summaries and the end of a tutorial |
+
+The reference also ended with a comment-keyword call to action ("comment the word EDIT and I'll send you everything"). It's a strong pattern for her own CTAs, for example "Comment CLEAN for my checklist".
+
 ### Reference library
 Treat references as inspiration to learn techniques from, never as templates to copy. Never copy a creator's name, branding, footage or music.
 - TikTok reference 1: https://vt.tiktok.com/ZSgUuBpAk/
 - TikTok reference 2: https://vt.tiktok.com/ZSgUVWkt2/
 
-**Status:** not analysed yet, because the links couldn't be opened from Claude's environment. Before describing what these videos do, ask Olaitan for the downloaded video files or screenshots. After analysing them, add the specific techniques observed here (what happens, when, and why it works). Don't claim to know their contents until then.
+**Status:** the links can't be opened from Claude's environment. Olaitan supplied the transcript of one reference (titled "Click the link in my bio to get all 20 video editing effects…"). It lists the 20 named effects in the catalogue above, about one per second, followed by a comment-keyword CTA. The visuals haven't been seen yet. When the video files or screenshots arrive, update the catalogue with what each effect actually looks like. Don't claim to know the visuals until then.
 
 ## Checklist before delivering
 - [ ] Viewers know what the video is about within the first second (bold headline or hook)
