@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Smart Cleaners Academy teaser stage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@300;400;600&display=swap">
+<style>
+/* 1080×1920 stage. Every visual is set from renderAt(t) so frames are deterministic. */
+:root {
+  --ink: #05040f;
+  --violet: #4A3FA6;
+  --deep: #1a1550;
+  --lavender: #C8B8F2;
+  --cream: #F6F1E7;
+  --gold: #E6A93B;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+body { font-family: "Poppins", system-ui, sans-serif; color: var(--cream); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+.layer { position: absolute; inset: 0; }
+#bg { background: radial-gradient(70% 45% at 50% 46%, #241c6b 0%, #120e3a 45%, var(--ink) 80%); }
+#glow { background: radial-gradient(42% 30% at 50% 44%, rgba(120, 100, 255, 0.55), rgba(74, 63, 166, 0.18) 55%, transparent 75%); mix-blend-mode: screen; }
+#tint { mix-blend-mode: screen; }
+#beam {
+  left: 290px; width: 500px; top: -200px; height: 1700px;
+  background: linear-gradient(180deg, rgba(200, 184, 242, 0.75) 0%, rgba(160, 150, 255, 0.28) 45%, rgba(120, 110, 255, 0) 85%);
+  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+  filter: blur(36px); mix-blend-mode: screen; transform-origin: 50% 0;
+}
+#haze1, #haze2 { filter: blur(60px); mix-blend-mode: screen; }
+#haze1 { background: radial-gradient(35% 18% at 30% 70%, rgba(110, 100, 220, 0.30), transparent 70%); }
+#haze2 { background: radial-gradient(30% 16% at 72% 30%, rgba(150, 120, 255, 0.22), transparent 70%); }
+#floor { top: auto; height: 560px; bottom: 0; background: radial-gradient(45% 40% at 50% 8%, rgba(150, 140, 255, 0.22), transparent 70%); }
+#dust { mix-blend-mode: screen; }
+#vignette { background: radial-gradient(85% 60% at 50% 48%, transparent 55%, rgba(0, 0, 0, 0.75) 100%); }
+#fade { background: #000; opacity: 0; }
+#flash { background: radial-gradient(60% 40% at 50% 45%, rgba(255, 255, 255, 0.9), rgba(200, 184, 242, 0.35) 50%, transparent 80%); opacity: 0; mix-blend-mode: screen; }
+
+/* Phone */
+#rig { position: absolute; inset: 0; perspective: 2600px; perspective-origin: 50% 45%; }
+#shadow { position: absolute; left: 50%; width: 520px; height: 70px; margin-left: -260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.85), transparent); filter: blur(8px); }
+#phone {
+  position: absolute; left: 50%; top: 0; width: 470px; height: 960px; margin-left: -235px; margin-top: -480px;
+  transform-style: preserve-3d;
+}
+.body {
+  position: absolute; inset: 0; border-radius: 74px;
+  background: linear-gradient(140deg, #4b4a58 0%, #17161e 22%, #0b0b10 50%, #2a2a35 78%, #5a5968 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.28), inset 0 0 0 9px #06060a, 0 50px 90px rgba(0, 0, 0, 0.7);
+}
+.edge { position: absolute; top: 40px; height: 880px; width: 22px; background: linear-gradient(90deg, #2b2a34, #6c6b7a 45%, #23222b); }
+.edge.r { right: 0; transform-origin: 100% 50%; transform: rotateY(90deg); }
+.edge.l { left: 0; transform-origin: 0 50%; transform: rotateY(-90deg); }
+.btn-side { position: absolute; width: 5px; border-radius: 3px; background: linear-gradient(90deg, #6c6b7a, #24232c); }
+.screen { position: absolute; inset: 15px; border-radius: 60px; overflow: hidden; background: #020205; }
+.content { position: absolute; left: 0; right: 0; top: 58px; bottom: 0; transform-origin: 50% 20%; overflow: hidden; }
+.statusbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; background: #2f2779; display: flex; align-items: center; justify-content: space-between; padding: 6px 44px 0 52px; font: 600 19px/1 "Poppins", sans-serif; color: #fff; }
+.statusbar svg { height: 16px; }
+.shot { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; }
+#homeFull { position: absolute; left: 0; top: 0; width: 100%; }
+.island { position: absolute; top: 20px; left: 50%; width: 126px; height: 36px; margin-left: -63px; border-radius: 20px; background: #000; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); }
+.glass { position: absolute; inset: 0; border-radius: 60px; background: linear-gradient(115deg, transparent 0%, transparent 38%, rgba(255, 255, 255, 0.16) 46%, rgba(255, 255, 255, 0.04) 52%, transparent 60%); background-size: 300% 300%; mix-blend-mode: screen; }
+.screen-off { position: absolute; inset: 0; background: radial-gradient(80% 60% at 30% 20%, #1b1a26, #050508 70%); }
+.screen-flash { position: absolute; inset: 0; background: radial-gradient(70% 50% at 50% 45%, #ffffff, rgba(200, 184, 242, 0.6) 40%, transparent 80%); opacity: 0; mix-blend-mode: screen; }
+
+/* Type */
+.txt { position: absolute; left: 0; right: 0; text-align: center; opacity: 0; }
+#t1 { top: 180px; font-weight: 300; font-size: 48px; line-height: 1.5; letter-spacing: 0.26em; padding-left: 0.26em; }
+#t1 span { color: var(--lavender); }
+#t3 { top: 1630px; font-weight: 600; font-size: 46px; letter-spacing: 0.22em; display: flex; justify-content: center; gap: 30px; opacity: 1; }
+#t3 b { opacity: 0; font-weight: 600; }
+#t3 b:nth-child(2) { color: var(--lavender); }
+#t3 b:nth-child(3) { color: var(--gold); }
+#crest { position: absolute; left: 50%; top: 1268px; width: 104px; height: 104px; margin-left: -52px; opacity: 0; filter: drop-shadow(0 0 22px rgba(230, 169, 59, 0.55)); }
+#title { top: 1392px; font-family: "DM Serif Display", Georgia, serif; font-size: 78px; line-height: 1.02; letter-spacing: 0.04em; }
+#title .l1 { display: block; color: var(--cream); }
+#title .l2 { display: block; color: transparent; background: linear-gradient(100deg, #b7801f 0%, #E6A93B 35%, #fff4d6 50%, #E6A93B 65%, #b7801f 100%); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; letter-spacing: 0.16em; }
+#rule { position: absolute; left: 50%; top: 1588px; width: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); transform: translateX(-50%); }
+#t5 { top: 190px; font-weight: 600; font-size: 64px; letter-spacing: 0.3em; text-shadow: 0 0 40px rgba(200, 184, 242, 0.6); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="bg"></div>
+  <div class="layer" id="haze1"></div>
+  <div class="layer" id="haze2"></div>
+  <div class="layer" id="beam"></div>
+  <div class="layer" id="glow"></div>
+  <div class="layer" id="tint"></div>
+  <div class="layer" id="floor"></div>
+  <canvas class="layer" id="dust" width="1080" height="1920"></canvas>
+
+  <div id="rig">
+    <div id="shadow"></div>
+    <div id="phone">
+      <div class="edge l"></div><div class="edge r"></div>
+      <div class="body"></div>
+      <div class="btn-side" style="left:-3px;top:210px;height:70px"></div>
+      <div class="btn-side" style="left:-3px;top:300px;height:110px"></div>
+      <div class="btn-side" style="left:-3px;top:425px;height:110px"></div>
+      <div class="btn-side" style="right:-3px;top:300px;height:150px"></div>
+      <div class="screen">
+        <div class="screen-off" id="off"></div>
+        <div class="statusbar" id="status"><span>9:41</span><svg viewBox="0 0 70 16" aria-hidden="true"><rect x="0" y="10" width="4" height="6" rx="1" fill="#fff"/><rect x="6" y="7" width="4" height="9" rx="1" fill="#fff"/><rect x="12" y="4" width="4" height="12" rx="1" fill="#fff"/><rect x="18" y="1" width="4" height="15" rx="1" fill="#fff"/><rect x="34" y="2" width="28" height="13" rx="4" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/><rect x="36.5" y="4.5" width="21" height="8" rx="2" fill="#fff"/><rect x="63.5" y="6" width="2.5" height="5" rx="1" fill="#fff" fill-opacity=".6"/></svg></div>
+        <div class="content" id="content">
+          <img id="homeFull" src="screens/home-full.png" alt="">
+          <img class="shot" id="s-clean-1" src="screens/clean-1.png" alt="">
+          <img class="shot" id="s-clean-2" src="screens/clean-2.png" alt="">
+          <img class="shot" id="s-clean-3" src="screens/clean-3.png" alt="">
+          <img class="shot" id="s-clean-4" src="screens/clean-4.png" alt="">
+          <img class="shot" id="s-safety" src="screens/safety-stop.png" alt="">
+          <img class="shot" id="s-results" src="screens/results.png" alt="">
+          <img class="shot" id="s-home" src="screens/home.png" alt="">
+        </div>
+        <div class="screen-flash" id="sflash"></div>
+        <div class="glass" id="glass"></div>
+        <div class="island"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="txt" id="t1">A NEW WAY<br><span>TO LEARN CLEANING…</span></div>
+  <div class="txt" id="t3"><b>LEARN.</b><b>PRACTISE.</b><b>IMPROVE.</b></div>
+  <svg id="crest" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M32 3 L57 12 V30 C57 46 46 56 32 61 C18 56 7 46 7 30 V12 Z" fill="#2C2560" stroke="#E6A93B" stroke-width="3"/>
+    <path d="M32 15 l3.2 8.6 9 .4 -7 5.6 2.4 8.8 -7.6 -5 -7.6 5 2.4 -8.8 -7 -5.6 9 -.4 z" fill="#E6A93B"/>
+    <path d="M18 44 q14 8 28 0" stroke="#C8B8F2" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="txt" id="title"><span class="l1">SMART CLEANERS</span><span class="l2">ACADEMY</span></div>
+  <div id="rule"></div>
+  <div class="txt" id="t5"></div>
+
+  <div class="layer" id="flash"></div>
+  <div class="layer" id="vignette"></div>
+  <div class="layer" id="fade"></div>
+</div>
+
+<script>
+const END_TEXT = new URLSearchParams(location.search).get("end") === "here" ? "IT'S HERE." : "LAUNCHING TODAY";
+document.getElementById("t5").textContent = END_TEXT;
+
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+const out = (k) => 1 - Math.pow(1 - k, 3);
+/** 0→1 between t0 and t1, eased. */
+const seg = (t, t0, t1, f = ease) => f(clamp((t - t0) / (t1 - t0)));
+/** Fade in over [a,b], hold, fade out over [c,d]. */
+const win = (t, a, b, c, d) => Math.min(seg(t, a, b, out), 1 - seg(t, c, d));
+
+// Deterministic dust motes.
+const motes = Array.from({ length: 90 }, (_, i) => {
+  const r = (n) => { const x = Math.sin(i * 127.1 + n * 311.7) * 43758.5453; return x - Math.floor(x); };
+  return { x: r(1) * 1080, y: r(2) * 1920, s: 0.6 + r(3) * 2.4, v: 6 + r(4) * 18, ph: r(5) * 6.28, a: 0.25 + r(6) * 0.6 };
+});
+const dctx = $("dust").getContext("2d");
+
+const shots = ["s-clean-1", "s-clean-2", "s-clean-3", "s-clean-4", "s-safety", "s-results", "s-home"];
+
+function renderAt(t) {
+  // ---- Camera and phone pose ----
+  let ry, rx, sc, cy, bright;
+  const s1 = seg(t, 0, 3), s2 = seg(t, 3, 4.7), s4 = seg(t, 11.9, 13.2);
+  if (t < 3) { ry = lerp(-36, -31, s1); rx = 9; sc = lerp(0.86, 0.95, s1); cy = 900; bright = lerp(0.04, 0.5, seg(t, 0.2, 2.8)); }
+  else if (t < 7) { ry = lerp(-31, 0, s2) + 3.5 * Math.sin((t - 4.7) * 1.1) * seg(t, 4.7, 5.4); rx = lerp(9, 2, s2); sc = lerp(0.95, 1.0, s2); cy = 900; bright = lerp(0.5, 1, seg(t, 3.0, 3.6)); }
+  else if (t < 11.9) {
+    const shot = t < 8.6 ? 0 : t < 10.2 ? 1 : 2;
+    const st = [7, 8.6, 10.2][shot], len = shot === 2 ? 1.7 : 1.6;
+    const k = seg(t, st, st + len, (x) => x);
+    ry = [lerp(11, 6, k), lerp(-11, -6, k), lerp(7, 2, k)][shot];
+    rx = lerp(4, 2, k);
+    sc = lerp(1.06, 1.09, k);
+    cy = 890; bright = 1;
+  } else { ry = lerp(2, 0, s4); rx = lerp(2, 0, s4); sc = lerp(1.09, 0.86, s4) * lerp(1, 1.025, seg(t, 13.2, 18.5, (x) => x)); cy = lerp(890, 760, s4); bright = 1; }
+  $("phone").style.transform = `translateY(${cy}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${sc})`;
+  $("phone").style.filter = `brightness(${bright})`;
+  const sh = $("shadow");
+  sh.style.top = `${cy + 480 * sc - 10}px`;
+  sh.style.transform = `scaleX(${sc * (1 - Math.abs(ry) / 200)})`;
+  sh.style.opacity = 0.9 * bright;
+
+  // ---- Screen content ----
+  const on = seg(t, 3.2, 3.55, out);
+  $("off").style.opacity = 1 - on;
+  $("sflash").style.opacity = win(t, 3.2, 3.3, 3.35, 3.9) * 0.85;
+  const content = $("content");
+  content.style.opacity = on;
+  $("status").style.opacity = on;
+  const home = $("homeFull");
+  const screenW = 440; // status bar sits above the app content
+  const pxPerCss = screenW / 390;
+  home.style.opacity = t < 7 ? 1 : 0;
+  home.style.transform = `translateY(${-seg(t, 4.9, 6.85) * 560 * pxPerCss}px)`;
+
+  const op = Object.fromEntries(shots.map((s) => [s, 0]));
+  const xf = (a, b, t0) => { const k = seg(t, t0, t0 + 0.14, (x) => x); op[a] = Math.max(op[a], 1 - k); op[b] = Math.max(op[b], k); };
+  let zoom = 1, origin = "50% 20%";
+  if (t >= 7 && t < 8.6) {
+    op["s-clean-1"] = 1;
+    xf("s-clean-1", "s-clean-2", 7.4); if (t >= 7.54) op["s-clean-1"] = 0;
+    if (t >= 7.8) { op["s-clean-2"] = 0; xf("s-clean-2", "s-clean-3", 7.8); }
+    if (t >= 8.2) { op["s-clean-3"] = 0; xf("s-clean-3", "s-clean-4", 8.2); }
+    zoom = lerp(1.0, 1.22, seg(t, 7, 8.6, (x) => x)); origin = "50% 17%";
+  } else if (t >= 8.6 && t < 10.2) {
+    op["s-safety"] = 1; zoom = lerp(1.06, 1.26, seg(t, 8.6, 10.2, (x) => x)); origin = "50% 38%";
+  } else if (t >= 10.2 && t < 12) {
+    op["s-results"] = 1; zoom = lerp(1.22, 1.02, seg(t, 10.2, 11.9)); origin = "50% 12%";
+  }
+  if (t >= 11.9) { op["s-results"] = 1 - seg(t, 11.9, 12.4); op["s-home"] = seg(t, 11.9, 12.4); }
+  for (const s of shots) $(s).style.opacity = op[s];
+  content.style.transformOrigin = origin;
+  content.style.transform = `scale(${zoom})`;
+
+  // Glass reflection follows the phone angle, plus a sweep at the hero reveal.
+  const sweep = seg(t, 12.9, 14.2);
+  $("glass").style.backgroundPosition = `${50 + ry * 2.2 + (t > 12.9 ? lerp(-120, 160, sweep) : 0)}% 50%`;
+  $("glass").style.opacity = 0.75 + 0.25 * win(t, 12.9, 13.3, 13.8, 14.2);
+
+  // ---- Atmosphere ----
+  $("beam").style.opacity = lerp(0, 0.95, seg(t, 0.15, 2.2)) * lerp(1, 0.45, seg(t, 3.5, 6));
+  $("beam").style.transform = `scaleX(${lerp(0.55, 1, seg(t, 0, 3))})`;
+  const peak = win(t, 12.6, 13.4, 17.6, 18.5);
+  $("glow").style.opacity = lerp(0.05, 0.55, seg(t, 2.6, 4.5)) + 0.45 * peak + 0.1 * Math.sin(t * 1.3);
+  $("bg").style.opacity = lerp(0.35, 1, seg(t, 0.5, 4));
+  $("haze1").style.transform = `translate(${Math.sin(t * 0.35) * 40}px, ${Math.cos(t * 0.27) * 25}px)`;
+  $("haze2").style.transform = `translate(${Math.cos(t * 0.3) * 45}px, ${Math.sin(t * 0.22) * 30}px)`;
+  $("floor").style.opacity = lerp(0.2, 1, seg(t, 2, 5));
+  const red = win(t, 8.6, 8.8, 9.8, 10.2), gold = win(t, 10.2, 10.45, 11.7, 12.3);
+  $("tint").style.background = `radial-gradient(40% 28% at 50% 46%, rgba(255, 80, 90, ${0.35 * red}), transparent 75%), radial-gradient(45% 30% at 50% 46%, rgba(230, 169, 59, ${0.4 * gold}), transparent 75%)`;
+
+  dctx.clearRect(0, 0, 1080, 1920);
+  const dustOn = lerp(0.35, 1, seg(t, 0, 3));
+  for (const m of motes) {
+    const y = ((m.y - t * m.v) % 1920 + 1920) % 1920;
+    const x = m.x + Math.sin(t * 0.6 + m.ph) * 14;
+    const inBeam = Math.max(0, 1 - Math.abs(x - 540) / (120 + (y / 1920) * 300));
+    const a = m.a * dustOn * (0.25 + 0.75 * inBeam);
+    dctx.fillStyle = `rgba(220, 210, 255, ${a})`;
+    dctx.beginPath(); dctx.arc(x, y, m.s, 0, Math.PI * 2); dctx.fill();
+  }
+
+  // Cut flashes on the beat.
+  const cut = (c) => win(t, c - 0.02, c + 0.02, c + 0.05, c + 0.22);
+  $("flash").style.opacity = 0.55 * Math.max(cut(7), cut(8.6), cut(10.2)) + 0.4 * win(t, 12.95, 13.05, 13.1, 13.6);
+
+  // ---- Type ----
+  const t1 = $("t1");
+  t1.style.opacity = win(t, 0.7, 1.7, 2.55, 3.0);
+  t1.style.letterSpacing = `${lerp(0.34, 0.24, seg(t, 0.7, 3))}em`;
+  t1.style.filter = `blur(${lerp(10, 0, seg(t, 0.7, 1.7, out))}px)`;
+
+  const words = document.querySelectorAll("#t3 b");
+  [7.15, 8.75, 10.35].forEach((w, i) => {
+    words[i].style.opacity = win(t, w, w + 0.35, 11.6, 11.95);
+    words[i].style.filter = `blur(${lerp(8, 0, seg(t, w, w + 0.35, out))}px)`;
+  });
+
+  const crest = $("crest");
+  crest.style.opacity = seg(t, 12.7, 13.3, out) * (1 - seg(t, 18.0, 18.5));
+  crest.style.transform = `scale(${lerp(0.7, 1, seg(t, 12.7, 13.4, out))})`;
+  const title = $("title");
+  title.style.opacity = seg(t, 12.95, 13.7, out);
+  title.style.filter = `blur(${lerp(14, 0, seg(t, 12.95, 13.7, out))}px)`;
+  title.style.letterSpacing = `${lerp(0.14, 0.04, seg(t, 12.95, 14.2, out))}em`;
+  title.querySelector(".l2").style.backgroundPosition = `${lerp(120, -20, seg(t, 13.2, 15.2))}% 0`;
+  $("rule").style.width = `${lerp(0, 520, seg(t, 13.4, 14.4))}px`;
+
+  const t5 = $("t5");
+  t5.style.opacity = seg(t, 16.0, 16.7, out);
+  t5.style.letterSpacing = `${lerp(0.5, 0.3, seg(t, 16.0, 17.2, out))}em`;
+  t5.style.filter = `blur(${lerp(12, 0, seg(t, 16.0, 16.7, out))}px)`;
+
+  $("fade").style.opacity = Math.max(1 - seg(t, 0, 0.5, out), seg(t, 18.0, 18.5));
+}
+window.renderAt = renderAt;
+window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => {}))]);
+renderAt(0);
+</script>
+</body>
+</html>
