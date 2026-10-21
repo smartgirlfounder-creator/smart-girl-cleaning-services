@@ -21,6 +21,7 @@ export const bathroomMission: CleaningMission = {
   estimatedMinutes: 8,
   whyItMatters: "Bathrooms are where germs spread most easily. A fixed, professional order of work means nothing is missed and nothing gets dirty again after you've cleaned it.",
   sceneId: "bathroom",
+  ppeBrief: "Today's job uses a corrosive toilet cleaner and spray products. Select everything you need, then put it on.",
   objects: [
     { id: "vent", name: "Extractor fan and window", zone: "general", inspectNote: "The fan is off and the window is shut. The room will fill with fumes once you start using products." },
     { id: "bin", name: "Bin", zone: "general", inspectNote: "The bin is overflowing with tissues and packaging." },

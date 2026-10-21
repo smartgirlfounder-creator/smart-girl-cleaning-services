@@ -376,3 +376,31 @@ li.done .box::after { content: ""; width: 8px; height: 4px; border-left: 2px sol
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition: none !important; }
 }
+
+/* ---------- Shift planner ---------- */
+.planner { display: flex; flex-direction: column; gap: 14px; }
+.brief-card { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); max-width: 80ch; }
+.timebar { position: relative; height: 34px; border-radius: 99px; background: rgba(200, 184, 242, 0.16); overflow: hidden; }
+.timebar span { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--lavender), var(--gold)); border-radius: 99px; transition: width 0.2s ease; }
+.timebar.over span { background: var(--crit); }
+.timebar b { position: relative; display: block; text-align: center; line-height: 34px; font-variant-numeric: tabular-nums; color: var(--charcoal); mix-blend-mode: normal; text-shadow: 0 0 6px rgba(246, 241, 231, 0.9); }
+.plan-grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .plan-grid { grid-template-columns: 1fr 1fr; align-items: start; } }
+.plan-col { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: var(--r-lg); background: rgba(23, 22, 28, 0.55); border: 1px solid var(--line); min-width: 0; }
+.plan-col h2 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.plan-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.plan-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--r-md); background: var(--surface-2); }
+.plan-n { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: var(--charcoal); font-weight: 700; font-size: 13px; }
+.plan-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.plan-body strong { font-size: 14px; font-weight: 600; }
+.plan-ctrl { display: flex; gap: 4px; flex: none; }
+.icon-btn { width: 36px; height: 36px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.icon-btn:disabled { opacity: 0.3; cursor: default; }
+.job-list { display: flex; flex-direction: column; gap: 6px; }
+.job { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; min-height: 56px; padding: 10px 12px; border-radius: var(--r-md); border: 1.5px dashed var(--line); background: transparent; cursor: pointer; }
+.job:hover { background: var(--surface); border-style: solid; }
+.job strong { font-size: 14px; font-weight: 600; }
+.empty { color: var(--muted); font-size: 14px; padding: 10px 0; }
+.cert-level { font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 12px; color: #8C6234; }
+.certificate + .certificate { margin-top: 16px; }
+@media (max-width: 899px) { .plan-grid .plan-col:last-child { order: -1; } }

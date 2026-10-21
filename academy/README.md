@@ -9,8 +9,11 @@ A mobile-first browser game that teaches professional cleaning through interacti
 | Professional Bathroom Cleaning | Beginner | Hands-on room | Inspect the room, choose PPE, pick tools and products from a trolley, clean in a professional order, final walk-through |
 | Chemical and Equipment Safety | Beginner | Safety decisions | 10 real-job situations: labels, dilution, never-mix rules, surfaces, PPE, storage, equipment, first aid |
 | Final Inspection and Quality Control | Professional (unlocks after both Beginner missions) | Quality control | Find 8 problems a colleague missed (including a safety hazard) without flagging good work |
+| Professional Kitchen Cleaning | Professional (unlocks after both Beginner missions) | Hands-on room | Green-coded tools, food-safe products, degreaser dwell time, clear before clean, sink last |
+| Hotel Turnover Rush | Expert (unlocks after both Professional missions) | Shift planning | Build an ordered plan for a 55-minute turnover: hazard first, every essential, right order, best extras |
+| Professional Judgement | Expert (unlocks after both Professional missions) | Decisions | Body-fluid spills, unsafe client requests, colleagues without PPE, prioritising, damage, DND, mould |
 
-Also included: main menu, room chooser with locked previews and planned rooms, equipment and chemical safety reference, progress page, 7 achievement badges, and a training-completion certificate (clearly labelled as not an accredited qualification).
+Also included: main menu, room chooser with locked previews and planned rooms, equipment and chemical safety reference, progress page, 10 achievement badges, and a training-completion certificate for each completed level (clearly labelled as not accredited).
 
 ## Run it
 
@@ -32,6 +35,7 @@ src/
   engine/            Game rules, no UI code
     types.ts         Mission, task, tool, product and result types
     cleaning.ts      Hands-on room runner: inspect → PPE → clean → final check
+    planning.ts      Shift-planning runner: time budget, essentials, ordering, best use of spare time
     scenario.ts      Decision runner for safety situations (choice / multi-select / match)
     inspection.ts    Quality-control runner: find defects, avoid false flags
     chemistry.ts     Never-mix rules (bleach + acid, bleach + ammonia)
@@ -42,7 +46,7 @@ src/
     missions/        One file per mission, plus index.ts (registry + planned rooms)
     levels.ts, achievements.ts
   ui/                Presentation only
-    scenes/bathroom.ts   SVG room whose look is driven by "flags" (dirty/clean/defect)
+    scenes/              SVG rooms (bathroom, kitchen) whose look is driven by "flags" (dirty/clean/defect)
     screens/             Menu, mission and results screens
     app.ts               Navigation and event handling
 ```
@@ -50,7 +54,8 @@ src/
 ### Safety rules in the engine
 
 - **Never-mix:** every product applied to a surface is remembered. Applying bleach where acid or ammonia products have been used (or the reverse) is blocked and recorded as a critical error.
-- **Cross-contamination:** tools marked `crossContamination` (red cloth, toilet brush) used outside their zone are a critical error.
+- **Cross-contamination:** tools marked `crossContamination` (red cloth, toilet brush) used outside their zone, or any tool used in one of its `forbiddenZones` (e.g. a yellow washroom cloth in a kitchen), are a critical error.
+- **Food safety:** using a product that isn't `foodSafe` where a food-safe one is needed is explained as a food-safety mistake.
 - **Ventilation:** products marked `needsVentilation` can't be used until the ventilation task is done.
 - **Safety prerequisites:** e.g. mopping before the wet floor sign is out is a safety mistake.
 - **Sequence:** e.g. floor before other surfaces, toilet before sink and shower, are sequence mistakes with explanations.
@@ -61,7 +66,7 @@ src/
 
 1. Add a mission file in `src/data/missions/` describing objects, PPE, tools, products and tasks (with `requires`, `safetyRequires` and explanations).
 2. Register it in `MISSIONS` in `src/data/missions/index.ts`, and remove it from `FUTURE_ROOMS`.
-3. If it needs new artwork, add a scene in `src/ui/scenes/` that draws dirty and clean states from flags, and pick the scene by `sceneId` in `screens/play.ts`. The bathroom scene can also be reused with different flags, as the inspection mission does.
+3. If it needs new artwork, add a scene in `src/ui/scenes/` that draws dirty and clean states from flags, and register it in `src/ui/scenes/index.ts` under the mission's `sceneId`. Existing scenes can also be reused with different flags, as the inspection mission does.
 
 No engine changes are needed for a new room of an existing mission type.
 
@@ -75,4 +80,4 @@ No engine changes are needed for a new room of an existing mission type.
 
 ## Next milestone
 
-Kitchen mission (green-coded tools, food-safe products, degreasing) using the same cleaning engine, then Expert-level timed scenarios. After that, a business edition: accounts, staff invitations, assigned missions and training records. That needs a backend, and is deliberately not started yet.
+The business edition: owner and staff accounts, staff invitations, assigned missions and training records. That needs a hosted database and sign-in service (for example Supabase), so it is waiting on approval of that extra service.

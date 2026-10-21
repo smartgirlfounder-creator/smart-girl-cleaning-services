@@ -5,6 +5,13 @@ import type { Mission, MissionResult } from "../../engine/types";
 import { esc } from "../html";
 import { badgeIcon, stars } from "../icons";
 
+const MISSED_HEADING: Record<Mission["kind"], string> = {
+  cleaning: "Tasks not completed",
+  scenario: "Not answered",
+  inspection: "Problems you missed",
+  planning: "Essential jobs left out of your plan",
+};
+
 export function resultsScreen(p: Progress, m: Mission, r: MissionResult, earned: Achievement[]): string {
   const idx = MISSIONS.findIndex((x) => x.id === m.id);
   const next = MISSIONS.slice(idx + 1).find((x) => p.isUnlocked(x));
@@ -13,7 +20,7 @@ export function resultsScreen(p: Progress, m: Mission, r: MissionResult, earned:
     ? "Not passed: a safety-critical error"
     : r.passed
       ? r.stars === 3 ? "Outstanding work" : "Mission passed"
-      : r.missed.length ? "Not passed: tasks were missed" : `Not passed: ${PASS_MARK} points needed`;
+      : r.missed.length ? "Not passed: essentials were missed" : r.mistakes.some((x) => x.key === "over-time") ? "Not passed: the plan runs over time" : `Not passed: ${PASS_MARK} points needed`;
   return `<div class="results">
     <header class="results-head ${r.passed ? "pass" : "fail"}">
       <span class="eyebrow">${esc(m.title)}</span>
@@ -35,7 +42,7 @@ export function resultsScreen(p: Progress, m: Mission, r: MissionResult, earned:
       ${r.lines.map((l) => `<div class="line"><div class="line-top"><span>${esc(l.label)}</span><span>${l.earned} / ${l.max}</span></div><div class="meter"><span style="width:${(l.earned / l.max) * 100}%"></span></div></div>`).join("")}
     </section>
 
-    ${r.missed.length ? `<section class="list-box"><h2>${m.kind === "inspection" ? "Problems you missed" : m.kind === "scenario" ? "Not answered" : "Tasks not completed"}</h2><ul>${r.missed.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>` : ""}
+    ${r.missed.length ? `<section class="list-box"><h2>${MISSED_HEADING[m.kind]}</h2><ul>${r.missed.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>` : ""}
 
     ${other.length ? `<section class="list-box"><h2>What to work on</h2><ul class="mistakes">${other.map((x) => `<li><strong>${esc(x.title)}</strong><p>${esc(x.why)}</p></li>`).join("")}</ul></section>` : r.criticalErrors.length ? "" : `<section class="list-box"><h2>No mistakes</h2><p>Every decision you made was a professional one.</p></section>`}
 

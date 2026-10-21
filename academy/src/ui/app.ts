@@ -2,11 +2,12 @@ import { ACHIEVEMENTS } from "../data/achievements";
 import { missionById } from "../data/missions";
 import { CleaningRun } from "../engine/cleaning";
 import { InspectionRun } from "../engine/inspection";
+import { PlanningRun } from "../engine/planning";
 import { Progress, browserStore } from "../engine/progress";
 import { ScenarioRun } from "../engine/scenario";
 import type { Mission, MissionResult, PpeId } from "../engine/types";
 import { aboutScreen, achievementsScreen, briefingScreen, homeScreen, libraryScreen, nextMission, progressScreen, roomsScreen } from "./screens/menu";
-import { cleaningView, inspectionView, scenarioView } from "./screens/play";
+import { cleaningView, inspectionView, planningView, scenarioView } from "./screens/play";
 import { resultsScreen } from "./screens/results";
 import type { Session, View } from "./session";
 
@@ -46,6 +47,8 @@ export class App {
       this.session = { kind: "cleaning", run: new CleaningRun(m), feedback: null, ppe: new Set(), tab: "tools", confirmFinish: false, hintObject: null, flash: null };
     } else if (m.kind === "scenario") {
       this.session = { kind: "scenario", run: new ScenarioRun(m), multi: new Set(), match: {}, outcome: null };
+    } else if (m.kind === "planning") {
+      this.session = { kind: "planning", run: new PlanningRun(m), confirmSubmit: false };
     } else {
       this.session = { kind: "inspection", run: new InspectionRun(m), feedback: null, confirmSubmit: false, flash: null };
     }
@@ -86,6 +89,7 @@ export class App {
         if (!s) return homeScreen(p);
         if (s.kind === "cleaning") return cleaningView(s);
         if (s.kind === "scenario") return scenarioView(s);
+        if (s.kind === "planning") return planningView(s);
         return inspectionView(s);
       }
     }
@@ -119,8 +123,7 @@ export class App {
     const el = e.target as HTMLInputElement;
     if (el.dataset.input === "player-name") {
       this.progress.setPlayerName(el.value);
-      const name = this.root.querySelector("#cert-name");
-      if (name) name.textContent = el.value.trim() || "Your name";
+      for (const name of this.root.querySelectorAll(".cert-name")) name.textContent = el.value.trim() || "Your name";
     }
   }
 
@@ -247,6 +250,21 @@ export class App {
           this.root.querySelector<HTMLElement>(".scenario-card h2")?.focus();
           return;
       }
+      return this.render();
+    }
+
+    if (s?.kind === "planning") {
+      const run = s.run;
+      switch (action) {
+        case "plan-add": run.add(id); break;
+        case "plan-remove": run.remove(id); break;
+        case "plan-up": run.move(id, -1); break;
+        case "plan-down": run.move(id, 1); break;
+        case "plan-submit": s.confirmSubmit = true; break;
+        case "plan-no": s.confirmSubmit = false; break;
+        case "plan-yes": return this.complete(run.finish());
+      }
+      if (action !== "plan-submit" && action !== "plan-no") s.confirmSubmit = false;
       return this.render();
     }
 

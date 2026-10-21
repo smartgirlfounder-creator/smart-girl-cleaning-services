@@ -8,6 +8,13 @@ import { backButton, esc, levelName, pageHeader } from "../html";
 import { badgeIcon, bottleIcon, crest, lockIcon, stars, toolIcon } from "../icons";
 import { renderBathroom } from "../scenes/bathroom";
 
+const KIND_LABEL: Record<Mission["kind"], string> = {
+  cleaning: "Hands-on room",
+  scenario: "Decisions",
+  inspection: "Quality control",
+  planning: "Shift planning",
+};
+
 export function nextMission(p: Progress): Mission | undefined {
   return MISSIONS.find((m) => p.isUnlocked(m) && !p.isPassed(m.id));
 }
@@ -69,7 +76,7 @@ export function roomsScreen(p: Progress): string {
       <div class="cards">
         ${missions.map((m) => `
           <button class="mission-card ${p.isUnlocked(m) ? "" : "is-locked"}" data-action="briefing" data-id="${m.id}" data-key="m-${m.id}">
-            <span class="kind">${m.kind === "cleaning" ? "Hands-on room" : m.kind === "scenario" ? "Safety decisions" : "Quality control"}</span>
+            <span class="kind">${KIND_LABEL[m.kind]}</span>
             <strong>${esc(m.title)}</strong>
             <span class="desc">${esc(m.summary)}</span>
             <span class="meta">${missionStatus(p, m)}</span>
@@ -94,7 +101,9 @@ export function briefingScreen(p: Progress, m: Mission): string {
       ? ["Inspect: tap every area of the room to see what needs doing.", "PPE: choose the protective equipment the job needs.", "Clean: pick a tool and a product from your trolley, then tap the area to clean it.", "Final check: walk through the room, then finish."]
       : m.kind === "scenario"
         ? ["Read each situation from a real cleaning job.", "Choose what you would do.", "See the consequence and the rule behind it."]
-        : ["Tap anything in the room that isn't up to standard.", "Compare the room with your colleague's checklist: ticks are not proof.", "Avoid flagging areas that were cleaned properly.", "Submit your inspection report."];
+        : m.kind === "planning"
+          ? ["Read the brief and check how much time you have.", "Tap jobs to add them to your plan, in the order you'll do them.", "Use the arrows to reorder, and leave out what doesn't fit.", "Start the shift to see how your plan works out."]
+          : ["Tap anything in the room that isn't up to standard.", "Compare the room with your colleague's checklist: ticks are not proof.", "Avoid flagging areas that were cleaned properly.", "Submit your inspection report."];
   const need = m.requires.filter((id) => !p.isPassed(id)).map((id) => missionById(id)?.title ?? id);
   return `${pageHeader(esc(m.title), undefined, backButton("rooms", "Rooms"))}
   <div class="briefing">
@@ -117,14 +126,13 @@ export function briefingScreen(p: Progress, m: Mission): string {
 }
 
 export function libraryScreen(): string {
-  const cloths = ["cloth-red", "cloth-yellow", "cloth-blue"].map((id) => TOOLS[id]);
+  const cloths = ["cloth-red", "cloth-yellow", "cloth-blue", "cloth-green"].map((id) => TOOLS[id]);
   return `${pageHeader("Equipment and Chemical Safety", "Reference guide for the tools and products used in the missions.")}
   <section class="lib-section">
     <h2>Colour-coded cloths</h2>
     <p class="small">One colour, one zone. This stops germs travelling from toilets to sinks, or from bathrooms to kitchens. Many companies use this UK-style system; always follow your employer's own colour code.</p>
     <div class="cards cards-3">
       ${cloths.map((t) => `<div class="ref-card">${toolIcon(t.icon, t.color)}<strong>${esc(t.name)}</strong><p>${esc(t.description)}</p></div>`).join("")}
-      <div class="ref-card">${toolIcon("cloth", "#5E9F5A")}<strong>Green microfibre cloth</strong><p>Kitchens and food areas. Used in the kitchen mission (coming soon).</p></div>
     </div>
   </section>
   <section class="lib-section">
@@ -161,8 +169,29 @@ export function libraryScreen(): string {
   <p class="disclaimer">This guide is simplified for training. In real work, always follow the product label, the safety data sheet (SDS) and your employer's procedures.</p>`;
 }
 
+function certificates(p: Progress): string {
+  const earned = LEVELS.map((lvl) => ({ lvl, missions: MISSIONS.filter((m) => m.level === lvl.id) }))
+    .filter(({ missions }) => missions.length && missions.every((m) => p.isPassed(m.id)));
+  if (!earned.length) return `<p class="small">Pass every mission in a level to unlock that level's training-completion certificate.</p>`;
+  const name = esc(p.data.playerName || "Your name");
+  return `<label class="field" for="player-name">Name on your certificates</label>
+    <input id="player-name" class="input" maxlength="60" value="${esc(p.data.playerName)}" placeholder="Your name" data-input="player-name" autocomplete="name">
+    ${earned.map(({ lvl, missions }) => {
+      const issued = missions.map((m) => p.record(m.id)?.lastPlayed ?? "").sort().pop();
+      return `<div class="certificate">
+        ${crest(56)}
+        <span class="eyebrow">Smart Cleaners Academy</span>
+        <h3>Certificate of Training Completion</h3>
+        <p class="cert-level">${esc(lvl.name)} level</p>
+        <p class="cert-name">${name}</p>
+        <p>has completed the ${esc(lvl.name)} training missions: ${esc(missions.map((m) => m.title).join(", "))}.</p>
+        ${issued ? `<p class="small">Issued ${esc(new Date(issued).toLocaleDateString())}</p>` : ""}
+        <p class="cert-note">This is a game-based training-completion certificate. It is not an accredited qualification.</p>
+      </div>`;
+    }).join("")}`;
+}
+
 export function progressScreen(p: Progress, confirmReset: boolean): string {
-  const graduate = !!p.data.achievements["graduate"];
   const storageNote = p.persistent
     ? "Your progress is saved in this browser on this device only. It won't appear on other devices, and clearing your browser data erases it."
     : "This browser isn't letting the Academy save. Your progress will last until you close or reload the page.";
@@ -170,7 +199,6 @@ export function progressScreen(p: Progress, confirmReset: boolean): string {
   <p class="notice">${esc(storageNote)}</p>
   ${LEVELS.map((lvl) => {
     const ms = MISSIONS.filter((m) => m.level === lvl.id);
-    if (!ms.length) return `<section class="level"><h2>${esc(lvl.name)}</h2><p class="small">Expert missions arrive in a later release.</p></section>`;
     return `<section class="level"><h2>${esc(lvl.name)}</h2>
       <div class="progress-list">${ms.map((m) => {
         const r = p.record(m.id);
@@ -181,20 +209,8 @@ export function progressScreen(p: Progress, confirmReset: boolean): string {
       }).join("")}</div></section>`;
   }).join("")}
   <section class="level">
-    <h2>Certificate</h2>
-    ${graduate
-      ? `<label class="field" for="player-name">Name on your certificate</label>
-         <input id="player-name" class="input" maxlength="60" value="${esc(p.data.playerName)}" placeholder="Your name" data-input="player-name" autocomplete="name">
-         <div class="certificate">
-           ${crest(56)}
-           <span class="eyebrow">Smart Cleaners Academy</span>
-           <h3>Certificate of Training Completion</h3>
-           <p class="cert-name" id="cert-name">${esc(p.data.playerName || "Your name")}</p>
-           <p>has completed the Beginner and Professional training missions: Professional Bathroom Cleaning, Chemical and Equipment Safety, and Final Inspection and Quality Control.</p>
-           <p class="small">Issued ${esc(new Date(p.data.achievements["graduate"]).toLocaleDateString())}</p>
-           <p class="cert-note">This is a game-based training-completion certificate. It is not an accredited qualification.</p>
-         </div>`
-      : `<p class="small">Pass all three training missions to unlock your training-completion certificate.</p>`}
+    <h2>Certificates</h2>
+    ${certificates(p)}
   </section>
   <section class="level">
     ${confirmReset
@@ -228,6 +244,6 @@ export function aboutScreen(): string {
       <li>Progress is saved on this device only. There are no accounts yet.</li>
     </ul>
     <h2>Coming next</h2>
-    <p>More rooms (kitchen, bedroom, sitting room, office, hotel turnover, move-in, move-out and post-construction cleaning), Expert-level missions, and a business edition with staff training records.</p>
+    <p>More rooms (bedroom, sitting room, office, hands-on hotel turnover, move-in, move-out and post-construction cleaning), and a business edition with staff accounts and training records.</p>
   </div>`;
 }

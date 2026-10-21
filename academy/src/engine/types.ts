@@ -43,6 +43,8 @@ export interface Tool {
   zones: Zone[];
   /** True when using it outside its zones spreads germs (red cloth, toilet brush). */
   crossContamination?: boolean;
+  /** Zones this tool must never enter, even if it is not a toilet tool (e.g. a washroom cloth in a kitchen). */
+  forbiddenZones?: Zone[];
   description: string;
 }
 
@@ -55,6 +57,8 @@ export interface Product {
   color: string;
   chemical: ChemicalClass;
   use: string;
+  /** Safe on surfaces that touch food. */
+  foodSafe?: boolean;
   /** Room objects or surfaces this product is suitable for, described for the safety library. */
   suitableFor: string[];
   avoidOn: string[];
@@ -122,6 +126,8 @@ export interface CleaningTask {
 export interface CleaningMission extends MissionMeta {
   kind: "cleaning";
   sceneId: string;
+  /** Shown on the PPE step: what in this job the PPE protects against. */
+  ppeBrief: string;
   objects: RoomObject[];
   ppe: { required: PpeId[]; recommended: PpeId[]; offered: PpeId[]; why: Partial<Record<PpeId, string>> };
   tools: string[];
@@ -148,7 +154,7 @@ export interface MatchRow {
 export type ScenarioVisual =
   | { type: "label"; productId: string }
   | { type: "bottles"; items: { name: string; color: string; unlabelled?: boolean; open?: boolean }[] }
-  | { type: "scene"; name: "frayed-cable" | "child-trolley" | "eye-splash" | "storage" };
+  | { type: "scene"; name: "frayed-cable" | "child-trolley" | "eye-splash" | "storage" | "body-fluid" | "clock" | "breakage" | "dnd" | "mould" };
 
 interface ScenarioBase {
   id: string;
@@ -203,7 +209,32 @@ export interface InspectionMission extends MissionMeta {
   colleagueChecklist: { label: string; ticked: boolean }[];
 }
 
-export type Mission = CleaningMission | ScenarioMission | InspectionMission;
+export interface PlanTask {
+  id: string;
+  label: string;
+  area: string;
+  minutes: number;
+  /** Must be in every acceptable plan. */
+  essential?: boolean;
+  /** A hazard: must be in the plan and done first. Leaving it out is safety-critical. */
+  safetyFirst?: boolean;
+  /** Must be the final task. */
+  last?: boolean;
+  /** Worth this much when included as an extra (non-essential) task. */
+  value?: number;
+  /** Tasks that must come earlier in the plan, if both are included. */
+  after?: Requirement[];
+  why: string;
+}
+
+export interface PlanningMission extends MissionMeta {
+  kind: "planning";
+  brief: string;
+  budgetMinutes: number;
+  tasks: PlanTask[];
+}
+
+export type Mission = CleaningMission | ScenarioMission | InspectionMission | PlanningMission;
 
 // ---------- Results ----------
 

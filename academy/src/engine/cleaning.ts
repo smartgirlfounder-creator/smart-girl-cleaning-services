@@ -159,11 +159,14 @@ export class CleaningRun {
       }
     }
 
-    // 2. Hygiene: toilet tools never touch other surfaces.
+    // 2. Hygiene: colour-coded tools never leave their zone.
     if (tool) {
       const t = TOOLS[tool];
-      if (t.crossContamination && !t.zones.includes(obj.zone)) {
-        const why = `The ${t.name.toLowerCase()} is only for toilets. Using it on the ${obj.name.toLowerCase()} spreads germs from the toilet to a cleaner surface (cross-contamination). Keep colour-coded tools in their own zone.`;
+      const toiletTool = t.crossContamination && !t.zones.includes(obj.zone);
+      if (toiletTool || t.forbiddenZones?.includes(obj.zone)) {
+        const why = toiletTool
+          ? `The ${t.name.toLowerCase()} is only for toilets. Using it on the ${obj.name.toLowerCase()} spreads germs from the toilet to a cleaner surface (cross-contamination). Keep colour-coded tools in their own zone.`
+          : `The ${t.name.toLowerCase()} belongs to a different zone. Using it on the ${obj.name.toLowerCase()} carries germs between areas, for example from a bathroom into a kitchen (cross-contamination). Keep colour-coded tools in their own zone.`;
         this.mistakes.add({ key: `cross:${tool}:${objectId}`, severity: "critical", category: "hygiene", title: `Cross-contamination: ${t.short} on ${obj.name}`, why });
         return { tone: "critical", title: "Stop! Cross-contamination", body: why };
       }
@@ -189,8 +192,11 @@ export class CleaningRun {
       return { tone: "warn", title: "This job needs a product", body: target.productWhy ?? "Choose a suitable product from the trolley." };
     }
     const p = PRODUCTS[product];
+    const targetProduct = target.product ? PRODUCTS[target.product] : null;
     const why =
-      product === "bleach"
+      targetProduct?.foodSafe && !p.foodSafe
+        ? `${p.name} is not approved for surfaces that touch food. Residue could end up in someone's meal. ${target.productWhy ?? ""}`
+        : product === "bleach"
         ? "Bleach isn't on the job sheet for this task. It can damage surfaces, and it is dangerous if it meets acidic toilet cleaner or ammonia glass cleaner. Only use it when a task specifically calls for it."
         : target.product === null
           ? `This step doesn't need a product. ${target.toolWhy}`

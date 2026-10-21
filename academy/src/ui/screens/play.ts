@@ -3,12 +3,13 @@ import type { CleaningRun } from "../../engine/cleaning";
 import type { ScenarioVisual } from "../../engine/types";
 import { esc, feedbackBox } from "../html";
 import { bottleIcon, toolIcon } from "../icons";
-import { ANCHORS, VIEW, renderBathroom, type Marker } from "../scenes/bathroom";
+import { VIEW, anchorsFor, renderScene, type Marker } from "../scenes";
 import type { Session } from "../session";
 
 type CleaningSession = Extract<Session, { kind: "cleaning" }>;
 type ScenarioSession = Extract<Session, { kind: "scenario" }>;
 type InspectionSession = Extract<Session, { kind: "inspection" }>;
+type PlanningSession = Extract<Session, { kind: "planning" }>;
 
 function playBar(title: string, right: string): string {
   return `<div class="play-bar">
@@ -18,9 +19,9 @@ function playBar(title: string, right: string): string {
   </div>`;
 }
 
-function flashLayer(flash: { obj: string; tone: string } | null): string {
+function flashLayer(sceneId: string, flash: { obj: string; tone: string } | null): string {
   if (!flash) return "";
-  const a = ANCHORS[flash.obj];
+  const a = anchorsFor(sceneId)[flash.obj];
   if (!a) return "";
   const pieces = flash.tone === "good" ? 8 : 1;
   return `<div class="flash flash-${flash.tone}" style="left:${(a.x / VIEW.w) * 100}%;top:${(a.y / VIEW.h) * 100}%" aria-hidden="true">
@@ -121,7 +122,7 @@ export function cleaningView(s: CleaningSession): string {
       <button class="btn btn-primary" data-action="to-ppe" data-key="to-ppe" ${run.canLeaveInspection() ? "" : "disabled"}>Next: choose PPE</button>`;
   } else if (run.phase === "ppe") {
     panel = `<h2>Step 2: Choose your PPE</h2>
-      <p>Today's job uses a corrosive toilet cleaner and spray products. Select everything you need, then put it on.</p>
+      <p>${esc(m.ppeBrief)}</p>
       <div class="ppe-grid">${m.ppe.offered.map((id) => {
         const on = s.ppe.has(id);
         return `<button class="ppe-item ${on ? "on" : ""}" aria-pressed="${on}" data-action="ppe" data-id="${id}" data-key="ppe-${id}"><strong>${esc(PPE[id].name)}</strong><span>${esc(PPE[id].purpose)}</span></button>`;
@@ -149,14 +150,14 @@ export function cleaningView(s: CleaningSession): string {
   }
 
   const placeholder =
-    run.phase === "inspect" ? "Tap an area of the bathroom to inspect it." : run.phase === "ppe" ? "Select your PPE on the right." : "Choose a tool and product, then tap an area.";
+    run.phase === "inspect" ? "Tap an area of the room to inspect it." : run.phase === "ppe" ? "Select your PPE on the right." : "Choose a tool and product, then tap an area.";
   return `<div class="play">
     ${playBar(m.title, stepper(run.phase))}
     <div class="play-grid">
       <section class="stage-col">
         <div class="scene-wrap ${run.phase === "ppe" ? "dim" : ""}">
-          ${renderBathroom(run.flags, { markers: cleaningMarkers(s), interactive: run.phase === "ppe" ? [] : m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) })}
-          ${flashLayer(s.flash)}
+          ${renderScene(m.sceneId, run.flags, { markers: cleaningMarkers(s), interactive: run.phase === "ppe" ? [] : m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) })}
+          ${flashLayer(m.sceneId, s.flash)}
         </div>
         ${feedbackBox(s.feedback, placeholder)}
       </section>
@@ -184,6 +185,13 @@ function scenarioVisual(v: ScenarioVisual): string {
       <circle cx="70" cy="40" r="14" fill="#F2C9A0"/><rect x="58" y="54" width="24" height="40" rx="10" fill="#E6A93B"/><path d="M80 62 l26 -14" stroke="#F2C9A0" stroke-width="7" stroke-linecap="round"/>`,
     "eye-splash": `<path d="M40 70 Q 130 10, 220 70 Q 130 130, 40 70 Z" fill="#FFFFFF" stroke="#4A4A55" stroke-width="4"/><circle cx="130" cy="70" r="22" fill="#5E8C61"/><circle cx="130" cy="70" r="9" fill="#1E1E24"/><path d="M190 20 q 8 14 0 22 q -8 -8 0 -22" fill="#58B4E8"/>`,
     storage: `<rect x="70" y="10" width="120" height="110" rx="6" fill="#B7854F"/><path d="M130 10 V120" stroke="#8C6234" stroke-width="3"/><rect x="138" y="56" width="16" height="18" rx="3" fill="#E6A93B"/><path d="M141 56 v-6 a5 5 0 0 1 10 0 v6" stroke="#E6A93B" stroke-width="3" fill="none"/>`,
+    "body-fluid": `<rect x="0" y="90" width="260" height="40" fill="#B9BDC4"/><ellipse cx="120" cy="108" rx="44" ry="10" fill="#C9B458" opacity="0.85"/>
+      <path d="M40 120 L58 60 H72 L90 120 Z" fill="#F2C230" stroke="#B88E10" stroke-width="2"/><rect x="180" y="40" width="54" height="64" rx="6" fill="#D24B3E"/><path d="M207 56 v30 M192 71 h30" stroke="#FFFFFF" stroke-width="6"/>`,
+    clock: `<circle cx="130" cy="65" r="52" fill="#FFFFFF" stroke="#4A4A55" stroke-width="5"/><path d="M130 65 V30 M130 65 L156 80" stroke="#4A4A55" stroke-width="5" stroke-linecap="round"/>
+      ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => `<circle cx="${130 + 44 * Math.sin((i * Math.PI) / 6)}" cy="${65 - 44 * Math.cos((i * Math.PI) / 6)}" r="2.5" fill="#4A4A55"/>`).join("")}<path d="M130 65 L130 13 A52 52 0 0 1 175 39 Z" fill="#E07A5F" opacity="0.35"/>`,
+    breakage: `<rect x="40" y="40" width="180" height="10" rx="3" fill="#B7854F"/><path d="M90 116 l14 -18 l10 12 l12 -16 l8 22 Z" fill="#4A3FA6"/><path d="M150 118 l10 -10 l8 10 Z" fill="#4A3FA6"/><path d="M60 120 h160" stroke="#9C958B" stroke-width="3"/>`,
+    dnd: `<rect x="80" y="4" width="110" height="122" rx="4" fill="#B7854F"/><circle cx="174" cy="70" r="5" fill="#E6D3A3"/><rect x="146" y="74" width="40" height="50" rx="4" fill="#B23A48"/><text x="166" y="96" text-anchor="middle" font-size="10" font-weight="700" fill="#FFFFFF">DO NOT</text><text x="166" y="110" text-anchor="middle" font-size="9" font-weight="700" fill="#FFFFFF">DISTURB</text>`,
+    mould: `<rect x="0" y="0" width="260" height="70" fill="#E9E4DC"/>${[[60, 20, 16], [90, 34, 22], [130, 24, 18], [168, 38, 20], [200, 22, 14], [110, 52, 12]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#2E3A2F" opacity="0.75"/>`).join("")}<rect x="0" y="70" width="260" height="60" fill="#D7EAE3"/>`,
   };
   return `<svg viewBox="0 0 260 130" class="scenario-art" aria-hidden="true">${art[v.name]}</svg>`;
 }
@@ -258,8 +266,8 @@ export function inspectionView(s: InspectionSession): string {
     <div class="play-grid">
       <section class="stage-col">
         <div class="scene-wrap">
-          ${renderBathroom(new Set(m.sceneFlags), { markers, interactive: m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) })}
-          ${flashLayer(s.flash)}
+          ${renderScene(m.sceneId, new Set(m.sceneFlags), { markers, interactive: m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) })}
+          ${flashLayer(m.sceneId, s.flash)}
         </div>
         ${feedbackBox(s.feedback, "Tap anything that isn't up to standard. Look closely: some problems are small.")}
       </section>
@@ -274,6 +282,52 @@ export function inspectionView(s: InspectionSession): string {
           <div class="area-grid">${m.objects.map((o) => `<button class="area-btn" data-action="tap" data-id="${o.id}" data-key="area-${o.id}">Flag ${esc(o.name.toLowerCase())}</button>`).join("")}</div></details>
         ${submit}
       </aside>
+    </div>
+  </div>`;
+}
+
+// ---------- Planning ----------
+
+export function planningView(s: PlanningSession): string {
+  const { run } = s;
+  const m = run.mission;
+  const used = run.minutesUsed;
+  const pct = Math.min(100, (used / m.budgetMinutes) * 100);
+  const available = m.tasks.filter((t) => !run.plan.includes(t.id));
+  const confirm = s.confirmSubmit
+    ? `<div class="confirm"><p>${run.overBudget ? `Your plan takes ${used} minutes, but you only have ${m.budgetMinutes}.` : "Ready to start the shift with this plan?"} You can't change it once the shift starts.</p>
+        <div class="btn-row"><button class="btn btn-primary" data-action="plan-yes" data-key="plan-yes">Start the shift</button><button class="btn" data-action="plan-no" data-key="plan-no">Keep planning</button></div></div>`
+    : `<button class="btn btn-primary" data-action="plan-submit" data-key="plan-submit" ${run.plan.length ? "" : "disabled"}>Start the shift</button>`;
+  return `<div class="play">
+    ${playBar(m.title, `<span class="small">${used} of ${m.budgetMinutes} min planned</span>`)}
+    <div class="planner">
+      <div class="brief-card"><span class="eyebrow">Your brief</span><p>${esc(m.brief)}</p></div>
+      <div class="timebar ${run.overBudget ? "over" : ""}" role="img" aria-label="${used} of ${m.budgetMinutes} minutes planned">
+        <span style="width:${pct}%"></span><b>${used} / ${m.budgetMinutes} min</b>
+      </div>
+      <div class="plan-grid">
+        <section class="plan-col">
+          <h2>Your plan <span class="small">in order</span></h2>
+          ${run.plan.length ? `<ol class="plan-list">${run.plan.map((id, i) => {
+            const t = run.task(id);
+            return `<li class="plan-item">
+              <span class="plan-n">${i + 1}</span>
+              <div class="plan-body"><strong>${esc(t.label)}</strong><span class="small">${esc(t.area)} · ${t.minutes} min</span></div>
+              <div class="plan-ctrl">
+                <button class="icon-btn" data-action="plan-up" data-id="${id}" data-key="up-${id}" aria-label="Move ${esc(t.label)} earlier" ${i === 0 ? "disabled" : ""}>↑</button>
+                <button class="icon-btn" data-action="plan-down" data-id="${id}" data-key="down-${id}" aria-label="Move ${esc(t.label)} later" ${i === run.plan.length - 1 ? "disabled" : ""}>↓</button>
+                <button class="icon-btn" data-action="plan-remove" data-id="${id}" data-key="rm-${id}" aria-label="Remove ${esc(t.label)}">✕</button>
+              </div>
+            </li>`;
+          }).join("")}</ol>` : `<p class="empty">Tap jobs on the list to add them here, in the order you'll do them.</p>`}
+          ${confirm}
+        </section>
+        <section class="plan-col">
+          <h2>Jobs to choose from</h2>
+          <div class="job-list">${available.map((t) => `<button class="job" data-action="plan-add" data-id="${t.id}" data-key="add-${t.id}">
+            <strong>${esc(t.label)}</strong><span class="small">${esc(t.area)} · ${t.minutes} min</span></button>`).join("") || `<p class="empty">Every job is in your plan.</p>`}</div>
+        </section>
+      </div>
     </div>
   </div>`;
 }

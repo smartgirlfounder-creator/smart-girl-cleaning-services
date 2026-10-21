@@ -1,5 +1,6 @@
 import type { CleaningRun } from "../engine/cleaning";
 import type { InspectionRun } from "../engine/inspection";
+import type { PlanningRun } from "../engine/planning";
 import type { Achievement } from "../engine/progress";
 import type { ScenarioRun, ScenarioOutcome } from "../engine/scenario";
 import type { Feedback, MissionResult } from "../engine/types";
@@ -29,6 +30,11 @@ export type Session =
       feedback: Feedback | null;
       confirmSubmit: boolean;
       flash: { obj: string; tone: Feedback["tone"] } | null;
+    }
+  | {
+      kind: "planning";
+      run: PlanningRun;
+      confirmSubmit: boolean;
     };
 
 export type View =

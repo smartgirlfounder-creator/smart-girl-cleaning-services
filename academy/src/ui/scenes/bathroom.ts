@@ -1,19 +1,9 @@
 // Bathroom scene, drawn as SVG. The look is driven entirely by scene flags:
 // a missing "clean" flag shows dirt, extra flags add defects for inspections.
-
-export type Marker = "todo" | "done" | "found" | "false" | "hint" | null;
-
-export interface SceneOptions {
-  markers?: Record<string, Marker>;
-  /** Objects the player can tap. Others are drawn but inert. */
-  interactive?: string[];
-  labels?: Record<string, string>;
-}
-
-export const VIEW = { w: 800, h: 560 };
+import { VIEW, dots, hit, markerLayer, type Anchors, type SceneOptions } from "./common";
 
 /** Where badges, sparkles and markers sit for each object (viewBox units). */
-export const ANCHORS: Record<string, { x: number; y: number }> = {
+export const ANCHORS: Anchors = {
   vent: { x: 318, y: 40 },
   shelf: { x: 625, y: 140 },
   mirror: { x: 400, y: 128 },
@@ -29,39 +19,12 @@ export const ANCHORS: Record<string, { x: number; y: number }> = {
 
 const has = (f: Set<string>, k: string) => f.has(k);
 
-function hit(id: string, shape: string, o: SceneOptions): string {
-  const live = o.interactive?.includes(id);
-  const label = o.labels?.[id] ?? id;
-  return live
-    ? `<g class="hit" data-obj="${id}" role="button" tabindex="0" aria-label="${label}">${shape}</g>`
-    : "";
-}
-
-function marker(id: string, kind: Marker): string {
-  if (!kind) return "";
-  const a = ANCHORS[id];
-  if (!a) return "";
-  const inner: Record<Exclude<Marker, null>, string> = {
-    todo: `<circle r="11" class="mk-todo"/><text y="5" text-anchor="middle" class="mk-q">?</text>`,
-    done: `<circle r="11" class="mk-done"/><path d="M-5 0 l3.5 4 l7 -8" class="mk-tick"/>`,
-    found: `<circle r="15" class="mk-found"/><text y="6" text-anchor="middle" class="mk-bang">!</text>`,
-    false: `<circle r="11" class="mk-false"/><path d="M-4 -4 l8 8 M4 -4 l-8 8" class="mk-x"/>`,
-    hint: `<circle r="18" class="mk-hint"/>`,
-  };
-  return `<g class="mk" transform="translate(${a.x} ${a.y})" pointer-events="none">${inner[kind]}</g>`;
-}
-
-function dots(points: [number, number, number][], fill: string, opacity = 1): string {
-  return points.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" opacity="${opacity}"/>`).join("");
-}
-
 export function renderBathroom(flags: Set<string>, o: SceneOptions = {}): string {
   const hotel = has(flags, "hotel");
   const wall = hotel ? "#E9E4DC" : "#D7EAE3";
   const wallLine = hotel ? "#D3CCC0" : "#BCD8CD";
   const floorA = hotel ? "#9C958B" : "#B9BDC4";
   const floorB = hotel ? "#8E877D" : "#A9AEB6";
-  const m = o.markers ?? {};
 
   const vent = has(flags, "vent");
   const fan = `
@@ -201,6 +164,6 @@ export function renderBathroom(flags: Set<string>, o: SceneOptions = {}): string
     ${floorMarks}${debris}
     ${windowPane}${fan}${door}${shower}${shelf}${mirror}${supplies}${sink}${toilet}${bottle}${bin}${sign}
     <g class="hits">${hits}</g>
-    <g class="markers">${Object.entries(m).map(([id, k]) => marker(id, k)).join("")}</g>
+    ${markerLayer(o.markers, ANCHORS)}
   </svg>`;
 }

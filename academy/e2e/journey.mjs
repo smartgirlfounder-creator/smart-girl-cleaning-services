@@ -197,15 +197,75 @@ async function run(label, viewport) {
   await page.waitForSelector(".results");
   check(await page.isVisible(".results-head.pass"), "inspection passed despite one false flag");
 
+  // Mission 4: kitchen
+  await page.click('[data-action="briefing"][data-key="next"]');
+  await page.click('[data-action="start"]');
+  await page.waitForSelector('.scene[aria-label="Kitchen"]');
+  const kitchenObjects = ["vent", "dishes", "bin", "microwave", "hob", "counters", "handles", "sink", "supplies", "floor"];
+  for (const o of kitchenObjects) await tapObj(o);
+  await page.click('[data-action="to-ppe"]');
+  for (const p of ["gloves", "eye-protection"]) await page.click(`[data-action="ppe"][data-id="${p}"]`);
+  await page.click('[data-action="equip"]');
+  await use(null, null, "vent");
+  await use(null, null, "dishes");
+  check((await page.locator(".scene").innerHTML()).includes("#E07A5F") , "kitchen scene renders");
+  await use("cloth-green", "disinfectant", "counters");
+  check((await fb().textContent()).includes("not approved for surfaces that touch food"), "kitchen: non-food-safe product explained");
+  const kitchen = [
+    ["bin-liner", null, "bin"], [null, "degreaser", "hob"], ["cloth-green", "kitchen-cleaner", "microwave"], ["scrub-pad-green", null, "hob"],
+    ["cloth-green", "food-safe-sanitiser", "counters"], ["cloth-blue", "food-safe-sanitiser", "handles"], ["scrub-pad-green", "limescale-remover", "sink"],
+    ["wet-sign", null, "floor"], ["mop", "floor-cleaner", "floor"],
+  ];
+  for (const [t, p, o] of kitchen) await use(t, p, o);
+  check(await page.isVisible("text=Step 4: Final walk-through"), "kitchen: all tasks done");
+  for (const o of kitchenObjects) await tapObj(o);
+  await shot("10-kitchen");
+  await noOverflow("kitchen");
+  await page.click('[data-action="finish"]');
+  await page.waitForSelector(".results");
+  check(await page.isVisible(".results-head.pass"), "kitchen passed with one non-critical mistake");
+
+  // Mission 5: hotel turnover planner
+  await page.click('[data-action="briefing"][data-key="next"]');
+  await page.click('[data-action="start"]');
+  await page.waitForSelector(".planner");
+  const plan = ["strip", "spill", "bins", "bathroom", "bed", "dust", "touch", "restock", "vacuum", "report", "balcony", "kettle", "inspect"];
+  for (const id of plan) await page.click(`[data-action="plan-add"][data-id="${id}"]`);
+  await page.click('[data-action="plan-up"][data-id="spill"]');
+  check((await page.textContent(".plan-item >> nth=0")).includes("coffee spill"), "planner: reordering moves the hazard first");
+  check((await page.textContent(".timebar b")).includes("55 / 55"), "planner: time bar adds up the plan");
+  await noOverflow("planner");
+  await shot("11-planner");
+  await page.click('[data-action="plan-submit"]');
+  await page.click('[data-action="plan-yes"]');
+  await page.waitForSelector(".results");
+  check((await page.textContent(".score-ring span")) === "100", "planner: a model plan scores 100");
+
+  // Mission 6: professional judgement
+  await page.click('[data-action="briefing"][data-key="next"]');
+  await page.click('[data-action="start"]');
+  await page.waitForSelector(".scenario-card");
+  const judgement = { "body-fluid": "kit", "client-mix": "decline", "colleague-ppe": "stop", priorities: { glass: "now", stairs: "now", soap: "today", skirting: "later" }, "running-late": "prioritise", breakage: "report", dnd: "skip", mould: "report" };
+  for (const a of Object.values(judgement)) {
+    if (typeof a === "string") await page.click(`[data-action="choose"][data-id="${a}"]`);
+    else {
+      for (const [row, c] of Object.entries(a)) await page.click(`[data-action="match"][data-id="${row}"][data-choice="${c}"]`);
+      await page.click('[data-action="submit-answer"]');
+    }
+    await page.click('[data-action="next-scenario"]');
+  }
+  await page.waitForSelector(".results");
+  check(await page.isVisible(".results-head.pass"), "judgement mission passed");
+
   // 10. Refresh: progress survives on this device
   await page.reload();
   await page.waitForSelector(".home");
-  check((await page.textContent(".home")).includes("3 of 3 training missions passed"), "progress survives a page refresh");
+  check((await page.textContent(".home")).includes("6 of 6 training missions passed"), "progress survives a page refresh");
   await page.click('[data-action="progress"]');
-  check(await page.isVisible(".certificate"), "certificate unlocked after all three missions");
+  check((await page.locator(".certificate").count()) === 3, "a certificate for each completed level");
   check((await page.textContent(".certificate")).includes("not an accredited qualification"), "certificate is labelled as not accredited");
   await page.fill("#player-name", "Test Player");
-  check((await page.textContent("#cert-name")) === "Test Player", "name appears on the certificate");
+  check((await page.textContent(".cert-name >> nth=2")) === "Test Player", "name appears on the certificates");
   await noOverflow("progress");
   await shot("08-progress");
   for (const v of ["library", "achievements", "about", "rooms"]) {
