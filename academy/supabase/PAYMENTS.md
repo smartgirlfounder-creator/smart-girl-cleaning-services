@@ -1,6 +1,6 @@
 # Switching on Expert Pass payments (Paystack)
 
-Everything is built and tested, but **switched off**. Beginner and Professional are free. Expert needs an **Expert Pass: ₦15,000 or $12 per year**, paid through Paystack.
+Everything is built and tested, but **switched off**. Beginner and Professional are free. Expert needs an **Expert Pass: ₦20,000 or $20 per year**, paid through Paystack.
 
 ## Olaitan's part (no coding)
 

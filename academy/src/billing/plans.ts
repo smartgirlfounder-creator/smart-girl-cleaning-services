@@ -8,8 +8,8 @@ export const EXPERT_PASS = {
   name: "Expert Pass",
   days: 365,
   /** Amounts in the smallest unit (kobo, cents), as Paystack expects. */
-  prices: { NGN: 1_500_000, USD: 1_200 } satisfies Record<Currency, number>,
-  labels: { NGN: "₦15,000", USD: "$12" } satisfies Record<Currency, string>,
+  prices: { NGN: 2_000_000, USD: 2_000 } satisfies Record<Currency, number>,
+  labels: { NGN: "₦20,000", USD: "$20" } satisfies Record<Currency, string>,
   levels: ["expert"] as const,
 };
 

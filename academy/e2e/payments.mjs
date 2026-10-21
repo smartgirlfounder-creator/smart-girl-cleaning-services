@@ -36,9 +36,9 @@ try {
   await page.click('[data-action="rooms"] >> nth=0');
   await page.click('[data-action="briefing"][data-id="hotel-turnover"]');
   check(await page.isVisible(".paywall"), "Expert mission shows the Expert Pass offer instead of Start");
-  check((await page.textContent(".paywall .price")).includes("₦15,000"), "price shown in naira by default");
+  check((await page.textContent(".paywall .price")).includes("₦20,000"), "price shown in naira by default");
   await page.click('[data-action="currency"][data-id="USD"]');
-  check((await page.textContent(".paywall .price")).includes("$12"), "switching to dollars shows $12");
+  check((await page.textContent(".paywall .price")).includes("$20"), "switching to dollars shows $20");
   check(await page.isVisible('[data-key="pay-signin"]'), "signed-out players are asked to sign in first");
   await page.screenshot({ path: "e2e/screenshots/paywall.png", fullPage: true });
 

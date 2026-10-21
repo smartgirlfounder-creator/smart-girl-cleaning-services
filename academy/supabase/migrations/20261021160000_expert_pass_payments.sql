@@ -9,7 +9,7 @@ create table public.app_settings (
 insert into public.app_settings (key, value) values
   ('payments_enabled', 'false'::jsonb),
   ('paid_missions', '["hotel-turnover", "professional-judgement"]'::jsonb),
-  ('expert_pass_prices', '{"NGN": 1500000, "USD": 1200}'::jsonb);  -- smallest units: kobo and cents
+  ('expert_pass_prices', '{"NGN": 2000000, "USD": 2000}'::jsonb);  -- smallest units: kobo and cents
 
 create table public.payments (
   id uuid primary key default gen_random_uuid(),

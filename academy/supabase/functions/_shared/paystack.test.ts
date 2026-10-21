@@ -2,12 +2,12 @@ import { createHmac } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { checkPayment, safeReturnUrl, validSignature } from "./paystack";
 
-const tx = (over = {}) => ({ status: "success", reference: "r1", amount: 1_500_000, currency: "NGN", metadata: { user_id: "u1", plan_id: "expert-pass" }, ...over });
+const tx = (over = {}) => ({ status: "success", reference: "r1", amount: 2_000_000, currency: "NGN", metadata: { user_id: "u1", plan_id: "expert-pass" }, ...over });
 
 describe("Paystack helpers", () => {
   it("accepts a full Expert Pass payment in naira or dollars", () => {
     expect(checkPayment(tx())).toEqual({ ok: true, userId: "u1" });
-    expect(checkPayment(tx({ currency: "USD", amount: 1200 }), "u1")).toEqual({ ok: true, userId: "u1" });
+    expect(checkPayment(tx({ currency: "USD", amount: 2000 }), "u1")).toEqual({ ok: true, userId: "u1" });
   });
 
   it("rejects failed, short, foreign or mismatched payments", () => {

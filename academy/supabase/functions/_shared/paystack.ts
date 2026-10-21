@@ -2,7 +2,7 @@
 // so it also runs under Node for unit tests.
 
 export const PLAN_ID = "expert-pass";
-export const PRICES: Record<string, number> = { NGN: 1_500_000, USD: 1_200 }; // kobo, cents
+export const PRICES: Record<string, number> = { NGN: 2_000_000, USD: 2_000 }; // kobo, cents
 
 export interface PaystackTransaction {
   status: string;
