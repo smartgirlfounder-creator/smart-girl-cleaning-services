@@ -1,0 +1,721 @@
+<title>Sparkle Sweep</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@400;600;700&display=swap">
+<style>
+/* Layout: one centered play column. Header, HUD strip, portrait stage with overlay cards. Single "Midnight Magic" look. */
+:root {
+  --violet: #4A3FA6;
+  --violet-deep: #2C2560;
+  --charcoal: #1E1E24;
+  --lavender: #C8B8F2;
+  --cream: #F6F1E7;
+  --gold: #E6A93B;
+  --muted: #B9B3D6;
+  --display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --body: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+html, body { min-height: 100%; }
+body {
+  background-color: var(--charcoal);
+  background-image: radial-gradient(120% 70% at 50% 0%, var(--violet) 0%, var(--violet-deep) 45%, var(--charcoal) 100%);
+  background-attachment: fixed;
+  color: var(--cream);
+  font-family: var(--body);
+}
+.wrap {
+  max-width: 540px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+header { display: flex; flex-direction: column; gap: 2px; }
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lavender);
+  font-weight: 600;
+}
+h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(34px, 9vw, 48px);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+h1 em { color: var(--gold); text-shadow: 0 0 24px rgba(230, 169, 59, 0.45); }
+
+.hud {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 10px;
+}
+.stat { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.stat span {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat b {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stat b.warn { color: var(--gold); animation: pulse 0.6s ease-in-out infinite alternate; }
+@keyframes pulse { to { opacity: 0.45; } }
+
+.meter { display: flex; flex-direction: column; gap: 6px; }
+.meter-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.meter-row b { color: var(--cream); font-variant-numeric: tabular-nums; }
+.bar {
+  position: relative;
+  height: 10px;
+  border-radius: 99px;
+  background: rgba(200, 184, 242, 0.16);
+  overflow: hidden;
+}
+.bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--lavender), var(--gold));
+  transition: width 0.25s ease-out;
+}
+.bar .goal {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 85%;
+  width: 2px;
+  background: var(--cream);
+  opacity: 0.8;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(200, 184, 242, 0.25), 0 18px 50px rgba(0, 0, 0, 0.45), 0 0 60px rgba(74, 63, 166, 0.5);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(30, 30, 36, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  cursor: default;
+}
+.card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border-radius: 20px;
+  background: linear-gradient(170deg, rgba(74, 63, 166, 0.95), rgba(44, 37, 96, 0.97));
+  box-shadow: 0 0 0 1px rgba(200, 184, 242, 0.3), 0 0 40px rgba(200, 184, 242, 0.25);
+  text-align: left;
+}
+.card h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.card h2 em { color: var(--gold); }
+.card p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--cream); }
+.card ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+.card .small { font-size: 12px; color: var(--lavender); }
+.big {
+  font-family: var(--display);
+  font-size: 44px;
+  line-height: 1;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+button {
+  font: 600 15px/1 var(--body);
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 18px;
+  cursor: pointer;
+  background: var(--gold);
+  color: var(--charcoal);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+button:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(230, 169, 59, 0.35); }
+button.ghost { background: transparent; color: var(--cream); box-shadow: inset 0 0 0 1.5px rgba(200, 184, 242, 0.55); }
+button:focus-visible { outline: 3px solid var(--lavender); outline-offset: 2px; }
+
+.hint { margin: 0; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stat b.warn { animation: none; }
+  .bar i, button { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Smart Girl Cleaning presents</div>
+    <h1>Sparkle <em>Sweep</em></h1>
+  </header>
+
+  <div class="hud" aria-live="polite">
+    <div class="stat"><span>Room</span><b id="hudRoom">Kitchen Counter</b></div>
+    <div class="stat"><span>Time</span><b id="hudTime">25s</b></div>
+    <div class="stat"><span>Score</span><b id="hudScore">0</b></div>
+  </div>
+
+  <div class="meter">
+    <div class="meter-row"><span>Clean</span><b id="hudClean">0%</b></div>
+    <div class="bar" aria-hidden="true"><i id="bar"></i><div class="goal" title="85% goal"></div></div>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="base"></canvas>
+    <canvas id="dirt"></canvas>
+    <canvas id="fx"></canvas>
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <p class="hint">Rub the mess with your finger or mouse. Tap gold stars for +3 seconds.</p>
+</div>
+
+<script>
+(() => {
+  const TARGET = 0.85;
+  const DIRTY_ALPHA = 50;
+  const SAMPLE_STEP = 7;
+  const BEST_KEY = "sparkle-sweep-best";
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const stage = document.getElementById("stage");
+  const overlay = document.getElementById("overlay");
+  const baseC = document.getElementById("base");
+  const dirtC = document.getElementById("dirt");
+  const fxC = document.getElementById("fx");
+  const bctx = baseC.getContext("2d");
+  const dctx = dirtC.getContext("2d", { willReadFrequently: true });
+  const fctx = fxC.getContext("2d");
+  const hud = {
+    room: document.getElementById("hudRoom"),
+    time: document.getElementById("hudTime"),
+    score: document.getElementById("hudScore"),
+    clean: document.getElementById("hudClean"),
+    bar: document.getElementById("bar"),
+  };
+
+  let W = 400, H = 500;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const fmt = (n) => Math.round(n).toLocaleString();
+
+  // ---------- Room surfaces ----------
+  function drawKitchen(c) {
+    c.fillStyle = "#ECE5D6";
+    c.fillRect(0, 0, W, H);
+    const cols = 4, rows = 5;
+    for (let r = 0; r < rows; r++) {
+      for (let k = 0; k < cols; k++) {
+        c.fillStyle = (r + k) % 2 ? "#E6DECC" : "#EFE9DC";
+        c.fillRect(k * W / cols, r * H / rows, W / cols, H / rows);
+      }
+    }
+    c.strokeStyle = "rgba(62, 68, 34, 0.18)";
+    c.lineWidth = 2;
+    for (let k = 1; k < cols; k++) { c.beginPath(); c.moveTo(k * W / cols, 0); c.lineTo(k * W / cols, H); c.stroke(); }
+    for (let r = 1; r < rows; r++) { c.beginPath(); c.moveTo(0, r * H / rows); c.lineTo(W, r * H / rows); c.stroke(); }
+    c.strokeStyle = "rgba(120, 110, 90, 0.12)";
+    c.lineWidth = 1.2;
+    for (let i = 0; i < 7; i++) {
+      c.beginPath();
+      let x = rnd(0, W), y = rnd(0, H);
+      c.moveTo(x, y);
+      for (let s = 0; s < 6; s++) { x += rnd(-30, 50); y += rnd(-20, 40); c.lineTo(x, y); }
+      c.stroke();
+    }
+  }
+
+  function drawMirror(c) {
+    const g = c.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, "#56708A");
+    g.addColorStop(0.5, "#86A0B8");
+    g.addColorStop(1, "#5B7690");
+    c.fillStyle = g;
+    c.fillRect(0, 0, W, H);
+    c.fillStyle = "rgba(255, 255, 255, 0.13)";
+    for (const [x, w] of [[0.18, 0.12], [0.36, 0.05], [0.7, 0.09]]) {
+      c.beginPath();
+      c.moveTo(W * x, 0);
+      c.lineTo(W * (x + w), 0);
+      c.lineTo(W * (x + w) - W * 0.5, H);
+      c.lineTo(W * x - W * 0.5, H);
+      c.closePath();
+      c.fill();
+    }
+    c.strokeStyle = "#E6A93B";
+    c.lineWidth = 12;
+    c.strokeRect(6, 6, W - 12, H - 12);
+    c.strokeStyle = "rgba(30, 30, 36, 0.35)";
+    c.lineWidth = 2;
+    c.strokeRect(13, 13, W - 26, H - 26);
+  }
+
+  function drawFloor(c) {
+    const plankH = H / 9;
+    const woods = ["#B07A4A", "#A26E41", "#BA8656", "#A8743F"];
+    for (let r = 0; r < 9; r++) {
+      const y = r * plankH;
+      c.fillStyle = woods[r % woods.length];
+      c.fillRect(0, y, W, plankH);
+      c.strokeStyle = "rgba(60, 35, 15, 0.18)";
+      c.lineWidth = 1;
+      for (let gl = 0; gl < 4; gl++) {
+        c.beginPath();
+        const gy = y + rnd(0.15, 0.85) * plankH;
+        c.moveTo(0, gy);
+        for (let x = 0; x <= W; x += W / 8) c.lineTo(x, gy + rnd(-2, 2));
+        c.stroke();
+      }
+      c.strokeStyle = "rgba(50, 28, 10, 0.45)";
+      c.lineWidth = 2;
+      c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke();
+      const off = (r % 3) * W / 3 + W * 0.2;
+      for (let x = off % (W * 0.66); x < W; x += W * 0.66) {
+        c.beginPath(); c.moveTo(x, y); c.lineTo(x, y + plankH); c.stroke();
+      }
+    }
+  }
+
+  // ---------- Mess ----------
+  function blob(c, x, y, r, rgb, a) {
+    const g = c.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(${rgb}, ${a})`);
+    g.addColorStop(0.6, `rgba(${rgb}, ${a * 0.85})`);
+    g.addColorStop(1, `rgba(${rgb}, 0)`);
+    c.fillStyle = g;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+
+  function messKitchen(c) {
+    for (let i = 0; i < 7; i++) {
+      const x = rnd(0.12, 0.88) * W, y = rnd(0.1, 0.9) * H, r = rnd(0.06, 0.1) * W;
+      c.fillStyle = "rgba(140, 90, 40, 0.3)";
+      c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = "rgba(105, 58, 24, 0.8)";
+      c.lineWidth = r * 0.2;
+      c.beginPath(); c.arc(x, y, r, rnd(0, 1), Math.PI * 2 - rnd(0, 0.6)); c.stroke();
+    }
+    for (let i = 0; i < 9; i++) blob(c, rnd(0.08, 0.92) * W, rnd(0.08, 0.92) * H, rnd(0.07, 0.13) * W, "150, 110, 40", 0.65);
+    c.fillStyle = "rgba(150, 100, 50, 0.9)";
+    for (let i = 0; i < 160; i++) {
+      c.beginPath();
+      c.arc(rnd(0, W), rnd(0, H), rnd(1.5, 3.5), 0, Math.PI * 2);
+      c.fill();
+    }
+  }
+
+  function messMirror(c) {
+    for (let i = 0; i < 9; i++) blob(c, rnd(0.1, 0.9) * W, rnd(0.1, 0.9) * H, rnd(0.12, 0.2) * W, "235, 242, 248", 0.62);
+    for (let i = 0; i < 10; i++) {
+      const cx = rnd(0.1, 0.9) * W, cy = rnd(0.1, 0.9) * H;
+      for (let d = 0; d < 14; d++) {
+        c.fillStyle = d % 3 ? "rgba(232, 248, 255, 0.95)" : "rgba(150, 220, 200, 0.95)";
+        c.beginPath();
+        c.arc(cx + rnd(-22, 22), cy + rnd(-22, 22), rnd(2, 5), 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+    for (let i = 0; i < 5; i++) {
+      const x = rnd(0.15, 0.85) * W, y = rnd(0.15, 0.85) * H;
+      c.fillStyle = "rgba(200, 205, 215, 0.55)";
+      c.beginPath(); c.ellipse(x, y, W * 0.035, W * 0.05, rnd(-0.5, 0.5), 0, Math.PI * 2); c.fill();
+    }
+  }
+
+  function foot(c, x, y, ang, s) {
+    c.save();
+    c.translate(x, y);
+    c.rotate(ang + Math.PI / 2);
+    c.fillStyle = "rgba(82, 54, 30, 0.85)";
+    c.beginPath(); c.ellipse(0, -s * 0.35, s * 0.32, s * 0.5, 0, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(0, s * 0.55, s * 0.25, s * 0.28, 0, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+
+  function messFloor(c) {
+    const s = W * 0.06;
+    for (let t = 0; t < 2; t++) {
+      let x = rnd(0.15, 0.85) * W, y = H + s;
+      const ang = rnd(-2.0, -1.15);
+      for (let i = 0; i < 11; i++) {
+        const side = i % 2 ? 1 : -1;
+        const px = x + Math.cos(ang + Math.PI / 2) * side * s * 0.6;
+        const py = y + Math.sin(ang + Math.PI / 2) * side * s * 0.6;
+        foot(c, px, py, ang, s);
+        x += Math.cos(ang) * s * 1.7;
+        y += Math.sin(ang) * s * 1.7;
+      }
+    }
+    for (let i = 0; i < 8; i++) {
+      const x = rnd(0.08, 0.92) * W, y = rnd(0.08, 0.92) * H;
+      blob(c, x, y, rnd(0.06, 0.11) * W, "90, 60, 32", 0.8);
+      c.fillStyle = "rgba(90, 60, 32, 0.85)";
+      for (let d = 0; d < 8; d++) {
+        c.beginPath(); c.arc(x + rnd(-40, 40), y + rnd(-40, 40), rnd(2, 5), 0, Math.PI * 2); c.fill();
+      }
+    }
+  }
+
+  const ROOMS = [
+    { name: "Kitchen Counter", tip: "Wipe away coffee rings, sticky spills and crumbs.", time: 25, draw: drawKitchen, mess: messKitchen },
+    { name: "Bathroom Mirror", tip: "Polish off toothpaste spots, steam and smudges.", time: 25, draw: drawMirror, mess: messMirror },
+    { name: "Living Room Floor", tip: "Mop up the muddy footprints before guests arrive.", time: 30, draw: drawFloor, mess: messFloor },
+  ];
+
+  // ---------- Game state ----------
+  let state = "intro";
+  let roomIndex = 0;
+  let total = 0;
+  let timeLeft = 0;
+  let clean = 0;
+  let dirty0 = 1;
+  let lastMeasure = 0;
+  let lastFrame = 0;
+  let particles = [];
+  let bonus = null;
+  let lastBonus = 0;
+  const pointers = new Map();
+
+  function readBest() {
+    try { return Number(localStorage.getItem(BEST_KEY)) || 0; } catch (e) { return 0; }
+  }
+  function saveBest(v) {
+    try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function sizeCanvases() {
+    const r = stage.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    for (const [cv, cx] of [[baseC, bctx], [dirtC, dctx], [fxC, fctx]]) {
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  }
+
+  function countDirty() {
+    const d = dctx.getImageData(0, 0, dirtC.width, dirtC.height).data;
+    let n = 0;
+    for (let i = 3; i < d.length; i += 4 * SAMPLE_STEP) if (d[i] > DIRTY_ALPHA) n++;
+    return n;
+  }
+
+  function prepareRoom(i) {
+    roomIndex = i;
+    sizeCanvases();
+    const room = ROOMS[i];
+    room.draw(bctx);
+    dctx.clearRect(0, 0, W, H);
+    room.mess(dctx);
+    fctx.clearRect(0, 0, W, H);
+    dirty0 = Math.max(1, countDirty());
+    clean = 0;
+    timeLeft = room.time;
+    particles = [];
+    bonus = null;
+    updateHud();
+  }
+
+  function updateHud() {
+    hud.room.textContent = ROOMS[roomIndex].name;
+    hud.time.textContent = Math.ceil(timeLeft) + "s";
+    hud.time.classList.toggle("warn", state === "play" && timeLeft <= 5);
+    hud.score.textContent = fmt(total);
+    const pct = Math.round(clean * 100);
+    hud.clean.textContent = pct + "%";
+    hud.bar.style.width = pct + "%";
+  }
+
+  function startRound(i) {
+    prepareRoom(i);
+    state = "play";
+    overlay.hidden = true;
+    lastFrame = performance.now();
+    lastBonus = lastFrame;
+    updateHud();
+  }
+
+  function endRound() {
+    clean = Math.min(1, 1 - countDirty() / dirty0);
+    state = "between";
+    pointers.clear();
+    const room = ROOMS[roomIndex];
+    const pct = Math.round(clean * 100);
+    if (clean >= TARGET) {
+      const secs = Math.max(0, Math.ceil(timeLeft));
+      const gained = pct * 10 + secs * 25;
+      total += gained;
+      updateHud();
+      if (roomIndex === ROOMS.length - 1) return showFinal();
+      const next = ROOMS[roomIndex + 1];
+      showCard(`
+        <h2>${room.name} <em>sparkling!</em></h2>
+        <p>${pct}% clean with ${secs}s to spare.</p>
+        <div class="big">+${fmt(gained)}</div>
+        <p class="small">${pct}% × 10 + ${secs}s × 25</p>
+        <div class="btns"><button id="go">Next: ${next.name}</button></div>
+      `, { go: () => startRound(roomIndex + 1) });
+    } else {
+      updateHud();
+      showCard(`
+        <h2>Time's up!</h2>
+        <p>The ${room.name.toLowerCase()} is ${pct}% clean. You need ${Math.round(TARGET * 100)}% to pass.</p>
+        <p class="small">Score so far: ${fmt(total)}</p>
+        <div class="btns">
+          <button id="retry">Try this room again</button>
+          <button id="restart" class="ghost">Start over</button>
+        </div>
+      `, { retry: () => startRound(roomIndex), restart: restartGame });
+    }
+  }
+
+  function showFinal() {
+    const best = readBest();
+    const isBest = total > best;
+    if (isBest) saveBest(total);
+    const shareText = `I scored ${fmt(total)} on Sparkle Sweep by Smart Girl Cleaning! Can you beat me?`;
+    showCard(`
+      <h2>Every room is <em>spotless</em></h2>
+      <div class="big">${fmt(total)}</div>
+      <p class="small">${isBest ? "New best score!" : `Your best: ${fmt(best)}`}</p>
+      <p>Share your score and challenge your friends.</p>
+      <div class="btns">
+        <button id="copy">Copy my score</button>
+        <button id="restart" class="ghost">Play again</button>
+      </div>
+      <p class="small" id="copyNote" hidden>${shareText}</p>
+    `, {
+      restart: restartGame,
+      copy: (btn) => {
+        const note = document.getElementById("copyNote");
+        const done = () => { btn.textContent = "Copied"; };
+        const fallback = () => {
+          note.hidden = false;
+          const range = document.createRange();
+          range.selectNodeContents(note);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          btn.textContent = "Select and copy the text below";
+        };
+        try {
+          navigator.clipboard.writeText(shareText).then(done, fallback);
+        } catch (e) { fallback(); }
+      },
+    });
+  }
+
+  function restartGame() {
+    total = 0;
+    startRound(0);
+  }
+
+  function showCard(html, actions) {
+    overlay.innerHTML = `<div class="card">${html}</div>`;
+    overlay.hidden = false;
+    for (const [id, fn] of Object.entries(actions)) {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("click", () => fn(el));
+    }
+    const first = overlay.querySelector("button");
+    if (first) first.focus({ preventScroll: true });
+  }
+
+  function showIntro() {
+    const best = readBest();
+    showCard(`
+      <h2>Can you make it <em>sparkle?</em></h2>
+      <p>Three rooms, one timer each. Get every room at least ${Math.round(TARGET * 100)}% clean to move on.</p>
+      <ul>
+        <li>Rub the mess with your finger or mouse.</li>
+        <li>Stubborn stains need a few passes.</li>
+        <li>Tap gold stars for +3 seconds.</li>
+      </ul>
+      ${best ? `<p class="small">Your best score: ${fmt(best)}</p>` : ""}
+      <div class="btns"><button id="go">Start cleaning</button></div>
+    `, { go: () => startRound(0) });
+  }
+
+  // ---------- Scrubbing ----------
+  function pos(e) {
+    const r = stage.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) };
+  }
+
+  function scrub(x0, y0, x1, y1) {
+    const R = W * 0.075;
+    const dist = Math.hypot(x1 - x0, y1 - y0);
+    const steps = Math.max(1, Math.ceil(dist / (R * 0.35)));
+    dctx.save();
+    dctx.globalCompositeOperation = "destination-out";
+    for (let i = 0; i <= steps; i++) {
+      const x = x0 + (x1 - x0) * (i / steps);
+      const y = y0 + (y1 - y0) * (i / steps);
+      const g = dctx.createRadialGradient(x, y, 0, x, y, R);
+      g.addColorStop(0, "rgba(0, 0, 0, 0.5)");
+      g.addColorStop(0.7, "rgba(0, 0, 0, 0.3)");
+      g.addColorStop(1, "rgba(0, 0, 0, 0)");
+      dctx.fillStyle = g;
+      dctx.beginPath(); dctx.arc(x, y, R, 0, Math.PI * 2); dctx.fill();
+    }
+    dctx.restore();
+    if (!reduceMotion && Math.random() < 0.6) {
+      particles.push({
+        x: x1 + rnd(-14, 14), y: y1 + rnd(-14, 14),
+        vx: rnd(-0.4, 0.4), vy: rnd(-1.2, -0.3),
+        r: rnd(4, 9), life: 1, rot: rnd(0, Math.PI),
+        color: Math.random() < 0.3 ? "#E6A93B" : Math.random() < 0.5 ? "#C8B8F2" : "#FFFFFF",
+      });
+    }
+  }
+
+  function hitBonus(p) {
+    if (!bonus) return false;
+    if (Math.hypot(p.x - bonus.x, p.y - bonus.y) < W * 0.08) {
+      timeLeft += 3;
+      for (let i = 0; i < 14; i++) {
+        particles.push({ x: bonus.x, y: bonus.y, vx: rnd(-2.5, 2.5), vy: rnd(-2.5, 2.5), r: rnd(5, 10), life: 1, rot: 0, color: "#E6A93B" });
+      }
+      bonus = null;
+      updateHud();
+      return true;
+    }
+    return false;
+  }
+
+  stage.addEventListener("pointerdown", (e) => {
+    if (state !== "play") return;
+    e.preventDefault();
+    stage.setPointerCapture(e.pointerId);
+    const p = pos(e);
+    if (hitBonus(p)) return;
+    pointers.set(e.pointerId, p);
+    scrub(p.x, p.y, p.x, p.y);
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if (state !== "play" || !pointers.has(e.pointerId)) return;
+    const last = pointers.get(e.pointerId);
+    const p = pos(e);
+    scrub(last.x, last.y, p.x, p.y);
+    pointers.set(e.pointerId, p);
+  });
+  const lift = (e) => pointers.delete(e.pointerId);
+  stage.addEventListener("pointerup", lift);
+  stage.addEventListener("pointercancel", lift);
+
+  // ---------- Effects + loop ----------
+  function star(c, x, y, r, rot) {
+    c.save();
+    c.translate(x, y);
+    c.rotate(rot);
+    c.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const rr = i % 2 ? r * 0.38 : r;
+      const a = i * Math.PI / 4;
+      c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    c.closePath();
+    c.fill();
+    c.restore();
+  }
+
+  function drawFx(now) {
+    fctx.clearRect(0, 0, W, H);
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy; p.life -= 0.03; p.rot += 0.05;
+      fctx.globalAlpha = Math.max(0, p.life);
+      fctx.fillStyle = p.color;
+      star(fctx, p.x, p.y, p.r * p.life, p.rot);
+    }
+    fctx.globalAlpha = 1;
+    particles = particles.filter((p) => p.life > 0);
+
+    if (bonus) {
+      const age = (now - bonus.born) / bonus.life;
+      if (age >= 1) { bonus = null; return; }
+      const pulse = reduceMotion ? 1 : 1 + Math.sin(now / 120) * 0.12;
+      fctx.save();
+      fctx.shadowColor = "rgba(230, 169, 59, 0.9)";
+      fctx.shadowBlur = 18;
+      fctx.globalAlpha = age > 0.8 ? (1 - age) / 0.2 : 1;
+      fctx.fillStyle = "#E6A93B";
+      star(fctx, bonus.x, bonus.y, W * 0.055 * pulse, now / 900);
+      fctx.restore();
+    }
+  }
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (state !== "play") {
+      if (particles.length) drawFx(now);
+      return;
+    }
+    const dt = Math.min(0.1, (now - lastFrame) / 1000);
+    lastFrame = now;
+    timeLeft -= dt;
+
+    if (!bonus && now - lastBonus > 4000 && Math.random() < 0.02) {
+      bonus = { x: rnd(0.15, 0.85) * W, y: rnd(0.15, 0.85) * H, born: now, life: 2600 };
+      lastBonus = now;
+    }
+    drawFx(now);
+
+    if (now - lastMeasure > 300) {
+      lastMeasure = now;
+      clean = Math.min(1, 1 - countDirty() / dirty0);
+    }
+    updateHud();
+
+    if (clean >= 0.97 || timeLeft <= 0) {
+      timeLeft = Math.max(0, timeLeft);
+      endRound();
+    }
+  }
+
+  prepareRoom(0);
+  showIntro();
+  requestAnimationFrame(tick);
+})();
+</script>
