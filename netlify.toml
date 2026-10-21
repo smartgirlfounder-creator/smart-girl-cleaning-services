@@ -1,0 +1,8 @@
+# Netlify builds and hosts Smart Cleaners Academy from the academy/ folder.
+[build]
+  base = "academy"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
