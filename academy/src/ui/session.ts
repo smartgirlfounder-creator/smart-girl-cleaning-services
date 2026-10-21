@@ -1,3 +1,4 @@
+import type { Account, AdminData, Assignment, AttemptRow, TeamData } from "../cloud/types";
 import type { CleaningRun } from "../engine/cleaning";
 import type { InspectionRun } from "../engine/inspection";
 import type { PlanningRun } from "../engine/planning";
@@ -44,6 +45,27 @@ export type View =
   | { name: "progress" }
   | { name: "achievements" }
   | { name: "about" }
+  | { name: "account" }
+  | { name: "team" }
+  | { name: "admin" }
   | { name: "briefing"; missionId: string }
   | { name: "play"; missionId: string }
   | { name: "results"; missionId: string; result: MissionResult; earned: Achievement[] };
+
+/** Accounts and the business edition. Everything here comes from the backend. */
+export interface CloudState {
+  status: "checking" | "offline" | "ready";
+  account: Account | null;
+  busy: boolean;
+  notice: { tone: "good" | "bad" | "info"; text: string } | null;
+  authTab: "signin" | "signup";
+  team: TeamData | null;
+  myRecords: AttemptRow[] | null;
+  myAssignments: Assignment[] | null;
+  admin: AdminData | null;
+  joinCode: string;
+  confirm: string | null;
+  copied: boolean;
+  /** What happened to the latest mission result. */
+  lastSave: "saved" | "queued" | "none" | null;
+}

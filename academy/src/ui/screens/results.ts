@@ -12,7 +12,7 @@ const MISSED_HEADING: Record<Mission["kind"], string> = {
   planning: "Essential jobs left out of your plan",
 };
 
-export function resultsScreen(p: Progress, m: Mission, r: MissionResult, earned: Achievement[]): string {
+export function resultsScreen(p: Progress, m: Mission, r: MissionResult, earned: Achievement[], save: "saved" | "queued" | "none" | null = "none"): string {
   const idx = MISSIONS.findIndex((x) => x.id === m.id);
   const next = MISSIONS.slice(idx + 1).find((x) => p.isUnlocked(x));
   const other = r.mistakes.filter((x) => x.severity !== "critical");
@@ -47,6 +47,8 @@ export function resultsScreen(p: Progress, m: Mission, r: MissionResult, earned:
     ${other.length ? `<section class="list-box"><h2>What to work on</h2><ul class="mistakes">${other.map((x) => `<li><strong>${esc(x.title)}</strong><p>${esc(x.why)}</p></li>`).join("")}</ul></section>` : r.criticalErrors.length ? "" : `<section class="list-box"><h2>No mistakes</h2><p>Every decision you made was a professional one.</p></section>`}
 
     ${earned.length ? `<section class="new-badges"><h2>New badge${earned.length > 1 ? "s" : ""}</h2><div class="badges">${earned.map((a) => `<div class="badge earned">${badgeIcon(true)}<strong>${esc(a.name)}</strong><p>${esc(a.description)}</p></div>`).join("")}</div></section>` : ""}
+
+    <p class="save-note">${save === "saved" ? "Saved to your training record." : save === "queued" ? "You're offline. This result will be saved to your training record when you're back online." : save === null ? "Saving to your training record…" : `Playing without an account: this result is saved on this device only. <button class="link-btn" data-action="account" data-key="save-signin">Sign in to keep a training record</button>`}</p>
 
     <section class="callout"><strong>Why it matters</strong><p>${esc(m.whyItMatters)}</p></section>
 

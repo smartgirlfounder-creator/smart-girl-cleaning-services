@@ -128,6 +128,23 @@ export class Progress {
     return earned;
   }
 
+  /** Folds in training records saved to the player's account, e.g. from another device. */
+  mergeRemote(records: { mission_id: string; score: number; stars: number; passed: boolean; created_at: string }[]): void {
+    const byMission = new Map<string, typeof records>();
+    for (const r of records) byMission.set(r.mission_id, [...(byMission.get(r.mission_id) ?? []), r]);
+    for (const [id, rs] of byMission) {
+      const local = this.data.missions[id];
+      this.data.missions[id] = {
+        attempts: Math.max(local?.attempts ?? 0, rs.length),
+        bestScore: Math.max(local?.bestScore ?? 0, ...rs.map((r) => r.score)),
+        bestStars: Math.max(local?.bestStars ?? 0, ...rs.map((r) => r.stars)),
+        passed: !!local?.passed || rs.some((r) => r.passed),
+        lastPlayed: [local?.lastPlayed ?? "", ...rs.map((r) => r.created_at)].sort().pop() ?? "",
+      };
+    }
+    this.save();
+  }
+
   setPlayerName(name: string): void {
     this.data.playerName = name.trim().slice(0, 60);
     this.save();

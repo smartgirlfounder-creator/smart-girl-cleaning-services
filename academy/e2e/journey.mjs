@@ -45,7 +45,8 @@ async function run(label, viewport) {
   const context = await browser.newContext({ viewport, hasTouch: viewport.width < 600 });
   const page = await context.newPage();
   const errors = [];
-  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  // The account service isn't reachable from the test machine; the app falls back to offline mode.
+  page.on("console", (m) => m.type() === "error" && !/supabase|Failed to load resource: net::/i.test(m.text()) && errors.push(m.text()));
   page.on("pageerror", (e) => errors.push(String(e)));
 
   const fb = () => page.locator(".feedback").first();

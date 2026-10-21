@@ -7,6 +7,7 @@ import type { Mission } from "../../engine/types";
 import { backButton, esc, levelName, pageHeader } from "../html";
 import { badgeIcon, bottleIcon, crest, lockIcon, stars, toolIcon } from "../icons";
 import { renderBathroom } from "../scenes/bathroom";
+import type { CloudState } from "../session";
 
 const KIND_LABEL: Record<Mission["kind"], string> = {
   cleaning: "Hands-on room",
@@ -19,7 +20,7 @@ export function nextMission(p: Progress): Mission | undefined {
   return MISSIONS.find((m) => p.isUnlocked(m) && !p.isPassed(m.id));
 }
 
-export function homeScreen(p: Progress): string {
+export function homeScreen(p: Progress, c: CloudState, accountChip: string): string {
   const next = nextMission(p);
   const passed = MISSIONS.filter((m) => p.isPassed(m.id)).length;
   const cta = next
@@ -32,10 +33,12 @@ export function homeScreen(p: Progress): string {
     ["progress", "My Progress", `${passed} of ${MISSIONS.length} missions passed`],
     ["achievements", "Achievements", `${Object.keys(p.data.achievements).length} of ${ACHIEVEMENTS.length} badges earned`],
     ["about", "About the Academy", "How training and scoring work"],
+    ["team", "My Team", c.account?.org ? `${c.account.org.name} · ${c.account.membership?.role === "owner" ? "owner" : "staff"}` : "Business edition: staff, assignments and training records"],
   ];
+  if (c.account?.isAdmin) tiles.push(["admin", "Admin Dashboard", "Everyone using the Academy, and how they're doing"]);
   return `
   <div class="home">
-    <header class="brand">${crest(44)}<div><span class="eyebrow">Professional cleaning training</span><strong class="brand-name">Smart Cleaners Academy</strong></div></header>
+    <header class="brand">${crest(44)}<div><span class="eyebrow">Professional cleaning training</span><strong class="brand-name">Smart Cleaners Academy</strong></div>${accountChip}</header>
     <section class="hero">
       <div class="hero-copy">
         <h1>Learn to clean like a <em>professional</em></h1>
@@ -241,9 +244,9 @@ export function aboutScreen(): string {
       <li>This is a simplified simulation for training. Always follow product labels, safety data sheets and your employer's procedures.</li>
       <li>Colour-coding follows a common UK-style system. Your workplace may use a different one.</li>
       <li>Certificates from the Academy are game-based training-completion certificates, not accredited qualifications.</li>
-      <li>Progress is saved on this device only. There are no accounts yet.</li>
+      <li>Without an account, progress is saved on this device only. With a free account, every finished mission is saved to your training record.</li>
     </ul>
     <h2>Coming next</h2>
-    <p>More rooms (bedroom, sitting room, office, hands-on hotel turnover, move-in, move-out and post-construction cleaning), and a business edition with staff accounts and training records.</p>
+    <p>More rooms (bedroom, sitting room, office, hands-on hotel turnover, move-in, move-out and post-construction cleaning), and email invitations and password resets for the business edition.</p>
   </div>`;
 }

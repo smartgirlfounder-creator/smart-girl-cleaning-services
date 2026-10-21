@@ -1,15 +1,18 @@
+import { cloud, flushQueue, saveRecord, toAttempt } from "../cloud";
 import { ACHIEVEMENTS } from "../data/achievements";
-import { missionById } from "../data/missions";
+import { MISSIONS, missionById } from "../data/missions";
 import { CleaningRun } from "../engine/cleaning";
 import { InspectionRun } from "../engine/inspection";
 import { PlanningRun } from "../engine/planning";
 import { Progress, browserStore } from "../engine/progress";
 import { ScenarioRun } from "../engine/scenario";
+import { summarise, trainingReportCsv } from "../engine/team";
 import type { Mission, MissionResult, PpeId } from "../engine/types";
 import { aboutScreen, achievementsScreen, briefingScreen, homeScreen, libraryScreen, nextMission, progressScreen, roomsScreen } from "./screens/menu";
 import { cleaningView, inspectionView, planningView, scenarioView } from "./screens/play";
+import { accountScreen, adminScreen, signedInChip, teamScreen } from "./screens/business";
 import { resultsScreen } from "./screens/results";
-import type { Session, View } from "./session";
+import type { CloudState, Session, View } from "./session";
 
 export class App {
   view: View = { name: "home" };
@@ -17,11 +20,193 @@ export class App {
   readonly progress = new Progress(browserStore(), ACHIEVEMENTS);
   private confirmExit = false;
   private confirmReset = false;
+  readonly cloud: CloudState = {
+    status: "checking", account: null, busy: false, notice: null, authTab: "signin",
+    team: null, myRecords: null, myAssignments: null, admin: null, joinCode: "", confirm: null, copied: false, lastSave: null,
+  };
 
   constructor(private root: HTMLElement) {
     root.addEventListener("click", (e) => this.onClick(e));
     root.addEventListener("keydown", (e) => this.onKey(e));
     root.addEventListener("input", (e) => this.onInput(e));
+    root.addEventListener("submit", (e) => this.onSubmit(e));
+    const join = new URLSearchParams(location.search).get("join");
+    if (join) this.cloud.joinCode = join.toUpperCase().slice(0, 6);
+  }
+
+  // ---------- Accounts ----------
+
+  async initCloud(): Promise<void> {
+    const ok = await cloud.available();
+    this.cloud.status = ok ? "ready" : "offline";
+    if (ok) {
+      cloud.onAuthChange(() => void this.refreshAccount());
+      await this.refreshAccount();
+      if (this.cloud.joinCode && !this.cloud.account) {
+        this.cloud.authTab = "signup";
+        this.cloud.notice = { tone: "info", text: "Create a free account (or sign in) to join your team." };
+        this.view = { name: "account" };
+      } else if (this.cloud.joinCode && !this.cloud.account?.org) {
+        this.view = { name: "team" };
+      }
+    }
+    this.render();
+  }
+
+  private async refreshAccount(): Promise<void> {
+    const before = this.cloud.account?.userId;
+    try {
+      this.cloud.account = await cloud.loadAccount();
+    } catch {
+      this.cloud.account = null;
+    }
+    const a = this.cloud.account;
+    if (a && a.userId !== before) {
+      void cloud.touch(a.userId).catch(() => undefined);
+      await flushQueue().catch(() => 0);
+      try {
+        this.cloud.myRecords = await cloud.myAttempts();
+        this.progress.mergeRemote(this.cloud.myRecords);
+      } catch {
+        /* keep local progress */
+      }
+    }
+    if (!a) {
+      this.cloud.team = this.cloud.admin = null;
+      this.cloud.myRecords = this.cloud.myAssignments = null;
+    }
+    this.render();
+  }
+
+  /** Runs a backend action with a busy state and a friendly error message. */
+  private async busy(work: () => Promise<void>): Promise<void> {
+    this.cloud.busy = true;
+    this.cloud.notice = null;
+    this.render();
+    try {
+      await work();
+    } catch (e) {
+      this.cloud.notice = { tone: "bad", text: e instanceof Error ? e.message : "Something went wrong. Try again." };
+    } finally {
+      this.cloud.busy = false;
+      this.render();
+    }
+  }
+
+  private async loadTeam(): Promise<void> {
+    const a = this.cloud.account;
+    if (!a?.org) return;
+    await this.busy(async () => {
+      if (a.membership?.role === "owner") this.cloud.team = await cloud.team(a.org!.id);
+      else {
+        [this.cloud.myAssignments, this.cloud.myRecords] = await Promise.all([cloud.myAssignments(), cloud.myAttempts()]);
+      }
+    });
+  }
+
+  private async loadAdmin(): Promise<void> {
+    if (!this.cloud.account?.isAdmin) return;
+    await this.busy(async () => {
+      this.cloud.admin = await cloud.adminOverview();
+    });
+  }
+
+  private siteUrl(): string {
+    return `${location.origin}${location.pathname}`;
+  }
+
+  private onSubmit(e: Event): void {
+    const form = e.target as HTMLFormElement;
+    const kind = form.dataset.form;
+    if (!kind) return;
+    e.preventDefault();
+    const f = new FormData(form);
+    const val = (k: string) => String(f.get(k) ?? "").trim();
+    const c = this.cloud;
+    if (kind === "signin" || kind === "signup") {
+      if (!val("email") || !f.get("password")) {
+        c.notice = { tone: "bad", text: "Enter your email and password." };
+        return this.render();
+      }
+      if (kind === "signup" && !val("name")) {
+        c.notice = { tone: "bad", text: "Enter your name, so your manager knows who you are." };
+        return this.render();
+      }
+      void this.busy(async () => {
+        if (kind === "signup") {
+          const r = await cloud.signUp(val("name"), val("email"), String(f.get("password")));
+          if (r.needsConfirmation) {
+            c.notice = { tone: "info", text: "Account created. Check your email to confirm it, then sign in." };
+            return;
+          }
+        } else await cloud.signIn(val("email"), String(f.get("password")));
+        await this.refreshAccount();
+        if (c.joinCode && !c.account?.org) this.view = { name: "team" };
+        c.notice = { tone: "good", text: kind === "signup" ? "Welcome to the Academy! Your account is ready." : "You're signed in." };
+      });
+    }
+    if (kind === "create-org") {
+      void this.busy(async () => {
+        await cloud.createOrg(val("name"));
+        await this.refreshAccount();
+        await this.loadTeam();
+        c.notice = { tone: "good", text: "Your business is set up. Share your team code with your staff." };
+      });
+    }
+    if (kind === "join-org") {
+      void this.busy(async () => {
+        const org = await cloud.joinOrg(val("code"));
+        c.joinCode = "";
+        await this.refreshAccount();
+        await this.loadTeam();
+        c.notice = { tone: "good", text: `You've joined ${org.name}.` };
+      });
+    }
+    if (kind === "assign") {
+      const org = c.account?.org;
+      if (!org) return;
+      void this.busy(async () => {
+        await cloud.assign(org.id, val("mission"), val("to") || null, val("due") || null);
+        c.team = await cloud.team(org.id);
+        c.notice = { tone: "good", text: `Assigned: ${missionById(val("mission"))?.title ?? "mission"}.` };
+      });
+    }
+  }
+
+  private downloadReport(): void {
+    const t = this.cloud.team;
+    const org = this.cloud.account?.org;
+    if (!t || !org) return;
+    const members = t.members.map((m) => ({ user_id: m.user_id, role: m.role, joined_at: m.joined_at, name: m.profile?.full_name ?? "", email: m.profile?.email ?? "" }));
+    const csv = trainingReportCsv(summarise(members, t.attempts), MISSIONS.map((m) => ({ id: m.id, title: m.title })));
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${org.name.replace(/[^\w-]+/g, "-")}-training-report-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  private copyInvite(): void {
+    const org = this.cloud.account?.org;
+    if (!org) return;
+    const text = `Join ${org.name} on Smart Cleaners Academy. Open ${this.siteUrl()}?join=${org.join_code} and create a free account, or enter team code ${org.join_code} under My Team.`;
+    const done = () => {
+      this.cloud.copied = true;
+      this.render();
+      setTimeout(() => { this.cloud.copied = false; this.render(); }, 2500);
+    };
+    try {
+      navigator.clipboard.writeText(text).then(done, () => {
+        this.cloud.notice = { tone: "info", text };
+        this.render();
+      });
+    } catch {
+      this.cloud.notice = { tone: "info", text };
+      this.render();
+    }
   }
 
   // ---------- Navigation ----------
@@ -30,6 +215,8 @@ export class App {
     this.view = view;
     this.confirmExit = false;
     this.confirmReset = false;
+    this.cloud.confirm = null;
+    if (view.name !== "results") this.cloud.notice = null;
     this.render();
     window.scrollTo({ top: 0 });
   }
@@ -59,7 +246,16 @@ export class App {
     const earned = this.progress.addResult(result);
     const missionId = result.missionId;
     this.session = null;
+    const a = this.cloud.account;
+    this.cloud.lastSave = a ? null : "none";
     this.go({ name: "results", missionId, result, earned });
+    if (a) {
+      void saveRecord(toAttempt(result, a.org?.id ?? null)).then((r) => {
+        this.cloud.lastSave = r;
+        if (r === "saved") this.cloud.myRecords = null;
+        if (this.view.name === "results") this.render();
+      });
+    }
   }
 
   // ---------- Rendering ----------
@@ -76,17 +272,20 @@ export class App {
     const v = this.view;
     const p = this.progress;
     switch (v.name) {
-      case "home": return homeScreen(p);
+      case "home": return homeScreen(p, this.cloud, signedInChip(this.cloud));
+      case "account": return accountScreen(this.cloud);
+      case "team": return teamScreen(this.cloud, this.siteUrl());
+      case "admin": return adminScreen(this.cloud);
       case "rooms": return roomsScreen(p);
       case "library": return libraryScreen();
       case "progress": return progressScreen(p, this.confirmReset);
       case "achievements": return achievementsScreen(p);
       case "about": return aboutScreen();
       case "briefing": return briefingScreen(p, this.mission(v.missionId));
-      case "results": return resultsScreen(p, this.mission(v.missionId), v.result, v.earned);
+      case "results": return resultsScreen(p, this.mission(v.missionId), v.result, v.earned, this.cloud.lastSave);
       case "play": {
         const s = this.session;
-        if (!s) return homeScreen(p);
+        if (!s) return homeScreen(p, this.cloud, signedInChip(this.cloud));
         if (s.kind === "cleaning") return cleaningView(s);
         if (s.kind === "scenario") return scenarioView(s);
         if (s.kind === "planning") return planningView(s);
@@ -179,6 +378,67 @@ export class App {
       case "reset-no": this.confirmReset = false; return this.render();
       case "reset-yes": this.progress.reset(); this.confirmReset = false; return this.render();
       case "tap": return this.tap(id);
+      case "account": return this.go({ name: "account" });
+      case "team":
+        this.go({ name: "team" });
+        return void this.loadTeam();
+      case "admin":
+        this.go({ name: "admin" });
+        return void this.loadAdmin();
+      case "auth-tab":
+        this.cloud.authTab = id === "signup" ? "signup" : "signin";
+        this.cloud.notice = null;
+        return this.render();
+      case "sign-out":
+        return void this.busy(async () => {
+          await cloud.signOut();
+          this.cloud.account = null;
+          this.cloud.team = this.cloud.admin = null;
+          this.cloud.myRecords = this.cloud.myAssignments = null;
+          this.cloud.notice = { tone: "info", text: "You're signed out. Your progress on this device is still here." };
+        });
+      case "refresh-team": return void this.loadTeam();
+      case "refresh-admin": return void this.loadAdmin();
+      case "copy-invite": return this.copyInvite();
+      case "download-report": return this.downloadReport();
+      case "new-code": {
+        const org = this.cloud.account?.org;
+        if (!org) return;
+        return void this.busy(async () => {
+          org.join_code = await cloud.regenerateCode(org.id);
+          this.cloud.notice = { tone: "good", text: "New team code created. The old one no longer works." };
+        });
+      }
+      case "unassign": {
+        const org = this.cloud.account?.org;
+        if (!org) return;
+        return void this.busy(async () => {
+          await cloud.unassign(id);
+          this.cloud.team = await cloud.team(org.id);
+        });
+      }
+      case "remove": this.cloud.confirm = `remove:${id}`; return this.render();
+      case "leave": this.cloud.confirm = "leave"; return this.render();
+      case "confirm-no": this.cloud.confirm = null; return this.render();
+      case "remove-yes": {
+        const org = this.cloud.account?.org;
+        if (!org) return;
+        this.cloud.confirm = null;
+        return void this.busy(async () => {
+          await cloud.removeMember(id);
+          this.cloud.team = await cloud.team(org.id);
+        });
+      }
+      case "leave-yes": {
+        const a = this.cloud.account;
+        if (!a) return;
+        this.cloud.confirm = null;
+        return void this.busy(async () => {
+          await cloud.leaveOrg(a.userId);
+          await this.refreshAccount();
+          this.cloud.notice = { tone: "info", text: "You've left the team." };
+        });
+      }
     }
 
     if (s?.kind === "cleaning") {
@@ -288,6 +548,7 @@ export class App {
 export function mount(root: HTMLElement): App {
   const app = new App(root);
   app.render();
+  void app.initCloud();
   return app;
 }
 
