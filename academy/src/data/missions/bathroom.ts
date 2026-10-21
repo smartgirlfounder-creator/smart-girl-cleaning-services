@@ -169,7 +169,7 @@ export const bathroomMission: CleaningMission = {
       tools: ["wet-sign"],
       product: null,
       toolWhy: "Place the wet floor sign at the doorway before the floor gets wet.",
-      success: "Sign in place at the doorway. Anyone coming in knows the floor will be wet.",
+      success: "Sign in place at the doorway. Anyone coming in knows the floor will be wet. It stays there on its own, so your hands are free: next, pick the mop and the floor cleaner.",
       flag: "sign",
     },
     {

@@ -45,6 +45,8 @@ export interface Tool {
   crossContamination?: boolean;
   /** Zones this tool must never enter, even if it is not a toilet tool (e.g. a washroom cloth in a kitchen). */
   forbiddenZones?: Zone[];
+  /** Placed or fitted, never used with a product (sign, bin liner, refills). Picking it puts any product down. */
+  placeOnly?: boolean;
   description: string;
 }
 

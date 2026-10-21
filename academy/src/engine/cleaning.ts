@@ -135,16 +135,20 @@ export class CleaningRun {
 
   hold(tool: string | null): void {
     this.heldTool = tool;
+    // A sign, bin liner or refill is carried on its own: the bottle goes back on the trolley.
+    if (tool && TOOLS[tool].placeOnly) this.heldProduct = null;
   }
 
   load(product: string | null): void {
     this.heldProduct = product;
+    // Picking up a bottle means the sign or liner has been put down.
+    if (product && this.heldTool && TOOLS[this.heldTool].placeOnly) this.heldTool = null;
   }
 
   apply(objectId: string): Feedback {
     const obj = this.object(objectId);
     const tool = this.heldTool;
-    const product = this.heldProduct;
+    const product = tool && TOOLS[tool].placeOnly ? null : this.heldProduct;
     const pending = this.mission.tasks.filter((t) => t.objectId === objectId && !this.done.has(t.id));
 
     // 1. Chemistry: never let incompatible products meet, even on a finished surface.
@@ -220,7 +224,11 @@ export class CleaningRun {
     const safety = (task.safetyRequires ?? []).find((r) => !this.done.has(r.task));
     if (safety) {
       this.mistakes.add({ key: `safety-req:${task.id}:${safety.task}`, severity: "major", category: "safety", title: `Unsafe: ${task.label}`, why: safety.why });
-      return { tone: "bad", title: "Safety step missing", body: safety.why };
+      const first = this.mission.tasks.find((t) => t.id === safety.task);
+      const how = first?.tools.length
+        ? ` How: choose the ${TOOLS[first.tools[0]].name.toLowerCase()} in Tools and tap the ${this.object(first.objectId).name.toLowerCase()} to place it. Then pick ${task.tools[0] ? `the ${TOOLS[task.tools[0]].name.toLowerCase()}` : "it up"} again.`
+        : "";
+      return { tone: "bad", title: "Safety step missing", body: safety.why + how };
     }
     const order = (task.requires ?? []).find((r) => !this.done.has(r.task));
     if (order) {

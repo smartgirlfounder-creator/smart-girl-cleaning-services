@@ -223,3 +223,33 @@ describe("progress", () => {
     expect(p.data.missions).toEqual({});
   });
 });
+
+describe("place-only tools", () => {
+  it("places the wet floor sign while a product is still in hand, then the mop works", () => {
+    const run = readyRun();
+    for (const [t, p, o] of [[null, null, "vent"], ["bin-liner", null, "bin"], [null, "toilet-cleaner", "toilet"], ["cloth-blue", "glass-cleaner", "mirror"], ["cloth-yellow", "bathroom-cleaner", "sink"], ["scrub-pad", "bathroom-cleaner", "shower"], ["cloth-blue", "disinfectant", "touch"], ["toilet-brush", null, "toilet"], ["cloth-red", "disinfectant", "toilet"]] as const)
+      use(run, t, p, o);
+    // Disinfectant is still loaded from the toilet; the learner only swaps the tool.
+    run.hold("wet-sign");
+    expect(run.heldProduct).toBeNull();
+    expect(run.tap("floor").tone).toBe("good");
+    expect(run.flags.has("sign")).toBe(true);
+    run.hold("mop");
+    run.load("floor-cleaner");
+    expect(run.tap("floor").tone).toBe("good");
+    expect(run.flags.has("floor")).toBe(true);
+  });
+
+  it("puts the sign down when a bottle is picked up", () => {
+    const run = readyRun();
+    run.hold("wet-sign");
+    run.load("floor-cleaner");
+    expect(run.heldTool).toBeNull();
+  });
+
+  it("explains how to place the sign when mopping first", () => {
+    const run = readyRun();
+    const fb = use(run, "mop", "floor-cleaner", "floor");
+    expect(fb.body).toContain("tap the floor to place it");
+  });
+});

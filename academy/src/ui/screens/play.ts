@@ -70,8 +70,10 @@ function tray(s: CleaningSession): string {
       <span class="small">In your hands</span>
       <span class="holding-items">
         <span class="hold">${held ? toolIcon(held.icon, held.color) : toolIcon("hand", "")}${esc(held ? held.short : "Gloved hands")}</span>
-        <span class="plus" aria-hidden="true">+</span>
-        <span class="hold">${prod ? bottleIcon(prod.color) : ""}${esc(prod ? prod.short : "No product")}</span>
+        ${held?.placeOnly
+          ? `<span class="hold">Tap where it goes</span>`
+          : `<span class="plus" aria-hidden="true">+</span>
+        <span class="hold">${prod ? bottleIcon(prod.color) : ""}${esc(prod ? prod.short : "No product")}</span>`}
       </span>
     </div>
     <div class="tabs" role="tablist">

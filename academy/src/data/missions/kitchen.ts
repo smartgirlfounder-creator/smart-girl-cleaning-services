@@ -170,7 +170,7 @@ export const kitchenMission: CleaningMission = {
       tools: ["wet-sign"],
       product: null,
       toolWhy: "Place the wet floor sign at the kitchen doorway before the floor gets wet.",
-      success: "Sign in place. Kitchens are busy, so this matters even more here.",
+      success: "Sign in place. Kitchens are busy, so this matters even more here. It stays there on its own: when the floor is next, pick the mop and the floor cleaner.",
       flag: "sign",
     },
     {
