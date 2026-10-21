@@ -4,7 +4,7 @@ import { MISSIONS, missionById } from "../data/missions";
 import { CleaningRun } from "../engine/cleaning";
 import { InspectionRun } from "../engine/inspection";
 import { PlanningRun } from "../engine/planning";
-import { Progress, browserStore } from "../engine/progress";
+import { Progress, browserStore, missionsToUpload } from "../engine/progress";
 import { ScenarioRun } from "../engine/scenario";
 import { summarise, trainingReportCsv } from "../engine/team";
 import { APP_NAME } from "../brand";
@@ -24,6 +24,8 @@ export class App {
   readonly progress = new Progress(browserStore(), ACHIEVEMENTS);
   private confirmExit = false;
   private paymentRef: string | null = null;
+  /** Missions copied from this device to the account at the last sign-in. */
+  private synced = 0;
   private readonly installer = createInstall(() => this.render());
   private confirmReset = false;
   readonly cloud: CloudState = {
@@ -62,7 +64,15 @@ export class App {
     this.render();
   }
 
-  private async refreshAccount(): Promise<void> {
+  private refreshing: Promise<void> | null = null;
+
+  /** Reloads the signed-in account. Calls made while one is running share it. */
+  private refreshAccount(): Promise<void> {
+    this.refreshing ??= this.loadAccountState().finally(() => (this.refreshing = null));
+    return this.refreshing;
+  }
+
+  private async loadAccountState(): Promise<void> {
     const before = this.cloud.account?.userId;
     try {
       this.cloud.account = await cloud.loadAccount();
@@ -74,7 +84,17 @@ export class App {
       void cloud.touch(a.userId).catch(() => undefined);
       await flushQueue().catch(() => 0);
       try {
-        this.cloud.myRecords = await cloud.myAttempts();
+        const remote = await cloud.myAttempts();
+        // Progress made on this device (for example before signing in) is saved to the account,
+        // so the player continues from the same level on any device.
+        const upload = missionsToUpload(this.progress.data, remote, (id) => !!missionById(id));
+        let saved = 0;
+        for (const r of upload) {
+          const res = await saveRecord({ ...r, critical_errors: 0, mistakes: ["Synced from this device"], org_id: a.org?.id ?? null });
+          if (res === "saved") saved++;
+        }
+        this.synced = saved;
+        this.cloud.myRecords = saved ? await cloud.myAttempts() : remote;
         this.progress.mergeRemote(this.cloud.myRecords);
       } catch {
         /* keep local progress */
@@ -169,7 +189,8 @@ export class App {
         } else await cloud.signIn(val("email"), String(f.get("password")));
         await this.refreshAccount();
         if (c.joinCode && !c.account?.org) this.view = { name: "team" };
-        c.notice = { tone: "good", text: kind === "signup" ? "Welcome to the Academy! Your account is ready." : "You're signed in." };
+        const synced = this.synced ? ` We saved ${this.synced} mission${this.synced === 1 ? "" : "s"} from this device to your account.` : "";
+        c.notice = { tone: "good", text: `${kind === "signup" ? "Welcome to Smart Sweep! Your account is ready." : "You're signed in."}${synced} Your progress is saved to your account, so you can continue on any device.` };
       });
     }
     if (kind === "create-org") {

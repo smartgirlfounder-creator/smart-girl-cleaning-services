@@ -67,6 +67,31 @@ export function emptyProgress(): ProgressData {
   return { version: 1, missions: {}, achievements: {}, playerName: "" };
 }
 
+export interface RemoteRecord {
+  mission_id: string;
+  score: number;
+  stars: number;
+  passed: boolean;
+}
+
+/**
+ * Missions this device has progress for that the player's account doesn't have yet
+ * (not played there, not passed there, or a lower best score), so they can be saved to the account.
+ */
+export function missionsToUpload(local: ProgressData, remote: RemoteRecord[], known: (id: string) => boolean): RemoteRecord[] {
+  const out: RemoteRecord[] = [];
+  for (const [id, rec] of Object.entries(local.missions)) {
+    if (!known(id) || rec.attempts < 1) continue;
+    const mine = remote.filter((r) => r.mission_id === id);
+    const best = Math.max(0, ...mine.map((r) => r.score));
+    const passed = mine.some((r) => r.passed);
+    if (!mine.length || (rec.passed && !passed) || rec.bestScore > best) {
+      out.push({ mission_id: id, score: rec.bestScore, stars: rec.bestStars, passed: rec.passed });
+    }
+  }
+  return out;
+}
+
 export interface Achievement {
   id: string;
   name: string;

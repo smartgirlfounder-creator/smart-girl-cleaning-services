@@ -477,3 +477,6 @@ select.input { appearance: auto; }
 .paywall { background-color: var(--violet-deep); }
 .app-icon { display: inline-block; flex: none; overflow: hidden; line-height: 0; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
 .app-icon svg { display: block; }
+
+.save-banner { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--r-lg); background: rgba(240, 190, 92, 0.12); border: 1.5px solid rgba(240, 190, 92, 0.55); }
+.save-banner > div { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }

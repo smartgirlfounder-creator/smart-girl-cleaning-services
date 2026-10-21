@@ -53,6 +53,9 @@ export function homeScreen(p: Progress, c: CloudState, accountChip: string, inst
         <figcaption>Mission 1: this bathroom needs a professional.</figcaption>
       </figure>
     </section>
+    ${c.status === "ready" && !c.account && passed > 0
+      ? `<div class="save-banner"><div><strong>Save your progress</strong><span class="small">Your progress is only on this device. Sign in and it's saved to your account, so you can pick up where you stopped on any phone or computer.</span></div><button class="btn btn-primary btn-sm" data-action="account" data-key="save-banner">Sign in</button></div>`
+      : ""}
     ${install}
     <nav class="menu-grid" aria-label="Main menu">
       ${tiles.map(([a, t, d], i) => `<button class="tile ${i === 0 ? "tile-feature" : ""}" data-action="${a}" data-key="tile-${a}"><strong>${esc(t)}</strong><span>${esc(d)}</span></button>`).join("")}

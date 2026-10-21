@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ACHIEVEMENTS } from "../data/achievements";
-import { Progress, memoryStore } from "./progress";
+import { Progress, memoryStore, missionsToUpload } from "./progress";
 import { assignmentStatus, summarise, trainingReportCsv, type MemberLike, type RecordLike } from "./team";
 
 const members: MemberLike[] = [
@@ -53,5 +53,22 @@ describe("merging account records into this device", () => {
     ]);
     expect(p.record("bathroom-basics")).toMatchObject({ bestScore: 95, bestStars: 3, passed: true });
     expect(p.record("chemical-safety")).toMatchObject({ attempts: 1, passed: false });
+  });
+});
+
+describe("saving device progress to the account", () => {
+  it("uploads missions the account is missing, hasn't passed, or has a lower score for", () => {
+    const p = new Progress(memoryStore(), ACHIEVEMENTS);
+    const add = (missionId: string, score: number, passed: boolean) => p.addResult({ missionId, score, stars: passed ? 3 : 0, passed, lines: [], mistakes: [], criticalErrors: [], missed: [], stats: {} });
+    add("bathroom-basics", 95, true);
+    add("chemical-safety", 80, true);
+    add("final-inspection", 40, false);
+    const remote = [
+      { mission_id: "bathroom-basics", score: 95, stars: 3, passed: true },
+      { mission_id: "chemical-safety", score: 50, stars: 0, passed: false },
+    ];
+    const up = missionsToUpload(p.data, remote, () => true);
+    expect(up.map((r) => r.mission_id).sort()).toEqual(["chemical-safety", "final-inspection"]);
+    expect(missionsToUpload(p.data, remote, (id) => id !== "final-inspection").map((r) => r.mission_id)).toEqual(["chemical-safety"]);
   });
 });

@@ -192,6 +192,26 @@ async function run(label, viewport) {
   await page.waitForSelector(".notice-box");
   check((await notice()).includes("don't match"), "wrong password gives a clear message");
 
+  // Progress follows the account: play signed out, sign up, then "switch device".
+  await page.evaluate(() => {
+    const passed = { attempts: 1, bestScore: 90, bestStars: 3, passed: true, lastPlayed: new Date().toISOString() };
+    localStorage.setItem("smart-cleaners-academy:v1", JSON.stringify({ version: 1, missions: { "bathroom-basics": passed, "chemical-safety": passed }, achievements: {}, playerName: "" }));
+  });
+  await page.goto(APP_URL);
+  await page.waitForSelector(".save-banner");
+  check(true, "signed-out players with progress are reminded to sign in to save it");
+  await page.click('[data-key="save-banner"]');
+  await signUp("Sam Learner", "sam@test.com");
+  check((await notice()).includes("saved 2 missions from this device"), "signing up saves this device's progress to the account");
+  await page.evaluate(() => localStorage.removeItem("smart-cleaners-academy:v1")); // a new phone: no local progress
+  await page.goto(APP_URL);
+  await signOut();
+  await signIn("sam@test.com");
+  await page.click('[data-action="home"]');
+  check((await page.textContent(".home")).includes("2 of 6 training missions passed"), "signing in on another device restores the progress");
+  await page.click('[data-action="play-training"] >> nth=0');
+  check(await page.isVisible("text=Final Inspection and Quality Control"), "and continues from the next mission");
+
   check(errors.length === 0, `no console errors${errors.length ? `: ${errors.join(" | ")}` : ""}`);
   await context.close();
 }
