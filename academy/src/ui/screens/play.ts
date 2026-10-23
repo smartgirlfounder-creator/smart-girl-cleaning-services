@@ -1,4 +1,5 @@
 import { PPE, PRODUCTS, TOOLS } from "../../data/equipment";
+import { type Avatar, avatarPicker, ppeStore } from "../avatar";
 import type { CleaningRun } from "../../engine/cleaning";
 import type { ScenarioVisual } from "../../engine/types";
 import { esc, feedbackBox } from "../html";
@@ -111,9 +112,10 @@ function areaButtons(run: CleaningRun, verb: string, isDone: (id: string) => boo
     <div class="area-grid">${run.mission.objects.map((o) => `<button class="area-btn ${isDone(o.id) ? "done" : ""}" data-action="tap" data-id="${o.id}" data-key="area-${o.id}">${esc(verb)} ${esc(o.name.toLowerCase())}</button>`).join("")}</div></details>`;
 }
 
-export function cleaningView(s: CleaningSession): string {
+export function cleaningView(s: CleaningSession, avatar: Avatar | null, draft: Avatar | null): string {
   const { run } = s;
   const m = run.mission;
+  const picking = run.phase === "ppe" && (s.picking || !avatar);
   let panel = "";
   if (run.phase === "inspect") {
     panel = `<h2>Step 1: Inspect the room</h2>
@@ -122,14 +124,17 @@ export function cleaningView(s: CleaningSession): string {
       <ul class="notes">${m.objects.filter((o) => run.inspected.has(o.id)).map((o) => `<li><strong>${esc(o.name)}:</strong> ${esc(o.inspectNote)}</li>`).join("")}</ul>
       ${areaButtons(run, "Inspect", (id) => run.inspected.has(id))}
       <button class="btn btn-primary" data-action="to-ppe" data-key="to-ppe" ${run.canLeaveInspection() ? "" : "disabled"}>Next: choose PPE</button>`;
+  } else if (picking) {
+    panel = avatarPicker(draft);
   } else if (run.phase === "ppe") {
-    panel = `<h2>Step 2: Choose your PPE</h2>
+    panel = `<h2>Step 2: Pick your PPE from the store</h2>
       <p>${esc(m.ppeBrief)}</p>
+      <p class="small">Tap an item on the shelves (or in the list below) and your cleaner will fetch it and put it on. Tap it again to put it back.</p>
       <div class="ppe-grid">${m.ppe.offered.map((id) => {
         const on = s.ppe.has(id);
         return `<button class="ppe-item ${on ? "on" : ""}" aria-pressed="${on}" data-action="ppe" data-id="${id}" data-key="ppe-${id}"><strong>${esc(PPE[id].name)}</strong><span>${esc(PPE[id].purpose)}</span></button>`;
       }).join("")}</div>
-      <button class="btn btn-primary" data-action="equip" data-key="equip">Put on PPE</button>`;
+      <div class="btn-row"><button class="btn btn-primary" data-action="equip" data-key="equip">I'm ready: start cleaning</button><button class="btn btn-ghost" data-action="avatar-edit" data-key="avatar-edit">Change my cleaner</button></div>`;
   } else {
     const isCheck = run.phase === "check";
     const finish = s.confirmFinish
@@ -152,14 +157,15 @@ export function cleaningView(s: CleaningSession): string {
   }
 
   const placeholder =
-    run.phase === "inspect" ? "Tap an area of the room to inspect it." : run.phase === "ppe" ? "Select your PPE on the right." : "Choose a tool and product, then tap an area.";
+    run.phase === "inspect" ? "Tap an area of the room to inspect it." : picking ? "Choose your cleaner, then head to the PPE store." : run.phase === "ppe" ? "Tap PPE on the store shelves. Your cleaner will fetch it and put it on." : "Choose a tool and product, then tap an area.";
   return `<div class="play">
     ${playBar(m.title, stepper(run.phase))}
     <div class="play-grid">
       <section class="stage-col">
-        <div class="scene-wrap ${run.phase === "ppe" ? "dim" : ""}">
-          ${renderScene(m.sceneId, run.flags, { markers: cleaningMarkers(s), interactive: run.phase === "ppe" ? [] : m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) })}
-          ${flashLayer(m.sceneId, s.flash)}
+        <div class="scene-wrap">
+          ${run.phase === "ppe"
+            ? ppeStore(picking ? draft : avatar, { offered: m.ppe.offered, worn: picking ? new Set() : s.ppe, anim: picking ? null : s.ppeAnim, interactive: !picking })
+            : renderScene(m.sceneId, run.flags, { markers: cleaningMarkers(s), interactive: m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) }) + flashLayer(m.sceneId, s.flash)}
         </div>
         ${feedbackBox(s.feedback, placeholder)}
       </section>

@@ -87,10 +87,36 @@ async function run(label, viewport) {
   for (const o of objects) await tapObj(o);
   check((await page.textContent(".count")).includes("9 of 9"), "every area inspected by tapping the room");
   await page.click('[data-action="to-ppe"]');
-  await page.click('[data-action="ppe"][data-id="gloves"]');
+  // Choosing a cartoon cleaner before the PPE store
+  check(await page.isVisible("text=Step 2: Choose your cleaner"), "first time: the player is asked to choose a cleaner");
+  check(await page.isDisabled('[data-action="avatar-done"]'), "can't continue until female or male is chosen");
+  await page.click('[data-action="avatar-gender"][data-id="male"]');
+  await page.click('[data-action="avatar-hair"][data-id="afro"]');
+  await page.click('[data-action="avatar-gender"][data-id="female"]');
+  check((await page.locator('[data-action="avatar-hair"]').allTextContents()).join(",") === "Braids,Afro puff,Headwrap,Bun", "female hairstyles are offered after switching");
+  await page.click('[data-action="avatar-hair"][data-id="wrap"]');
+  await page.click('[data-action="avatar-skin"][data-id="1"]');
+  await page.click('[data-action="avatar-uniform"][data-id="maroon"]');
+  await shot("avatar-picker");
+  await page.click('[data-action="avatar-done"]');
+  check(await page.isVisible("text=Step 2: Pick your PPE from the store"), "the PPE store opens with the chosen cleaner");
+  await noOverflow("ppe-store");
+  check((await page.locator(".ppe-store .cleaner").count()) === 1, "the cleaner stands in the PPE store");
+  for (const name of ["Protective", "gloves", "Safety", "glasses", "Apron", "Dust mask"]) check((await page.textContent(".ppe-store")).includes(name), `store shelf label shows "${name}"`);
+  await page.click('.ppe-store [data-action="ppe"][data-id="gloves"]');
+  check((await page.locator(".ppe-store .cleaner.walk").count()) === 1, "tapping the gloves makes the cleaner walk to the shelf");
+  await page.waitForTimeout(900);
+  await shot("ppe-store-reach");
+  await page.waitForTimeout(900);
+  check((await fb().textContent()).includes("Put on: Protective gloves"), "the cleaner puts the gloves on");
+  check((await page.getAttribute('.ppe-grid [data-id="gloves"]', "aria-pressed")) === "true", "the list matches the store");
   await page.click('[data-action="equip"]');
   check((await fb().textContent()).includes("safety glasses"), "missing eye protection is refused with an explanation");
-  await page.click('[data-action="ppe"][data-id="eye-protection"]');
+  await page.focus('.ppe-store [data-id="eye-protection"]');
+  await page.keyboard.press("Enter");
+  check((await page.getAttribute('.ppe-grid [data-id="eye-protection"]', "aria-pressed")) === "true", "keyboard: Enter on a shelf item picks it");
+  await page.waitForTimeout(1700);
+  await shot("ppe-store-dressed");
   await page.click('[data-action="equip"]');
   check(await page.isVisible("text=Step 3: Clean"), "PPE accepted, cleaning starts");
 

@@ -61,6 +61,8 @@ export interface ProgressData {
   missions: Record<string, MissionRecord>;
   achievements: Record<string, string>;
   playerName: string;
+  /** The player's cartoon cleaner (checked by the UI when read). */
+  avatar?: unknown;
 }
 
 export function emptyProgress(): ProgressData {
@@ -175,8 +177,14 @@ export class Progress {
     this.save();
   }
 
+  setAvatar(avatar: unknown): void {
+    this.data.avatar = avatar;
+    this.save();
+  }
+
+  /** Clears training progress. The player's name and cleaner are kept. */
   reset(): void {
-    this.data = emptyProgress();
+    this.data = { ...emptyProgress(), playerName: this.data.playerName, avatar: this.data.avatar };
     this.save();
   }
 }

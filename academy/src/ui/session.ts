@@ -17,6 +17,10 @@ export type Session =
       confirmFinish: boolean;
       hintObject: string | null;
       flash: { obj: string; tone: Feedback["tone"] } | null;
+      /** Choosing or changing the cartoon cleaner during the PPE step. */
+      picking: boolean;
+      /** PPE picked or put back in the last action: plays the walk to the store once. */
+      ppeAnim: { id: string; kind: "take" | "return" } | null;
     }
   | {
       kind: "scenario";

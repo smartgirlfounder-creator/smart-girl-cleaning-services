@@ -16,6 +16,8 @@ import { createInstall, installCard, installHelp } from "./install";
 import { paywall } from "./screens/billing";
 import { accountScreen, adminScreen, signedInChip, teamScreen } from "./screens/business";
 import { resultsScreen } from "./screens/results";
+import { type Avatar, cleanAvatar, defaultAvatar } from "./avatar";
+import { PPE } from "../data/equipment";
 import type { CloudState, Session, View } from "./session";
 
 export class App {
@@ -28,6 +30,8 @@ export class App {
   private synced = 0;
   private readonly installer = createInstall(() => this.render());
   private confirmReset = false;
+  /** The cleaner being chosen before it is saved. */
+  private avatarDraft: Avatar | null = null;
   readonly cloud: CloudState = {
     status: "checking", account: null, busy: false, notice: null, authTab: "signin",
     team: null, myRecords: null, myAssignments: null, admin: null, joinCode: "", confirm: null, copied: false, lastSave: null, pass: null, currency: "NGN",
@@ -279,7 +283,7 @@ export class App {
     const m = this.mission(id);
     if (!this.progress.isUnlocked(m) || this.needsPass(m)) return this.go({ name: "briefing", missionId: id });
     if (m.kind === "cleaning") {
-      this.session = { kind: "cleaning", run: new CleaningRun(m), feedback: null, ppe: new Set(), tab: "tools", confirmFinish: false, hintObject: null, flash: null };
+      this.session = { kind: "cleaning", run: new CleaningRun(m), feedback: null, ppe: new Set(), tab: "tools", confirmFinish: false, hintObject: null, flash: null, picking: false, ppeAnim: null };
     } else if (m.kind === "scenario") {
       this.session = { kind: "scenario", run: new ScenarioRun(m), multi: new Set(), match: {}, outcome: null };
     } else if (m.kind === "planning") {
@@ -312,8 +316,9 @@ export class App {
     const focusKey = (document.activeElement as HTMLElement | null)?.dataset?.key;
     this.root.innerHTML = this.screen() + this.modal();
     if (focusKey) this.root.querySelector<HTMLElement>(`[data-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
-    // Flash effects play once per action.
+    // Flash effects and the walk to the PPE store play once per action.
     if (this.session && "flash" in this.session) this.session.flash = null;
+    if (this.session?.kind === "cleaning") this.session.ppeAnim = null;
   }
 
   private screen(): string {
@@ -337,7 +342,7 @@ export class App {
       case "play": {
         const s = this.session;
         if (!s) return homeScreen(p, this.cloud, signedInChip(this.cloud), installCard(this.installer.state));
-        if (s.kind === "cleaning") return cleaningView(s);
+        if (s.kind === "cleaning") return cleaningView(s, this.avatar(), this.avatarDraft);
         if (s.kind === "scenario") return scenarioView(s);
         if (s.kind === "planning") return planningView(s);
         return inspectionView(s);
@@ -357,6 +362,14 @@ export class App {
   // ---------- Events ----------
 
   private onKey(e: KeyboardEvent): void {
+    const svgButton = (e.target as Element).closest<SVGElement>("svg [data-action]");
+    if (svgButton && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      const key = svgButton.dataset.key;
+      this.act(svgButton.dataset.action!, svgButton.dataset.id ?? "", svgButton as unknown as HTMLElement);
+      if (key) this.root.querySelector<SVGElement>(`[data-key="${CSS.escape(key)}"]`)?.focus();
+      return;
+    }
     const t = (e.target as Element).closest<SVGElement>("[data-obj]");
     if (t && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
@@ -401,6 +414,10 @@ export class App {
       s.flash = { obj: objectId, tone: fb.tone === "critical" ? "critical" : fb.tone };
     }
     this.render();
+  }
+
+  private avatar(): Avatar | null {
+    return cleanAvatar(this.progress.data.avatar);
   }
 
   private act(action: string, id: string, el: HTMLElement): void {
@@ -505,10 +522,39 @@ export class App {
       const run = s.run;
       switch (action) {
         case "to-ppe":
-          if (run.startPpe()) s.feedback = { tone: "info", title: "Inspection complete", body: "You know what the room needs. Now choose your protective equipment." };
+          if (run.startPpe()) s.feedback = { tone: "info", title: "Inspection complete", body: this.avatar() ? "You know what the room needs. Now pick your protective equipment from the PPE store." : "You know what the room needs. Now choose your cleaner, then pick their protective equipment." };
           break;
-        case "ppe":
-          s.ppe.has(id) ? s.ppe.delete(id) : s.ppe.add(id);
+        case "ppe": {
+          if (!(id in PPE)) break;
+          const taking = !s.ppe.has(id);
+          taking ? s.ppe.add(id) : s.ppe.delete(id);
+          s.ppeAnim = { id, kind: taking ? "take" : "return" };
+          const item = PPE[id as PpeId];
+          s.feedback = taking
+            ? { tone: "info", title: `Put on: ${item.name}`, body: item.purpose }
+            : { tone: "info", title: `Put back: ${item.name}`, body: "Back on the shelf in the PPE store." };
+          break;
+        }
+        case "avatar-edit":
+          s.picking = true;
+          this.avatarDraft = this.avatar();
+          break;
+        case "avatar-gender":
+          if (id === "female" || id === "male") this.avatarDraft = this.avatarDraft?.gender === id ? this.avatarDraft : defaultAvatar(id);
+          break;
+        case "avatar-skin":
+        case "avatar-hair":
+        case "avatar-uniform":
+          if (this.avatarDraft) {
+            const key = action === "avatar-skin" ? "skin" : action === "avatar-hair" ? "hair" : "uniform";
+            this.avatarDraft = cleanAvatar({ ...this.avatarDraft, [key]: key === "skin" ? Number(id) : id }) ?? this.avatarDraft;
+          }
+          break;
+        case "avatar-done":
+          if (!this.avatarDraft) break;
+          this.progress.setAvatar(this.avatarDraft);
+          s.picking = false;
+          s.feedback = { tone: "good", title: "Ready for the PPE store", body: "Tap each item your cleaner needs. They'll take it from the shelf and put it on." };
           break;
         case "equip":
           s.feedback = run.equipPpe([...s.ppe] as PpeId[]).feedback;
