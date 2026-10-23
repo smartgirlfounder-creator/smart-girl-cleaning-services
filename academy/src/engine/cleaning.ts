@@ -81,6 +81,7 @@ export class CleaningRun {
     const left = this.mission.objects.length - this.inspected.size;
     return {
       tone: "info",
+      kind: "inspect",
       title: o.name,
       body: o.inspectNote + (left === 0 ? " Every area is inspected. Next, put on your PPE." : ` ${left} area${left === 1 ? "" : "s"} left to inspect.`),
     };
@@ -159,7 +160,7 @@ export class CleaningRun {
         const b = PRODUCTS[hazard.productB].name;
         const why = `${a} reacts with the ${b.toLowerCase()} already on the ${obj.name.toLowerCase()} and releases ${hazard.gas}, which can seriously harm your lungs. Never mix these products, and never put one straight on top of the other.`;
         this.mistakes.add({ key: `mix:${objectId}:${product}`, severity: "critical", category: "safety", title: `Dangerous mix: ${PRODUCTS[product].short} + ${PRODUCTS[hazard.productB].short}`, why });
-        return { tone: "critical", title: "Stop! Dangerous chemical mix", body: why + " The simulation stopped this action." };
+        return { tone: "critical", kind: "chemical-mix", title: "Stop! Dangerous chemical mix", body: why + " The simulation stopped this action." };
       }
     }
 
@@ -172,12 +173,12 @@ export class CleaningRun {
           ? `The ${t.name.toLowerCase()} is only for toilets. Using it on the ${obj.name.toLowerCase()} spreads germs from the toilet to a cleaner surface (cross-contamination). Keep colour-coded tools in their own zone.`
           : `The ${t.name.toLowerCase()} belongs to a different zone. Using it on the ${obj.name.toLowerCase()} carries germs between areas, for example from a bathroom into a kitchen (cross-contamination). Keep colour-coded tools in their own zone.`;
         this.mistakes.add({ key: `cross:${tool}:${objectId}`, severity: "critical", category: "hygiene", title: `Cross-contamination: ${t.short} on ${obj.name}`, why });
-        return { tone: "critical", title: "Stop! Cross-contamination", body: why };
+        return { tone: "critical", kind: "cross-contamination", title: "Stop! Cross-contamination", body: why };
       }
     }
 
     if (pending.length === 0) {
-      return { tone: "info", title: `${obj.name}: done`, body: "This area already meets the standard. Move on to the next task." };
+      return { tone: "info", kind: "already-done", title: `${obj.name}: done`, body: "This area already meets the standard. Move on to the next task." };
     }
 
     // 3. A task that matches what the player is holding.
@@ -189,11 +190,11 @@ export class CleaningRun {
     if (!this.toolMatches(target, tool)) {
       const holding = tool ? TOOLS[tool].name : "gloved hands only";
       this.mistakes.add({ key: `tool:${target.id}:${tool ?? "hands"}`, severity: "major", category: "tools", title: `Wrong tool for: ${target.label}`, why: target.toolWhy });
-      return { tone: "bad", title: "Wrong tool for this job", body: `You're using ${holding.toLowerCase()}. ${target.toolWhy}` };
+      return { tone: "bad", kind: "wrong-tool", taskId: target.id, title: "Wrong tool for this job", body: `You're using ${holding.toLowerCase()}. ${target.toolWhy}` };
     }
     if (product === null) {
       this.mistakes.add({ key: `noproduct:${target.id}`, severity: "minor", category: "tools", title: `No product for: ${target.label}`, why: target.productWhy ?? "" });
-      return { tone: "warn", title: "This job needs a product", body: target.productWhy ?? "Choose a suitable product from the trolley." };
+      return { tone: "warn", kind: "no-product", taskId: target.id, title: "This job needs a product", body: target.productWhy ?? "Choose a suitable product from the trolley." };
     }
     const p = PRODUCTS[product];
     const targetProduct = target.product ? PRODUCTS[target.product] : null;
@@ -206,7 +207,7 @@ export class CleaningRun {
           ? `This step doesn't need a product. ${target.toolWhy}`
           : `${p.name} isn't the right product here. ${target.productWhy ?? ""}`;
     this.mistakes.add({ key: `product:${target.id}:${product}`, severity: "major", category: "tools", title: `Wrong product for: ${target.label}`, why });
-    return { tone: "bad", title: "Wrong product", body: why };
+    return { tone: "bad", kind: "wrong-product", taskId: target.id, title: "Wrong product", body: why };
   }
 
   private toolMatches(t: CleaningTask, tool: string | null): boolean {
@@ -219,7 +220,7 @@ export class CleaningRun {
     if (product?.needsVentilation && vent && !this.done.has(vent.id)) {
       const why = `${product.name} gives off strong fumes. Switch on the extractor fan or open a window before using it.`;
       this.mistakes.add({ key: `vent:${product.id}`, severity: "major", category: "safety", title: "Used a strong product without ventilation", why });
-      return { tone: "bad", title: "Ventilate first", body: why };
+      return { tone: "bad", kind: "ventilate", taskId: task.id, title: "Ventilate first", body: why };
     }
     const safety = (task.safetyRequires ?? []).find((r) => !this.done.has(r.task));
     if (safety) {
@@ -228,17 +229,19 @@ export class CleaningRun {
       const how = first?.tools.length
         ? ` How: choose the ${TOOLS[first.tools[0]].name.toLowerCase()} in Tools and tap the ${this.object(first.objectId).name.toLowerCase()} to place it. Then pick ${task.tools[0] ? `the ${TOOLS[task.tools[0]].name.toLowerCase()}` : "it up"} again.`
         : "";
-      return { tone: "bad", title: "Safety step missing", body: safety.why + how };
+      return { tone: "bad", kind: "safety-step", taskId: task.id, title: "Safety step missing", body: safety.why + how };
     }
     const order = (task.requires ?? []).find((r) => !this.done.has(r.task));
     if (order) {
       this.mistakes.add({ key: `seq:${task.id}`, severity: "major", category: "sequence", title: `Out of order: ${task.label}`, why: order.why });
-      return { tone: "warn", title: "Not yet: wrong order", body: order.why };
+      return { tone: "warn", kind: "wrong-order", taskId: task.id, title: "Not yet: wrong order", body: order.why };
     }
 
     this.done.add(task.id);
     this.flags.add(task.flag);
     if (task.product) (this.residues[obj.id] ??= []).push(task.product);
+    // A sign, liner or refill stays where it was put, so the hands are free again.
+    if (this.heldTool && TOOLS[this.heldTool].placeOnly) this.heldTool = null;
 
     if (this.phase === "clean" && this.allRequiredDone()) {
       this.phase = "check";
@@ -246,11 +249,13 @@ export class CleaningRun {
       this.heldProduct = null;
       return {
         tone: "good",
+        kind: "task-done",
+        taskId: task.id,
         title: task.label,
         body: `${task.success} Every required task is done. Tools are back on the trolley. Now do your final walk-through: tap each area to check it.`,
       };
     }
-    return { tone: "good", title: task.label, body: task.success };
+    return { tone: "good", kind: "task-done", taskId: task.id, title: task.label, body: task.success };
   }
 
   confirmCheck(objectId: string): Feedback {
@@ -261,9 +266,9 @@ export class CleaningRun {
     const left = this.mission.objects.length - this.checked.size;
     const tail = left === 0 ? " Walk-through complete. You can finish the mission." : ` ${left} area${left === 1 ? "" : "s"} left to check.`;
     if (optionalLeft.length) {
-      return { tone: "warn", title: `${obj.name}: one more thing`, body: `Not done yet: ${optionalLeft.map((t) => t.label.toLowerCase()).join(", ")}. Pick it from the trolley if you'd like to go the extra mile.${tail}` };
+      return { tone: "warn", kind: "check", title: `${obj.name}: one more thing`, body: `Not done yet: ${optionalLeft.map((t) => t.label.toLowerCase()).join(", ")}. Pick it from the trolley if you'd like to go the extra mile.${tail}` };
     }
-    return { tone: "good", title: `${obj.name}: meets the standard`, body: `Checked: ${tasks.map((t) => t.label.toLowerCase()).join(", ") || "nothing needed"}.${tail}` };
+    return { tone: "good", kind: "check", title: `${obj.name}: meets the standard`, body: `Checked: ${tasks.map((t) => t.label.toLowerCase()).join(", ") || "nothing needed"}.${tail}` };
   }
 
   finish(): MissionResult {

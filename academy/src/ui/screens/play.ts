@@ -112,20 +112,29 @@ function areaButtons(run: CleaningRun, verb: string, isDone: (id: string) => boo
     <div class="area-grid">${run.mission.objects.map((o) => `<button class="area-btn ${isDone(o.id) ? "done" : ""}" data-action="tap" data-id="${o.id}" data-key="area-${o.id}">${esc(verb)} ${esc(o.name.toLowerCase())}</button>`).join("")}</div></details>`;
 }
 
-export function cleaningView(s: CleaningSession, avatar: Avatar | null, draft: Avatar | null): string {
+export interface CleaningViewOptions {
+  /** Show the 3D world (a slot the app fills) instead of the 2D picture. */
+  world: boolean;
+  /** The 3D cleaner is acting something out; actions wait. */
+  busy: boolean;
+  /** 3D is available for this mission, so the player can switch views. */
+  canToggle: boolean;
+}
+
+export function cleaningView(s: CleaningSession, avatar: Avatar | null, draft: Avatar | null, o: CleaningViewOptions = { world: false, busy: false, canToggle: false }): string {
   const { run } = s;
   const m = run.mission;
-  const picking = run.phase === "ppe" && (s.picking || !avatar);
+  const picking = (run.phase === "ppe" || (o.world && run.phase === "inspect")) && (s.picking || !avatar);
   let panel = "";
-  if (run.phase === "inspect") {
+  if (picking) {
+    panel = avatarPicker(draft, run.phase === "inspect");
+  } else if (run.phase === "inspect") {
     panel = `<h2>Step 1: Inspect the room</h2>
       <p>Professionals look before they clean. Tap each area of the room to see what needs doing.</p>
       <div class="count">${run.inspected.size} of ${m.objects.length} areas inspected</div>
       <ul class="notes">${m.objects.filter((o) => run.inspected.has(o.id)).map((o) => `<li><strong>${esc(o.name)}:</strong> ${esc(o.inspectNote)}</li>`).join("")}</ul>
       ${areaButtons(run, "Inspect", (id) => run.inspected.has(id))}
       <button class="btn btn-primary" data-action="to-ppe" data-key="to-ppe" ${run.canLeaveInspection() ? "" : "disabled"}>Next: choose PPE</button>`;
-  } else if (picking) {
-    panel = avatarPicker(draft);
   } else if (run.phase === "ppe") {
     panel = `<h2>Step 2: Pick your PPE from the store</h2>
       <p>${esc(m.ppeBrief)}</p>
@@ -156,14 +165,22 @@ export function cleaningView(s: CleaningSession, avatar: Avatar | null, draft: A
          ${checklist(run)}`;
   }
 
-  const placeholder =
+  if (o.canToggle && !picking) {
+    panel += `<p class="view-toggle"><button class="btn btn-ghost btn-small" data-action="toggle-view" data-key="toggle-view">${o.world ? "Switch to the simple 2D view" : "Switch to the 3D cleaner view"}</button></p>`;
+  }
+  if (o.busy) panel = `<div class="working" aria-busy="true">${panel}</div>`;
+
+  const placeholder = o.busy ? "Watch your cleaner…" :
+    picking && run.phase === "inspect" ? "Choose your cleaner to begin." :
     run.phase === "inspect" ? "Tap an area of the room to inspect it." : picking ? "Choose your cleaner, then head to the PPE store." : run.phase === "ppe" ? "Tap PPE on the store shelves. Your cleaner will fetch it and put it on." : "Choose a tool and product, then tap an area.";
   return `<div class="play">
     ${playBar(m.title, stepper(run.phase))}
     <div class="play-grid">
-      <section class="stage-col">
-        <div class="scene-wrap">
-          ${run.phase === "ppe"
+      <section class="stage-col ${o.world && run.phase !== "ppe" ? "is-3d" : ""}">
+        <div class="scene-wrap ${o.world && run.phase !== "ppe" ? "is-3d" : ""}">
+          ${o.world && run.phase !== "ppe"
+            ? `<div class="world-slot" data-world-slot></div>`
+            : run.phase === "ppe"
             ? ppeStore(picking ? draft : avatar, { offered: m.ppe.offered, worn: picking ? new Set() : s.ppe, anim: picking ? null : s.ppeAnim, interactive: !picking })
             : renderScene(m.sceneId, run.flags, { markers: cleaningMarkers(s), interactive: m.objects.map((o) => o.id), labels: Object.fromEntries(m.objects.map((o) => [o.id, o.name])) }) + flashLayer(m.sceneId, s.flash)}
         </div>

@@ -8,10 +8,19 @@ export type MistakeCategory = "tools" | "sequence" | "safety" | "hygiene" | "dec
 
 export type FeedbackTone = "good" | "info" | "warn" | "bad" | "critical";
 
+/** What happened, so animated views can act it out. */
+export type FeedbackKind =
+  | "inspect" | "check" | "task-done" | "already-done"
+  | "chemical-mix" | "cross-contamination" | "wrong-tool" | "no-product" | "wrong-product"
+  | "ventilate" | "safety-step" | "wrong-order";
+
 export interface Feedback {
   tone: FeedbackTone;
   title: string;
   body: string;
+  kind?: FeedbackKind;
+  /** The task completed, or the one the player was closest to. */
+  taskId?: string;
 }
 
 export interface RecordedMistake {

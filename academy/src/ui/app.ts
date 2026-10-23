@@ -18,6 +18,7 @@ import { accountScreen, adminScreen, signedInChip, teamScreen } from "./screens/
 import { resultsScreen } from "./screens/results";
 import { type Avatar, cleanAvatar, defaultAvatar } from "./avatar";
 import { PPE } from "../data/equipment";
+import { World3D } from "../three/world";
 import type { CloudState, Session, View } from "./session";
 
 export class App {
@@ -32,6 +33,9 @@ export class App {
   private confirmReset = false;
   /** The cleaner being chosen before it is saved. */
   private avatarDraft: Avatar | null = null;
+  /** The 3D world for the bathroom mission, created on first use and kept for the app's life. */
+  private world: World3D | null = null;
+  private prefer3d = readViewPref();
   readonly cloud: CloudState = {
     status: "checking", account: null, busy: false, notice: null, authTab: "signin",
     team: null, myRecords: null, myAssignments: null, admin: null, joinCode: "", confirm: null, copied: false, lastSave: null, pass: null, currency: "NGN",
@@ -284,6 +288,8 @@ export class App {
     if (!this.progress.isUnlocked(m) || this.needsPass(m)) return this.go({ name: "briefing", missionId: id });
     if (m.kind === "cleaning") {
       this.session = { kind: "cleaning", run: new CleaningRun(m), feedback: null, ppe: new Set(), tab: "tools", confirmFinish: false, hintObject: null, flash: null, picking: false, ppeAnim: null };
+      this.avatarDraft = this.avatar();
+      if (this.uses3d()) this.loadWorld(this.session.run);
     } else if (m.kind === "scenario") {
       this.session = { kind: "scenario", run: new ScenarioRun(m), multi: new Set(), match: {}, outcome: null };
     } else if (m.kind === "planning") {
@@ -316,6 +322,13 @@ export class App {
     const focusKey = (document.activeElement as HTMLElement | null)?.dataset?.key;
     this.root.innerHTML = this.screen() + this.modal();
     if (focusKey) this.root.querySelector<HTMLElement>(`[data-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
+    // The 3D world keeps running between renders: move it into the new screen.
+    const slot = this.root.querySelector<HTMLElement>("[data-world-slot]");
+    if (slot && this.world) this.world.mount(slot);
+    else if (this.world) {
+      if (this.world.busy && this.session?.kind !== "cleaning") this.world.abort();
+      this.world.unmount();
+    }
     // Flash effects and the walk to the PPE store play once per action.
     if (this.session && "flash" in this.session) this.session.flash = null;
     if (this.session?.kind === "cleaning") this.session.ppeAnim = null;
@@ -342,7 +355,10 @@ export class App {
       case "play": {
         const s = this.session;
         if (!s) return homeScreen(p, this.cloud, signedInChip(this.cloud), installCard(this.installer.state));
-        if (s.kind === "cleaning") return cleaningView(s, this.avatar(), this.avatarDraft);
+        if (s.kind === "cleaning") {
+          const can = s.run.mission.sceneId === "bathroom" && supports3d();
+          return cleaningView(s, this.avatar(), this.avatarDraft, { world: this.uses3d(), busy: !!this.world?.busy && this.uses3d(), canToggle: can });
+        }
         if (s.kind === "scenario") return scenarioView(s);
         if (s.kind === "planning") return planningView(s);
         return inspectionView(s);
@@ -402,6 +418,24 @@ export class App {
   private tap(objectId: string): void {
     const s = this.session;
     if (!s) return;
+    if (s.kind === "cleaning" && this.uses3d() && this.world) {
+      // The cleaner acts it out; the result shows when they've finished.
+      if (this.world.busy || ((s.run.phase === "inspect" || s.run.phase === "ppe") && (s.picking || !this.avatar()))) return;
+      const ctx = { phase: s.run.phase, tool: s.run.heldTool, product: s.run.heldProduct };
+      const fb = s.run.tap(objectId);
+      s.hintObject = null;
+      s.confirmFinish = false;
+      s.feedback = null;
+      this.world.hint(null);
+      const world = this.world;
+      void world.perform(objectId, fb, ctx).then(() => {
+        if (this.session !== s) return;
+        s.feedback = fb;
+        world.result(fb);
+        this.render();
+      });
+      return;
+    }
     if (s.kind === "cleaning") {
       const fb = s.run.tap(objectId);
       s.feedback = fb;
@@ -418,6 +452,21 @@ export class App {
 
   private avatar(): Avatar | null {
     return cleanAvatar(this.progress.data.avatar);
+  }
+
+  /** Whether the current mission is shown as the 3D world. */
+  private uses3d(): boolean {
+    const s = this.session;
+    return s?.kind === "cleaning" && s.run.mission.sceneId === "bathroom" && this.prefer3d && supports3d();
+  }
+
+  private loadWorld(run: CleaningRun): void {
+    if (!this.world) {
+      this.world = new World3D();
+      this.world.onBusy = () => this.render();
+    }
+    this.world.onPick = (area) => this.tap(area);
+    this.world.load(run, this.avatar() ?? defaultAvatar("female"));
   }
 
   private act(action: string, id: string, el: HTMLElement): void {
@@ -438,6 +487,7 @@ export class App {
       case "exit": this.confirmExit = true; return this.render();
       case "exit-no": this.confirmExit = false; return this.render();
       case "exit-yes": {
+        this.world?.abort();
         const missionId = this.view.name === "play" ? this.view.missionId : "";
         this.session = null;
         return missionId ? this.go({ name: "briefing", missionId }) : this.go({ name: "home" });
@@ -520,7 +570,14 @@ export class App {
 
     if (s?.kind === "cleaning") {
       const run = s.run;
+      const in3d = this.uses3d() && this.world;
+      if (in3d && this.world!.busy && action !== "tab") return;
       switch (action) {
+        case "toggle-view":
+          this.prefer3d = !this.prefer3d;
+          writeViewPref(this.prefer3d);
+          if (this.uses3d()) this.loadWorld(run);
+          break;
         case "to-ppe":
           if (run.startPpe()) s.feedback = { tone: "info", title: "Inspection complete", body: this.avatar() ? "You know what the room needs. Now pick your protective equipment from the PPE store." : "You know what the room needs. Now choose your cleaner, then pick their protective equipment." };
           break;
@@ -541,6 +598,7 @@ export class App {
           break;
         case "avatar-gender":
           if (id === "female" || id === "male") this.avatarDraft = this.avatarDraft?.gender === id ? this.avatarDraft : defaultAvatar(id);
+          if (in3d && this.avatarDraft) this.world!.setAvatar(this.avatarDraft);
           break;
         case "avatar-skin":
         case "avatar-hair":
@@ -548,29 +606,37 @@ export class App {
           if (this.avatarDraft) {
             const key = action === "avatar-skin" ? "skin" : action === "avatar-hair" ? "hair" : "uniform";
             this.avatarDraft = cleanAvatar({ ...this.avatarDraft, [key]: key === "skin" ? Number(id) : id }) ?? this.avatarDraft;
+            if (in3d) this.world!.setAvatar(this.avatarDraft);
           }
           break;
         case "avatar-done":
           if (!this.avatarDraft) break;
           this.progress.setAvatar(this.avatarDraft);
           s.picking = false;
-          s.feedback = { tone: "good", title: "Ready for the PPE store", body: "Tap each item your cleaner needs. They'll take it from the shelf and put it on." };
+          if (in3d) this.world!.setAvatar(this.avatarDraft);
+          s.feedback = run.phase === "inspect"
+            ? { tone: "good", title: "Meet your cleaner", body: "Tap each area of the bathroom. Your cleaner will walk over and inspect it." }
+            : { tone: "good", title: "Ready for the PPE store", body: "Tap each item your cleaner needs. They'll take it from the shelf and put it on." };
           break;
         case "equip":
           s.feedback = run.equipPpe([...s.ppe] as PpeId[]).feedback;
+          if (in3d) this.world!.setPpe(run.ppeOn);
           break;
         case "tab":
           s.tab = id === "products" ? "products" : "tools";
           break;
         case "hold":
           run.hold(id || null);
+          if (in3d) void this.world!.equip();
           break;
         case "load":
           run.load(id || null);
+          if (in3d) void this.world!.equip();
           break;
         case "hint": {
           const t = run.suggestedTask();
           s.hintObject = t?.objectId ?? null;
+          if (in3d) this.world!.hint(s.hintObject);
           s.feedback = t
             ? { tone: "info", title: `Suggested next job: ${t.label}`, body: t.toolWhy }
             : { tone: "info", title: "No hint needed", body: "All required tasks are done." };
@@ -658,3 +724,26 @@ export function mount(root: HTMLElement): App {
   return app;
 }
 
+
+const VIEW_KEY = "smart-sweep:view";
+
+function readViewPref(): boolean {
+  try {
+    return localStorage.getItem(VIEW_KEY) !== "2d";
+  } catch {
+    return true;
+  }
+}
+
+function writeViewPref(on3d: boolean): void {
+  try {
+    localStorage.setItem(VIEW_KEY, on3d ? "3d" : "2d");
+  } catch {
+    /* storage blocked */
+  }
+}
+
+let webgl: boolean | null = null;
+function supports3d(): boolean {
+  return (webgl ??= World3D.supported());
+}

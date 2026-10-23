@@ -14,9 +14,11 @@
     "e2e:business": "VITE_CLOUD=mock vite build --outDir dist-mock && node e2e/business.mjs",
     "e2e:payments": "VITE_CLOUD=mock VITE_PAYMENTS=on vite build --outDir dist-pay && node e2e/payments.mjs",
     "e2e:pwa": "node e2e/pwa-check.mjs . e2e/screenshots/pwa.png",
-    "icons": "node brand/render-icons.mjs"
+    "icons": "node brand/render-icons.mjs",
+    "e2e:3d": "node e2e/world3d.mjs"
   },
   "devDependencies": {
+    "@types/three": "0.170.0",
     "playwright-core": "1.56.1",
     "typescript": "5.8.3",
     "vite": "6.3.5",
@@ -24,6 +26,7 @@
     "vitest": "3.2.4"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.49.4"
+    "@supabase/supabase-js": "2.49.4",
+    "three": "0.170.0"
   }
 }

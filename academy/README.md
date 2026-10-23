@@ -23,6 +23,7 @@ npm run dev        # local development server
 npm run build      # typecheck + build to one self-contained file: dist/index.html
 npm test           # engine unit tests (Vitest)
 npm run e2e        # full player journey in a real browser, phone and desktop sizes (needs a build first)
+npm run e2e:3d     # the 3D cleaner: walking, carrying, cleaning, wrong moves, safety stops (needs a build first)
 npm run e2e:business  # accounts, teams, assignments, reports and admin, against an in-memory backend
 npm run artifact   # turns dist/index.html into dist/artifact.html for hosting as a claude.ai Artifact
 ```
@@ -56,7 +57,17 @@ src/
     missions/        One file per mission, plus index.ts (registry + planned rooms)
     levels.ts, achievements.ts
   cloud/             Backend access (Supabase), an in-memory fake for tests, offline record queue
+  three/             The 3D cleaner view (Three.js), used for the bathroom mission
+    character.ts         Cartoon cleaner built as a jointed rig (spine, neck, shoulders, elbows, hips, knees),
+                         face expressions, hair styles and PPE; joints blend smoothly towards each new pose
+    bathroom.ts          The 3D bathroom: fittings, dirt that fades as it's cleaned, the equipment trolley
+    director.ts          Acts out each game result: walking, picking up, spraying, scrubbing, wiping, mopping,
+                         funny "wrong" reactions, safety stops (nothing is ever sprayed) and celebrations
+    props.ts, fx.ts      Tools and bottles; spray, foam, water, sparkles and floating signs
+    sfx.ts               Synthesised sound effects (with on-screen captions, and a mute button)
+    world.ts             Renderer, camera, game loop, tapping in the scene
   ui/                Presentation only
+    avatar.ts            Choosing your cleaner, and the 2D PPE store
     scenes/              SVG rooms (bathroom, kitchen) whose look is driven by "flags" (dirty/clean/defect)
     screens/             Menu, mission and results screens
     app.ts               Navigation and event handling

@@ -43,6 +43,8 @@ const browser = await chromium.launch({ executablePath: chromiumPath() });
 async function run(label, viewport) {
   console.log(`\n${label} (${viewport.width}×${viewport.height})`);
   const context = await browser.newContext({ viewport, hasTouch: viewport.width < 600 });
+  // This journey checks the classic 2D view; e2e/world3d.mjs checks the 3D cleaner.
+  await context.addInitScript(() => localStorage.setItem("smart-sweep:view", "2d"));
   const page = await context.newPage();
   const errors = [];
   // The account service isn't reachable from the test machine; the app falls back to offline mode.

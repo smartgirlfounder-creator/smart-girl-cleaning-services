@@ -261,7 +261,7 @@ export function ppeStore(a: Avatar | null, o: StoreOptions): string {
 
 // ---------- Choosing a cleaner ----------
 
-export function avatarPicker(draft: Avatar | null): string {
+export function avatarPicker(draft: Avatar | null, beforeStart = false): string {
   const card = (g: Gender, label: string) => {
     const look = draft?.gender === g ? draft : defaultAvatar(g);
     const on = draft?.gender === g;
@@ -276,9 +276,9 @@ export function avatarPicker(draft: Avatar | null): string {
       <p class="small pick-label">Uniform colour</p>
       <div class="swatches">${UNIFORMS.map((u) => `<button class="swatch ${draft.uniform === u.id ? "on" : ""}" aria-pressed="${draft.uniform === u.id}" aria-label="${esc(u.name)} uniform" title="${esc(u.name)}" style="background:${u.color}" data-action="avatar-uniform" data-id="${u.id}" data-key="uni-${u.id}"></button>`).join("")}</div>`
     : "";
-  return `<h2>Step 2: Choose your cleaner</h2>
-    <p>Who's cleaning today? Your cleaner will pick their PPE from the store and wear it.</p>
+  return `<h2>${beforeStart ? "Before you start: choose your cleaner" : "Step 2: Choose your cleaner"}</h2>
+    <p>${beforeStart ? "Who's cleaning today? You'll watch your cleaner walk around the bathroom, pick up equipment and do every job you choose." : "Who's cleaning today? Your cleaner will pick their PPE from the store and wear it."}</p>
     <div class="who-grid">${card("female", "Female")}${card("male", "Male")}</div>
     ${extras}
-    <button class="btn btn-primary" data-action="avatar-done" data-key="avatar-done" ${draft ? "" : "disabled"}>Go to the PPE store</button>`;
+    <button class="btn btn-primary" data-action="avatar-done" data-key="avatar-done" ${draft ? "" : "disabled"}>${beforeStart ? "Start: inspect the room" : "Go to the PPE store"}</button>`;
 }

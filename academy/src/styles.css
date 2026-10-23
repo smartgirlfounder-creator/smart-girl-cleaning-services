@@ -522,3 +522,38 @@ select.input { appearance: auto; }
 .swatch.on { border-color: var(--cream); box-shadow: 0 0 0 3px var(--gold); }
 .chip { padding: 8px 14px; min-height: 36px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: inherit; font: inherit; font-size: 14px; cursor: pointer; }
 .chip.on { border-color: var(--gold); background: rgba(230, 169, 59, 0.16); }
+
+/* ---------- 3D cleaner view ---------- */
+.world-slot { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #2c2560; }
+@media (max-width: 959px) {
+  .world-slot { aspect-ratio: 1 / 0.9; max-height: 48vh; margin: 0 auto; }
+  /* Keep the cleaner in view while scrolling down to the tools. */
+  .stage-col.is-3d { display: contents; }
+  .scene-wrap.is-3d { position: sticky; top: 0; z-index: 5; align-self: start; background: #2c2560; }
+}
+.w3d-caption[data-tone="good"] { background: rgba(46, 158, 91, 0.92); }
+.w3d-caption[data-tone="bad"], .w3d-caption[data-tone="warn"] { background: rgba(217, 58, 58, 0.92); }
+.w3d-caption[data-tone="critical"] { background: rgba(198, 40, 40, 0.95); box-shadow: 0 0 0 2px #f2c230; }
+.world3d { position: absolute; inset: 0; overflow: hidden; touch-action: manipulation; }
+.world3d canvas { display: block; width: 100%; height: 100%; }
+.w3d-bar { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
+.w3d-btn { font: inherit; font-size: 12px; font-weight: 600; padding: 6px 10px; min-height: 32px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(23, 22, 28, 0.6); color: #fff; cursor: pointer; }
+.w3d-caption { position: absolute; left: 10px; bottom: 10px; max-width: calc(100% - 20px); padding: 6px 12px; border-radius: 999px; background: rgba(23, 22, 28, 0.72); color: #fff; font-size: 13px; font-weight: 600; opacity: 0; transform: translateY(6px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
+.w3d-caption.on { opacity: 1; transform: none; }
+.w3d-bang { position: absolute; left: 50%; top: 18%; transform: translate(-50%, 0) scale(0.4) rotate(-6deg); opacity: 0; padding: 8px 18px; border-radius: 14px; font-family: var(--body); font-weight: 900; font-size: clamp(20px, 5vw, 34px); letter-spacing: 0.5px; color: #fff; white-space: nowrap; pointer-events: none; text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35); }
+.w3d-bang.on { animation: w3d-bang 1.9s cubic-bezier(.2, 1.6, .4, 1) both; }
+.w3d-bang.bad { background: #d93a3a; box-shadow: 0 0 0 4px #fff, 0 10px 30px rgba(0, 0, 0, 0.4); }
+.w3d-bang.stop { background: #c62828; box-shadow: 0 0 0 4px #f2c230, 0 10px 30px rgba(0, 0, 0, 0.4); }
+.w3d-bang.good { background: #2e9e5b; box-shadow: 0 0 0 4px #fff, 0 10px 30px rgba(0, 0, 0, 0.4); }
+@keyframes w3d-bang {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.4) rotate(-6deg); }
+  12% { opacity: 1; transform: translate(-50%, 0) scale(1.08) rotate(-4deg); }
+  20%, 30% { transform: translate(-50%, 0) scale(1) rotate(3deg); }
+  25%, 35% { transform: translate(-50%, 0) scale(1) rotate(-3deg); }
+  80% { opacity: 1; transform: translate(-50%, 0) scale(1) rotate(-2deg); }
+  100% { opacity: 0; transform: translate(-50%, -10px) scale(0.95) rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) { .w3d-bang.on { animation: none; opacity: 1; transform: translate(-50%, 0); } }
+.working { opacity: 0.55; pointer-events: none; }
+.view-toggle { margin-top: 10px; }
+.btn-small { padding: 6px 12px; min-height: 36px; font-size: 13px; }
