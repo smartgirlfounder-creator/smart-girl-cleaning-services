@@ -20,11 +20,11 @@ const series = {
 };
 ---
 <Base
-  title={`${settings.podcastName} | Business, Marketing and Sales`}
-  description={`${settings.podcastName}: conversations on business, entrepreneurship, marketing, sales and consumer psychology with Kaffy Olaitan.`}
+  title={`${settings.podcastName}: the Podcast with Kaffy Olaitan`}
+  description={`${settings.podcastName} is Kaffy Olaitan's podcast on business, entrepreneurship, marketing, sales and the psychology of why people buy.`}
   schema={[series, breadcrumbs(site, [['Home', '/'], ['Podcast', '/podcast/']])]}
 >
-  <PageHero eyebrow="The podcast" title={settings.podcastName} lead={`${settings.podcastTagline} Clear thinking on how businesses grow and how people decide, for entrepreneurs who want more than motivation.`}>
+  <PageHero eyebrow="The podcast with Kaffy Olaitan" title={settings.podcastName} lead={`${settings.podcastTagline} Clear thinking on how businesses grow and how people decide, for entrepreneurs who want more than motivation.`}>
     <div class="btn-row">
       {settings.socials.filter((s) => s.name === 'YouTube').map((s) => <a class="btn" href={s.url} target="_blank" rel="noopener">Subscribe on YouTube</a>)}
     </div>
