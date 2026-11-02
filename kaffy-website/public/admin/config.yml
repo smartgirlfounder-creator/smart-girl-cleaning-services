@@ -130,6 +130,7 @@ collections:
           - { label: "Newsletter name", name: newsletterName, widget: string }
           - { label: "Free 10-minute diagnostic call link", name: diagnosticUrl, widget: string }
           - { label: "Online store link (Selar)", name: storeUrl, widget: string }
+          - { label: "Smart Entrepreneurs Community link (WhatsApp)", name: communityUrl, widget: string }
           - label: "Social links"
             name: socials
             widget: list
@@ -172,7 +173,7 @@ collections:
             fields:
               - { label: "Title", name: title, widget: string }
               - { label: "Description", name: description, widget: text }
-              - { label: "Shelf", name: category, widget: select, options: ["Business Education", "Marketing and Sales", "Women and Entrepreneurship", "Books and Publications", "Tools and Templates", "Courses and Masterclasses"] }
+              - { label: "Shelf", name: category, widget: select, options: ["Business Education", "Marketing and Sales", "Women and Entrepreneurship", "Books and Publications", "Tools and Templates", "Courses and Masterclasses", "Community"] }
               - { label: "Link (leave empty to send people to Contact)", name: url, widget: string, required: false }
               - { label: "Button text", name: cta, widget: string }
               - { label: "Label (e.g. Free or Paid)", name: badge, widget: string, required: false }

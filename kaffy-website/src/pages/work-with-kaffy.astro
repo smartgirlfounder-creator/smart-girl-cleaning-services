@@ -13,6 +13,7 @@ const services = [
   { title: 'Workshops and Masterclasses', text: 'Hands-on sessions where participants leave with a plan, not just notes. In person in Ilorin and beyond, or online.', href: '/contact/?type=training', cta: 'Host a workshop' },
   { title: 'Moderating and Hosting', text: 'Panels, fireside chats and events moderated with preparation, warmth and good questions.', href: '/contact/?type=speaking', cta: 'Invite me to host' },
   { title: 'Brand Partnerships', text: 'Partnerships with brands whose products and values genuinely fit women, entrepreneurs and small businesses.', href: '/contact/?type=partnership', cta: 'Propose a partnership' },
+  { title: 'Smart Entrepreneurs Community', text: 'A paid WhatsApp community for entrepreneurs who want to keep learning and growing with others who are building too. Request to join and you\u2019ll receive the payment details.', href: settings.communityUrl, cta: 'Request to join' },
   { title: 'Media Collaborations', text: 'Interviews, podcast appearances, features and expert commentary on business, marketing and women in business.', href: '/contact/?type=media', cta: 'Media enquiries' },
 ];
 ---
@@ -31,7 +32,7 @@ const services = [
           <span class="num">0{i + 1}</span>
           <h3>{s.title}</h3>
           <p>{s.text}</p>
-          <a class="link-arrow" href={s.href}>{s.cta}</a>
+          <a class="link-arrow" href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener' : undefined}>{s.cta}</a>
         </article>
       ))}
     </div>

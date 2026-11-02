@@ -44,6 +44,15 @@
       "cta": "Play the game",
       "badge": "",
       "featured": false
+    },
+    {
+      "title": "Smart Entrepreneurs Community",
+      "description": "A paid WhatsApp community for entrepreneurs who want to grow alongside people who are building too. Tap to request to join. Once your request comes in, Kaffy will send you the payment details to complete your membership.",
+      "category": "Community",
+      "url": "https://chat.whatsapp.com/BuxnnbFZvBH9nBawMLueLL",
+      "cta": "Request to join",
+      "badge": "Paid",
+      "featured": false
     }
   ]
 }
