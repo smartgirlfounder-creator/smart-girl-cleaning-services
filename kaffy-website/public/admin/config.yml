@@ -129,6 +129,7 @@ collections:
           - { label: "Documentary tagline", name: documentaryTagline, widget: string }
           - { label: "Newsletter name", name: newsletterName, widget: string }
           - { label: "Free 10-minute diagnostic call link", name: diagnosticUrl, widget: string }
+          - { label: "Online store link (Selar)", name: storeUrl, widget: string }
           - label: "Social links"
             name: socials
             widget: list

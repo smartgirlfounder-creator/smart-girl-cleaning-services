@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import resources from '../data/resources.json';
 import { breadcrumbs, slugify } from '../lib/utils';
+import settings from '../data/settings.json';
 
 const featured = resources.items.find((r) => r.featured);
 const site = Astro.site!.toString().replace(/\/$/, '');
@@ -25,7 +26,10 @@ const shelves = [
   schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Resources', '/resources/']]), ...books]}
 >
   <PageHero eyebrow="Resources" title="Tools for people who build." lead="Practical guides, templates and tools to help you think better about your business. The library grows as new resources are released.">
-    <div class="btn-row"><a class="btn" href="https://linktr.ee/Smartgirlclean" target="_blank" rel="noopener">All my links in one place</a></div>
+    <div class="btn-row">
+      <a class="btn" href={settings.storeUrl} target="_blank" rel="noopener">Visit my store</a>
+      <a class="btn ghost" href="https://linktr.ee/Smartgirlclean" target="_blank" rel="noopener">All my links</a>
+    </div>
   </PageHero>
   {featured && (
     <section class="section dark">
@@ -41,6 +45,7 @@ const shelves = [
   )}
   <section class="section white">
     <div class="wrap">
+      <p class="store-note">Tools, templates and guides are all available in <a href={settings.storeUrl} target="_blank" rel="noopener">my Selar store</a>. Here are the highlights.</p>
       {shelves.map((s) => {
         const items = resources.items.filter((r) => r.category === s.name);
         return (
@@ -68,6 +73,7 @@ const shelves = [
 </Base>
 
 <style>
+  .store-note { color: var(--muted); margin: 0 0 8px; }
   .shelf { padding: 40px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 90px; }
   .shelf-head { margin-bottom: 20px; }
   .shelf-head h2 { font-size: clamp(28px, 3.4vw, 38px); margin-bottom: 6px; }
