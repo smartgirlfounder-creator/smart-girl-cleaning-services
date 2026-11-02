@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import gallery from '../data/gallery.json';
+import { slugify, breadcrumbs } from '../lib/utils';
+
+const order = ['Professional Portraits', 'Community and Philanthropy', 'Business and Entrepreneurship', 'Podcast and Media', 'Speaking Engagements', 'Behind the Scenes', 'Personal Journey'];
+const groups = order.map((name) => ({ name, items: gallery.items.filter((i) => i.category === name) })).filter((g) => g.items.length);
+---
+<Base
+  title="Gallery | Kaffy Olaitan"
+  description="Photographs of Kaffy Olaitan: portraits, community outreach in Ilorin, business, behind the scenes and her personal journey."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Gallery', '/gallery/']])]}
+>
+  <PageHero eyebrow="Gallery" title="The journey, in pictures." lead="Portraits, community work, behind the scenes and the places it all started. New photos are added as the story continues." />
+  <section class="section white">
+    <div class="wrap">
+      <nav class="chips" aria-label="Gallery categories">
+        {groups.map((g) => <a class="chip" href={`#${slugify(g.name)}`}>{g.name}</a>)}
+      </nav>
+      {groups.map((g) => (
+        <section class="group" id={slugify(g.name)}>
+          <h2>{g.name}</h2>
+          <div class="masonry">
+            {g.items.map((i) => (
+              <figure>
+                <img src={i.image} alt={i.alt} loading="lazy" />
+                {i.caption && <figcaption class="caption">{i.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .group { margin-top: 64px; scroll-margin-top: 100px; }
+  .masonry { columns: 1; column-gap: 20px; }
+  @media (min-width: 640px) { .masonry { columns: 2; } }
+  @media (min-width: 1000px) { .masonry { columns: 3; } }
+  figure { margin: 0 0 20px; break-inside: avoid; }
+  figure img { width: 100%; }
+</style>

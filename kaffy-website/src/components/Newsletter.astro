@@ -1,0 +1,26 @@
+---
+import settings from '../data/settings.json';
+---
+<section class="section dark newsletter" id="newsletter" aria-labelledby="nl-title">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">{settings.newsletterName}</span>
+      <h2 id="nl-title">One email. Every week. The business lessons I had to learn the expensive way.</h2>
+      <p class="lead">Business insights, marketing ideas, sales lessons and honest reflections from building in real time. Free, and you can leave whenever you like.</p>
+    </div>
+    <form class="form" name="newsletter" method="POST" action="/thank-you/?form=newsletter" data-netlify="true" netlify-honeypot="company">
+      <input type="hidden" name="form-name" value="newsletter" />
+      <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+      <div>
+        <label for="nl-name">First name</label>
+        <input id="nl-name" name="first_name" autocomplete="given-name" />
+      </div>
+      <div>
+        <label for="nl-email">Email address</label>
+        <input id="nl-email" name="email" type="email" required autocomplete="email" />
+      </div>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required /> <span>Yes, send me {settings.newsletterName}. I can unsubscribe at any time. See the <a href="/privacy/">privacy policy</a>.</span></label>
+      <div><button class="btn" type="submit">Join the letter</button></div>
+    </form>
+  </div>
+</section>

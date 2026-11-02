@@ -1,0 +1,52 @@
+{
+  "topics": [
+    {
+      "title": "The Business of Building a Business",
+      "hook": "Most businesses don't fail for lack of passion. They fail for lack of a system.",
+      "description": "What it actually takes to turn an idea into a business that pays you: offers, pricing, operations, people and cash. Built from the experience of starting a service business from one small room and growing it in public.",
+      "takeaways": ["How to tell a hobby from a business in one honest question", "Pricing that covers your time, your costs and your growth", "The simple systems that stop a business depending on you for everything"],
+      "audiences": ["Aspiring and early-stage founders", "Small business owners", "Women's business networks"],
+      "contexts": ["Entrepreneurship summits", "Business association meetings", "University enterprise weeks"]
+    },
+    {
+      "title": "The Psychology of Selling",
+      "hook": "People don't buy products. They buy the version of themselves the product promises.",
+      "description": "Why people say yes, why they hesitate, and how to sell without begging or pressure. A practical look at trust, objections, timing and the small signals that move a buyer.",
+      "takeaways": ["The real reasons customers say 'let me think about it'", "How to talk about price with confidence", "Turning one sale into referrals"],
+      "audiences": ["Sales teams", "Service providers", "Founders who hate selling"],
+      "contexts": ["Corporate sales training", "Workshops", "Business masterclasses"]
+    },
+    {
+      "title": "Marketing in the Attention Economy",
+      "hook": "Followers are not customers. Attention is only useful if you know what to do with it.",
+      "description": "How small businesses can earn attention online and convert it into paying customers, using content, storytelling and positioning rather than big budgets.",
+      "takeaways": ["Content that builds trust, not just views", "Positioning so you stop competing on price", "A simple path from viewer to buyer"],
+      "audiences": ["Small business owners", "Content creators building a business", "Marketing teams at SMEs"],
+      "contexts": ["Digital business conferences", "Creator events", "Marketing workshops"]
+    },
+    {
+      "title": "From Skill to Sustainable Business",
+      "hook": "A skill pays you once. A business pays you while you sleep.",
+      "description": "For people who are good at something and want to be paid properly for it. How to package a skill into a service, price it, find the first customers and grow beyond yourself.",
+      "takeaways": ["Packaging a skill into a clear offer", "Finding your first ten customers", "When and how to hire your first helper"],
+      "audiences": ["Artisans and freelancers", "Graduates and career changers", "Empowerment programmes"],
+      "contexts": ["Youth and women empowerment programmes", "Vocational training graduations", "Community enterprise events"]
+    },
+    {
+      "title": "Women, Wealth and Entrepreneurship",
+      "hook": "A woman with a skill is talented. A woman who can sell her skill is free.",
+      "description": "Financial independence is not a mindset. It is a skill set. A practical, honest conversation about women, money and building businesses, including with limited resources and heavy responsibilities.",
+      "takeaways": ["Why financial dependence is a business problem, not a personal failure", "Starting with what you have, not what you wish you had", "Building income that fits a full life"],
+      "audiences": ["Women's organisations", "Women in business networks", "NGOs and development programmes"],
+      "contexts": ["International Women's Day events", "Women's conferences", "Faith and community programmes"]
+    },
+    {
+      "title": "Customer Acquisition and Business Growth",
+      "hook": "You don't have a sales problem. You have a 'nobody knows you exist' problem.",
+      "description": "Where customers really come from, how to keep them, and how to grow without burning money. Practical channels for service businesses, from word of mouth to social media.",
+      "takeaways": ["Mapping where your best customers come from", "Retention: the cheapest growth there is", "Simple numbers every owner should track"],
+      "audiences": ["SME owners", "Start-up founders", "Business development teams"],
+      "contexts": ["SME forums", "Accelerator programmes", "Chamber of commerce events"]
+    }
+  ]
+}

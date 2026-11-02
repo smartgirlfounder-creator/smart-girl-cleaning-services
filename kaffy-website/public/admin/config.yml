@@ -1,0 +1,189 @@
+# Content admin for kaffyolaitan.com (Decap CMS).
+# Kaffy signs in with GitHub. Every "Publish" saves to GitHub and Netlify rebuilds the site in about a minute.
+backend:
+  name: github
+  repo: smartgirlfounder-creator/smart-girl-cleaning-services
+  branch: main
+
+publish_mode: simple
+media_folder: kaffy-website/public/images/uploads
+public_folder: /images/uploads
+site_url: https://kaffyolaitan.com
+display_url: https://kaffyolaitan.com
+locale: en
+
+collections:
+  - name: podcast
+    label: "Podcast episodes"
+    label_singular: "Podcast episode"
+    description: "Each episode gets its own page at /podcast/episode-name/."
+    folder: kaffy-website/src/content/podcast
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: [date, episode, title]
+    summary: "Ep. {{episode}}: {{title}}"
+    fields:
+      - { label: "Episode title", name: title, widget: string }
+      - { label: "Episode number", name: episode, widget: number, value_type: int, min: 1 }
+      - { label: "Publish date", name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "YouTube link", name: youtube, widget: string, required: false, hint: "Paste the full YouTube link." }
+      - { label: "Audio link (optional)", name: audio, widget: string, required: false, hint: "An MP3 link from your audio host, if you have one." }
+      - { label: "Short summary", name: summary, widget: text, hint: "One or two sentences. Shown on cards and in Google." }
+      - label: "Category"
+        name: category
+        widget: select
+        options: ["Entrepreneurship", "Marketing", "Sales", "Consumer Psychology", "Women in Business", "Business Strategy", "Personal Development"]
+      - { label: "Guest name (optional)", name: guest, widget: string, required: false }
+      - { label: "Guest biography (optional)", name: guestBio, widget: text, required: false }
+      - { label: "Key lessons", name: lessons, widget: list, required: false, field: { label: Lesson, name: lesson, widget: string } }
+      - label: "Resources mentioned"
+        name: resources
+        widget: list
+        required: false
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Link, name: url, widget: string }
+      - { label: "Cover image (optional)", name: image, widget: image, required: false, hint: "If empty, the YouTube thumbnail is used." }
+      - { label: "Hide from the website (draft)", name: draft, widget: boolean, default: false }
+      - { label: "Show notes", name: body, widget: markdown }
+
+  - name: documentary
+    label: "Becoming Kaffy (documentary)"
+    label_singular: "Documentary day"
+    description: "Each day gets its own page at /becoming-kaffy/day-name/."
+    folder: kaffy-website/src/content/documentary
+    create: true
+    slug: "day-{{fields.day}}-{{slug}}"
+    sortable_fields: [date, day, title]
+    summary: "Day {{fields.day}}: {{title}}"
+    fields:
+      - { label: "Title", name: title, widget: string }
+      - { label: "Day number", name: day, widget: number, value_type: int, min: 1 }
+      - { label: "Date", name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "YouTube link", name: youtube, widget: string, required: false }
+      - { label: "Short summary", name: summary, widget: text }
+      - { label: "What today taught me", name: lessons, widget: list, required: false, field: { label: Lesson, name: lesson, widget: string } }
+      - { label: "Photos", name: photos, widget: list, required: false, field: { label: Photo, name: photo, widget: image } }
+      - { label: "Cover image (optional)", name: image, widget: image, required: false }
+      - { label: "Hide from the website (draft)", name: draft, widget: boolean, default: false }
+      - { label: "Written reflection", name: body, widget: markdown }
+
+  - name: articles
+    label: "Articles (blog)"
+    label_singular: "Article"
+    folder: kaffy-website/src/content/articles
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: [date, title, category]
+    summary: "{{title}} ({{category}})"
+    fields:
+      - { label: "Title", name: title, widget: string }
+      - { label: "Description for Google (about 150 characters)", name: description, widget: text }
+      - { label: "Publish date", name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - label: "Category"
+        name: category
+        widget: select
+        options: ["Entrepreneurship", "Marketing", "Sales", "Consumer Behaviour", "Business Strategy", "Women in Business", "Business Growth", "Leadership", "Personal Reflections"]
+      - { label: "Featured image", name: image, widget: image, required: false }
+      - { label: "Describe the image (for accessibility)", name: imageAlt, widget: string, required: false }
+      - { label: "Related podcast episode", name: relatedPodcast, widget: relation, collection: podcast, search_fields: [title], value_field: "{{slug}}", display_fields: [title], required: false }
+      - { label: "Related documentary day", name: relatedDocumentary, widget: relation, collection: documentary, search_fields: [title], value_field: "{{slug}}", display_fields: [title], required: false }
+      - { label: "Hide from the website (draft)", name: draft, widget: boolean, default: false }
+      - { label: "Article", name: body, widget: markdown }
+
+  - name: media
+    label: "Media and press"
+    label_singular: "Media appearance"
+    folder: kaffy-website/src/content/media
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: title, widget: string }
+      - { label: "Outlet (TV station, podcast, newspaper)", name: outlet, widget: string }
+      - { label: "Type", name: type, widget: select, options: ["Interview", "Television", "Radio", "Podcast guest", "Press coverage", "Article", "Conference interview", "Video feature"] }
+      - { label: "Date", name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "Link", name: url, widget: string, required: false }
+      - { label: "YouTube link", name: youtube, widget: string, required: false }
+      - { label: "Image", name: image, widget: image, required: false }
+      - { label: "Hide from the website (draft)", name: draft, widget: boolean, default: false }
+      - { label: "Notes", name: body, widget: markdown, required: false }
+
+  - name: site
+    label: "Site settings and lists"
+    files:
+      - label: "Settings (email, quotes, names, social links)"
+        name: settings
+        file: kaffy-website/src/data/settings.json
+        fields:
+          - { label: "Name", name: name, widget: string }
+          - { label: "Titles", name: titles, widget: string }
+          - { label: "Location line", name: location, widget: string }
+          - { label: "Public email", name: email, widget: string, required: false }
+          - { label: "Hero quote", name: heroQuote, widget: string }
+          - { label: "Hero attribution", name: heroAttribution, widget: string }
+          - { label: "Hero answer", name: heroAnswer, widget: text }
+          - { label: "Hero punchline", name: heroPunchline, widget: string }
+          - { label: "Podcast name", name: podcastName, widget: string }
+          - { label: "Podcast tagline", name: podcastTagline, widget: string }
+          - { label: "Documentary name", name: documentaryName, widget: string }
+          - { label: "Documentary tagline", name: documentaryTagline, widget: string }
+          - { label: "Newsletter name", name: newsletterName, widget: string }
+          - label: "Social links"
+            name: socials
+            widget: list
+            fields:
+              - { label: "Name (e.g. Instagram)", name: name, widget: string }
+              - { label: "Link", name: url, widget: string }
+      - label: "Milestones (The Journey So Far)"
+        name: milestones
+        file: kaffy-website/src/data/milestones.json
+        fields:
+          - label: "Milestones"
+            name: items
+            widget: list
+            summary: "{{fields.date}}: {{fields.title}}"
+            fields:
+              - { label: "Date", name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+              - { label: "Title", name: title, widget: string }
+              - { label: "Description", name: description, widget: text }
+              - { label: "Category", name: category, widget: select, options: ["Business", "Speaking", "Media", "Community", "Publications", "Personal"] }
+      - label: "Gallery"
+        name: gallery
+        file: kaffy-website/src/data/gallery.json
+        fields:
+          - label: "Photos"
+            name: items
+            widget: list
+            summary: "{{fields.category}}: {{fields.alt}}"
+            fields:
+              - { label: "Photo", name: image, widget: image }
+              - { label: "Describe the photo (for accessibility)", name: alt, widget: string }
+              - { label: "Caption (optional)", name: caption, widget: string, required: false }
+              - { label: "Category", name: category, widget: select, options: ["Professional Portraits", "Community and Philanthropy", "Business and Entrepreneurship", "Podcast and Media", "Speaking Engagements", "Behind the Scenes", "Personal Journey"] }
+      - label: "Resources"
+        name: resources
+        file: kaffy-website/src/data/resources.json
+        fields:
+          - label: "Resources"
+            name: items
+            widget: list
+            fields:
+              - { label: "Title", name: title, widget: string }
+              - { label: "Description", name: description, widget: text }
+              - { label: "Shelf", name: category, widget: select, options: ["Business Education", "Marketing and Sales", "Women and Entrepreneurship", "Books and Publications", "Tools and Templates", "Courses and Masterclasses"] }
+              - { label: "Link (leave empty to send people to Contact)", name: url, widget: string, required: false }
+              - { label: "Button text", name: cta, widget: string }
+      - label: "Speaking topics"
+        name: speaking
+        file: kaffy-website/src/data/speaking.json
+        fields:
+          - label: "Topics"
+            name: topics
+            widget: list
+            fields:
+              - { label: "Title", name: title, widget: string }
+              - { label: "Hook line", name: hook, widget: string }
+              - { label: "Description", name: description, widget: text }
+              - { label: "Takeaways", name: takeaways, widget: list, field: { label: Takeaway, name: t, widget: string } }
+              - { label: "Ideal audiences", name: audiences, widget: list, field: { label: Audience, name: a, widget: string } }
+              - { label: "Event contexts", name: contexts, widget: list, field: { label: Context, name: c, widget: string } }

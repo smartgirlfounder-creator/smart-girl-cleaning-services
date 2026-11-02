@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import YouTube from '../../components/YouTube.astro';
+import settings from '../../data/settings.json';
+import categories from '../../data/categories.json';
+import { published, formatDate, slugify, breadcrumbs } from '../../lib/utils';
+
+const site = Astro.site!;
+const episodes = published(await getCollection('podcast'));
+const [latest] = episodes;
+const series = {
+  '@context': 'https://schema.org',
+  '@type': 'PodcastSeries',
+  name: settings.podcastName,
+  description: settings.podcastTagline,
+  url: new URL('/podcast/', site).toString(),
+  author: { '@id': site.toString().replace(/\/$/, '') + '/#person' },
+};
+---
+<Base
+  title={`${settings.podcastName} | Business, Marketing and Sales`}
+  description={`${settings.podcastName}: conversations on business, entrepreneurship, marketing, sales and consumer psychology with Kaffy Olaitan.`}
+  schema={[series, breadcrumbs(site, [['Home', '/'], ['Podcast', '/podcast/']])]}
+>
+  <PageHero eyebrow="The podcast" title={settings.podcastName} lead={`${settings.podcastTagline} Clear thinking on how businesses grow and how people decide, for entrepreneurs who want more than motivation.`}>
+    <div class="btn-row">
+      {settings.socials.filter((s) => s.name === 'YouTube').map((s) => <a class="btn" href={s.url} target="_blank" rel="noopener">Subscribe on YouTube</a>)}
+    </div>
+  </PageHero>
+
+  {latest ? (
+    <>
+      <section class="section white">
+        <div class="wrap split">
+          <YouTube url={latest.data.youtube} title={latest.data.title} />
+          <div>
+            <span class="eyebrow">Latest episode &middot; Episode {latest.data.episode}</span>
+            <h2>{latest.data.title}</h2>
+            <p class="lead">{latest.data.summary}</p>
+            <a class="btn" href={`/podcast/${latest.id}/`}>Show notes and lessons</a>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="wrap">
+          <span class="eyebrow">All episodes</span>
+          <h2>The archive</h2>
+          <div class="chips" role="group" aria-label="Filter by category">
+            <button class="chip" type="button" data-filter="all" aria-current="true">All</button>
+            {categories.podcast.map((c) => <button class="chip" type="button" data-filter={slugify(c)}>{c}</button>)}
+          </div>
+          <div class="grid g3 archive">
+            {episodes.map((e) => (
+              <a class="card" href={`/podcast/${e.id}/`} data-cat={slugify(e.data.category)}>
+                <span class="num">Episode {e.data.episode} &middot; {formatDate(e.data.date)}</span>
+                <h3>{e.data.title}</h3>
+                <p>{e.data.summary}</p>
+                {e.data.guest && <p class="guest">With {e.data.guest}</p>}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  ) : (
+    <section class="section white">
+      <div class="wrap">
+        <div class="empty">
+          <span class="eyebrow">Episode 1</span>
+          <h2>Coming soon</h2>
+          <p>The first episodes are in production. Subscribe on YouTube or join {settings.newsletterName} below to hear the moment they go live.</p>
+        </div>
+        <div class="grid g4 topics">
+          {categories.podcast.slice(0, 4).map((c) => <div class="card"><span class="num">Topic</span><h3>{c}</h3></div>)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section dark">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Be a guest</span>
+        <h2>Have a business story worth learning from?</h2>
+        <p class="lead">I talk with founders, marketers and experts about the decisions that shaped their businesses. If that's you, get in touch.</p>
+      </div>
+      <div><a class="btn" href="/contact/?type=podcast-guest">Pitch yourself as a guest</a></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .archive { margin-top: 32px; }
+  .guest { font-size: 14px; color: var(--taupe); margin: 10px 0 0; }
+  .topics { margin-top: 28px; }
+  button.chip { cursor: pointer; }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  chips.forEach((chip) => chip.addEventListener('click', () => {
+    chips.forEach((c) => c.removeAttribute('aria-current'));
+    chip.setAttribute('aria-current', 'true');
+    const f = chip.dataset.filter;
+    document.querySelectorAll<HTMLElement>('[data-cat]').forEach((card) => {
+      card.hidden = f !== 'all' && card.dataset.cat !== f;
+    });
+  }));
+</script>

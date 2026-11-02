@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import resources from '../data/resources.json';
+import { breadcrumbs } from '../lib/utils';
+
+const shelves = [
+  { name: 'Business Education', text: 'Guides to starting, planning and growing a business.' },
+  { name: 'Marketing and Sales', text: 'Frameworks for positioning, customer acquisition, selling and consumer psychology.' },
+  { name: 'Women and Entrepreneurship', text: 'Practical resources on starting a business and financial independence.' },
+  { name: 'Books and Publications', text: 'Ebooks, articles and, in time, books.' },
+  { name: 'Tools and Templates', text: 'Calculators, templates and practical business tools.' },
+  { name: 'Courses and Masterclasses', text: 'Online programmes, masterclasses and workshops.' },
+];
+---
+<Base
+  title="Business Resources, Tools and Guides | Kaffy Olaitan"
+  description="Business education resources from Kaffy Olaitan: guides, marketing and sales frameworks, tools and templates for entrepreneurs and small business owners."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Resources', '/resources/']])]}
+>
+  <PageHero eyebrow="Resources" title="Tools for people who build." lead="Practical guides, templates and tools to help you think better about your business. The library grows as new resources are released." />
+  <section class="section white">
+    <div class="wrap">
+      {shelves.map((s) => {
+        const items = resources.items.filter((r) => r.category === s.name);
+        return (
+          <section class="shelf">
+            <div class="shelf-head"><h2>{s.name}</h2><p>{s.text}</p></div>
+            {items.length > 0 ? (
+              <div class="grid g3">
+                {items.map((r) => (
+                  <article class="card">
+                    <h3>{r.title}</h3>
+                    <p>{r.description}</p>
+                    <a class="link-arrow" href={r.url || '/contact/?type=general'}>{r.cta}</a>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p class="soon">Coming soon. <a href="#newsletter">Join the letter</a> to hear first.</p>
+            )}
+          </section>
+        );
+      })}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .shelf { padding: 40px 0; border-bottom: 1px solid var(--line); }
+  .shelf-head { margin-bottom: 20px; }
+  .shelf-head h2 { font-size: clamp(28px, 3.4vw, 38px); margin-bottom: 6px; }
+  .shelf-head p, .soon { color: var(--muted); margin: 0; }
+</style>

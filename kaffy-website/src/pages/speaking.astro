@@ -1,0 +1,139 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import speaking from '../data/speaking.json';
+import { breadcrumbs } from '../lib/utils';
+
+const site = Astro.site!;
+const shortBio = 'Kaffy Olaitan is a business educator, entrepreneur and public speaker based in Ilorin, Nigeria. A graduate of Environmental Biology and a former primary school teacher, she founded Smart Girl Cleaning Services in November 2023 and built it from one small room while raising four children. She teaches entrepreneurs, especially women, how to think better about business, market smarter and sell with confidence, drawing on practical experience rather than theory. Her talks cover entrepreneurship, marketing, sales, consumer psychology and women’s economic empowerment.';
+const engagements = ['Keynote', 'Workshop or masterclass', 'Panel discussion', 'Corporate training', 'Moderating or hosting', 'Podcast or media interview', 'Other'];
+---
+<Base
+  title="Book Kaffy Olaitan to Speak | Business and Entrepreneurship Speaker"
+  description="Invite Kaffy Olaitan to speak on entrepreneurship, marketing, the psychology of selling and women, wealth and business. Talks, workshops and panels. Based in Ilorin, Nigeria."
+  schema={[breadcrumbs(site, [['Home', '/'], ['Speaking', '/speaking/']])]}
+>
+  <PageHero
+    eyebrow="Speaking and engagements"
+    title="Not another motivational talk."
+    lead="Your audience has heard 'believe in yourself' a hundred times. I give them the thinking behind businesses that grow: how customers decide, how to sell without begging, and how to build something that lasts."
+    image="/images/photos/kaffy-olaitan-portrait-yellow-seated-800.webp"
+    imageAlt="Kaffy Olaitan, public speaker, seated in yellow"
+  >
+    <div class="btn-row"><a class="btn" href="#book">Book Kaffy to speak</a><a class="btn ghost" href="#topics">See the topics</a></div>
+  </PageHero>
+
+  <section class="section white" id="topics">
+    <div class="wrap">
+      <span class="eyebrow">Speaking topics</span>
+      <h2>Talks people use the next morning</h2>
+      <div class="topics">
+        {speaking.topics.map((t, i) => (
+          <article class="topic">
+            <span class="num">0{i + 1}</span>
+            <h3>{t.title}</h3>
+            <p class="topic-hook">&ldquo;{t.hook}&rdquo;</p>
+            <p>{t.description}</p>
+            <div class="topic-meta">
+              <div><p class="meta-h">Your audience leaves with</p><ul class="ticks">{t.takeaways.map((x) => <li>{x}</li>)}</ul></div>
+              <div><p class="meta-h">Ideal for</p><p class="meta-p">{t.audiences.join(' · ')}</p><p class="meta-h">Great at</p><p class="meta-p">{t.contexts.join(' · ')}</p></div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="note">Every talk is adapted to your audience, your sector and your time slot.</p>
+    </div>
+  </section>
+
+  <section class="section dark">
+    <div class="wrap narrow">
+      <span class="eyebrow">How I speak</span>
+      <p class="pull">Practical. Honest. Built from real business.</p>
+      <hr class="rule" />
+      <p class="lead">I don't teach from theory I haven't tested. My talks come from building a business with no manual, from mistakes that cost money, and from studying why people buy. Expect clear thinking, real examples, audience interaction and ideas people can act on immediately.</p>
+    </div>
+  </section>
+
+  <section class="section white">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">For event organisers</span>
+        <h2>Speaker biography</h2>
+        <p>Feel free to copy this for your programme, website or introduction.</p>
+        <blockquote class="bio" id="bio">{shortBio}</blockquote>
+        <button class="btn ghost copy" type="button" data-copy="#bio">Copy biography</button>
+      </div>
+      <div>
+        <span class="eyebrow">On stage</span>
+        <h2>Gallery</h2>
+        <p>Photographs and video from talks and events will appear here as engagements take place. Until then, here are portraits you can use in your promotion, with credit.</p>
+        <div class="grid g2">
+          <div class="photo portrait"><img src="/images/photos/kaffy-olaitan-portrait-yellow-800.webp" alt="Kaffy Olaitan portrait in yellow" width="800" height="1000" loading="lazy" /></div>
+          <div class="photo portrait"><img src="/images/photos/kaffy-olaitan-maroon-800.webp" alt="Kaffy Olaitan portrait in maroon" width="800" height="1067" loading="lazy" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="book">
+    <div class="wrap narrow">
+      <span class="eyebrow">Book Kaffy</span>
+      <h2>Tell me about your event</h2>
+      <p class="lead">Share the details below and I'll get back to you, usually within two working days.</p>
+      <form class="form" name="speaking-enquiry" method="POST" action="/thank-you/?form=speaking" data-netlify="true" netlify-honeypot="company">
+        <input type="hidden" name="form-name" value="speaking-enquiry" />
+        <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+        <div class="row">
+          <div><label for="b-name">Your name *</label><input id="b-name" name="name" required autocomplete="name" /></div>
+          <div><label for="b-org">Organisation *</label><input id="b-org" name="organisation" required autocomplete="organization" /></div>
+        </div>
+        <div class="row">
+          <div><label for="b-email">Email *</label><input id="b-email" name="email" type="email" required autocomplete="email" /></div>
+          <div><label for="b-phone">Phone or WhatsApp</label><input id="b-phone" name="phone" type="tel" autocomplete="tel" /></div>
+        </div>
+        <div class="row">
+          <div><label for="b-event">Event name *</label><input id="b-event" name="event_name" required /></div>
+          <div><label for="b-date">Event date</label><input id="b-date" name="event_date" type="date" /></div>
+        </div>
+        <div class="row">
+          <div><label for="b-loc">Location (city, or online)</label><input id="b-loc" name="location" /></div>
+          <div><label for="b-type">Type of engagement</label><select id="b-type" name="engagement_type">{engagements.map((e) => <option>{e}</option>)}</select></div>
+        </div>
+        <div class="row">
+          <div><label for="b-aud">Who is the audience?</label><input id="b-aud" name="audience_type" placeholder="e.g. women entrepreneurs, sales team, students" /></div>
+          <div><label for="b-size">Expected audience size</label><select id="b-size" name="audience_size"><option>Under 50</option><option>50 to 200</option><option>200 to 500</option><option>500 to 1,000</option><option>Over 1,000</option><option>Online audience</option></select></div>
+        </div>
+        <div class="row">
+          <div><label for="b-topic">Topic you're interested in</label><select id="b-topic" name="topic">{speaking.topics.map((t) => <option>{t.title}</option>)}<option>Not sure yet, please advise</option></select></div>
+          <div><label for="b-budget">Budget range (optional)</label><input id="b-budget" name="budget" /></div>
+        </div>
+        <div><label for="b-info">Anything else I should know?</label><textarea id="b-info" name="message"></textarea></div>
+        <label class="consent"><input type="checkbox" name="consent" value="yes" required /> <span>I agree that my details are used to reply to this enquiry. See the <a href="/privacy/">privacy policy</a>.</span></label>
+        <div><button class="btn" type="submit">Send booking enquiry</button></div>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .topics { display: grid; gap: 0; margin-top: 40px; border-top: 1px solid var(--line); }
+  .topic { padding: 40px 0; border-bottom: 1px solid var(--line); }
+  .topic-hook { font: italic 500 clamp(22px, 2.4vw, 28px)/1.3 var(--serif); color: var(--black); max-width: 760px; }
+  .topic > p:not(.topic-hook) { color: var(--muted); max-width: 760px; }
+  .topic-meta { display: grid; gap: 24px; margin-top: 20px; }
+  @media (min-width: 820px) { .topic-meta { grid-template-columns: 1.2fr 1fr; } }
+  .meta-h { font: 600 11px/1.4 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--taupe); margin-bottom: 8px; }
+  .meta-p { font-size: 15px; color: var(--charcoal); }
+  .note { margin-top: 28px; color: var(--muted); }
+  .bio { margin: 0 0 20px; padding: 24px; background: var(--ivory); border-left: 1px solid var(--champagne); font-size: 16px; color: var(--charcoal); }
+  .portrait { aspect-ratio: 4 / 5; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+    b.addEventListener('click', async () => {
+      const text = document.querySelector(b.dataset.copy!)?.textContent ?? '';
+      try { await navigator.clipboard.writeText(text.trim()); b.textContent = 'Copied'; } catch { b.textContent = 'Select and copy the text above'; }
+    });
+  });
+</script>

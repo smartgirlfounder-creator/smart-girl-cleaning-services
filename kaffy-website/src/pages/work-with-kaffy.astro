@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { breadcrumbs } from '../lib/utils';
+
+const services = [
+  { title: 'Public Speaking', text: 'Keynotes and talks on entrepreneurship, marketing, the psychology of selling and women’s economic independence, adapted to your audience.', href: '/speaking/', cta: 'See speaking topics' },
+  { title: 'Corporate Training', text: 'Practical sessions that help teams sell better, understand customers and think commercially. Built around your sector and your goals.', href: '/contact/?type=training', cta: 'Discuss training' },
+  { title: 'Business Education', text: 'Structured learning for entrepreneurs and programmes: from starting a business to pricing, marketing and growth.', href: '/contact/?type=training', cta: 'Plan a programme' },
+  { title: 'Marketing and Sales Consulting', text: 'A clear-eyed look at how your business attracts, converts and keeps customers, with practical next steps you can act on.', href: '/contact/?type=consulting', cta: 'Book a conversation' },
+  { title: 'Workshops and Masterclasses', text: 'Hands-on sessions where participants leave with a plan, not just notes. In person in Ilorin and beyond, or online.', href: '/contact/?type=training', cta: 'Host a workshop' },
+  { title: 'Moderating and Hosting', text: 'Panels, fireside chats and events moderated with preparation, warmth and good questions.', href: '/contact/?type=speaking', cta: 'Invite me to host' },
+  { title: 'Brand Partnerships', text: 'Partnerships with brands whose products and values genuinely fit women, entrepreneurs and small businesses.', href: '/contact/?type=partnership', cta: 'Propose a partnership' },
+  { title: 'Media Collaborations', text: 'Interviews, podcast appearances, features and expert commentary on business, marketing and women in business.', href: '/contact/?type=media', cta: 'Media enquiries' },
+];
+---
+<Base
+  title="Work With Kaffy Olaitan | Speaking, Training and Consulting"
+  description="Work with Kaffy Olaitan: public speaking, corporate training, business education, marketing and sales consulting, workshops, hosting and brand partnerships."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Work With Me', '/work-with-kaffy/']])]}
+>
+  <PageHero eyebrow="Work with me" title="Bring practical business thinking to your people." lead="Whether it's a stage, a team or a single business, I help people understand how customers think and how businesses grow, and then act on it." />
+  <section class="section white">
+    <div class="wrap grid g2">
+      {services.map((s, i) => (
+        <article class="card">
+          <span class="num">0{i + 1}</span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+          <a class="link-arrow" href={s.href}>{s.cta}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap center">
+      <h2>Not sure which fits?</h2>
+      <p class="lead">Tell me what you're trying to achieve and I'll suggest the best format.</p>
+      <div class="btn-row" style="justify-content:center"><a class="btn" href="/contact/">Start a conversation</a></div>
+    </div>
+  </section>
+</Base>

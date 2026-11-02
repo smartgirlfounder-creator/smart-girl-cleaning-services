@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import YouTube from '../components/YouTube.astro';
+import { published, formatDate, breadcrumbs } from '../lib/utils';
+
+const items = published(await getCollection('media'));
+---
+<Base
+  title="Media, Press and Interviews | Kaffy Olaitan"
+  description="Interviews, podcast appearances, press coverage and media features with Kaffy Olaitan, plus media enquiries and press resources."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Media', '/media/']])]}
+>
+  <PageHero eyebrow="Media and press" title="In the media" lead="Interviews, features, podcast appearances and press coverage. For interviews or expert comment, get in touch." >
+    <div class="btn-row"><a class="btn" href="/contact/?type=media">Media enquiries</a></div>
+  </PageHero>
+  <section class="section white">
+    <div class="wrap">
+      {items.length > 0 ? (
+        <div class="grid g2">
+          {items.map((m) => (
+            <article class="card">
+              <span class="num">{m.data.type} &middot; {m.data.outlet} &middot; {formatDate(m.data.date)}</span>
+              <h3>{m.data.title}</h3>
+              <YouTube url={m.data.youtube} title={m.data.title} />
+              {m.data.url && <p><a class="link-arrow" href={m.data.url} target="_blank" rel="noopener">View feature</a></p>}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty"><p>Interviews and features will appear here. Producers, journalists and podcast hosts: I'd love to hear from you.</p></div>
+      )}
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Press kit</span>
+        <h2>Biography and photos</h2>
+        <p class="lead">Use the official biography on the speaking page and approved portraits from the gallery. A downloadable media kit is on its way.</p>
+      </div>
+      <div class="btn-row"><a class="btn ghost" href="/speaking/#bio">Biography</a><a class="btn ghost" href="/gallery/#professional-portraits">Portraits</a></div>
+    </div>
+  </section>
+</Base>

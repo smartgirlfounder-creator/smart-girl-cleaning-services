@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "date": "2023-11-01",
+      "title": "Smart Girl Cleaning Services launches",
+      "description": "Started from one small room in Ilorin, with four children and no business manual.",
+      "category": "Business"
+    },
+    {
+      "date": "2025-11-07",
+      "title": "150 elderly women fed across three Ilorin markets",
+      "description": "Food taken to elderly women at Ipata, Mandate and Ago markets. Every bag carried the same message: Smart Girl cleaned. Someone got fed.",
+      "category": "Community"
+    },
+    {
+      "date": "2025-12-16",
+      "title": "500 subscribers on YouTube",
+      "description": "The channel passes its first 500 subscribers.",
+      "category": "Media"
+    }
+  ]
+}

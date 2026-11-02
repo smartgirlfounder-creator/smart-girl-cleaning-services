@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Thank you | Kaffy Olaitan" description="Your message has been received." noindex>
+  <section class="section">
+    <div class="wrap narrow center">
+      <span class="eyebrow">Received</span>
+      <h1 id="ty-title">Thank you.</h1>
+      <p class="lead" id="ty-text">Your message is on its way to me. I'll reply as soon as I can, usually within two working days.</p>
+      <div class="btn-row" style="justify-content:center"><a class="btn" href="/">Back to the home page</a><a class="btn ghost" href="/articles/">Read an article</a></div>
+    </div>
+  </section>
+</Base>
+<script>
+  if (new URLSearchParams(location.search).get('form') === 'newsletter') {
+    document.getElementById('ty-title')!.textContent = 'You’re in.';
+    document.getElementById('ty-text')!.textContent = 'Welcome to The Business Growth Letter. Look out for the next one in your inbox.';
+  }
+</script>

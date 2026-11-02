@@ -1,0 +1,87 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import YouTube from '../../components/YouTube.astro';
+import Share from '../../components/Share.astro';
+import settings from '../../data/settings.json';
+import { published, formatDate, youtubeId, breadcrumbs } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const all = published(await getCollection('documentary')).reverse();
+  return all.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, prev: all[i - 1], next: all[i + 1] } }));
+}
+interface Props { entry: CollectionEntry<'documentary'>; prev?: CollectionEntry<'documentary'>; next?: CollectionEntry<'documentary'> }
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const site = Astro.site!;
+const path = `/becoming-kaffy/${entry.id}/`;
+const vid = youtubeId(d.youtube);
+const articles = (await getCollection('articles')).filter((a) => !a.data.draft && a.data.relatedDocumentary === entry.id);
+const schema: object[] = [
+  {
+    '@context': 'https://schema.org', '@type': 'BlogPosting', headline: `${settings.documentaryName}, Day ${d.day}: ${d.title}`,
+    datePublished: d.date.toISOString(), description: d.summary, url: new URL(path, site).toString(),
+    author: { '@id': site.toString().replace(/\/$/, '') + '/#person' },
+  },
+  breadcrumbs(site, [['Home', '/'], [settings.documentaryName, '/becoming-kaffy/'], [`Day ${d.day}`, path]]),
+];
+if (vid) schema.push({
+  '@context': 'https://schema.org', '@type': 'VideoObject', name: d.title, description: d.summary,
+  uploadDate: d.date.toISOString(), thumbnailUrl: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,
+  embedUrl: `https://www.youtube.com/embed/${vid}`, contentUrl: `https://www.youtube.com/watch?v=${vid}`,
+});
+---
+<Base title={`Day ${d.day}: ${d.title} | ${settings.documentaryName}`} description={d.summary} image={d.image ?? (vid ? `https://i.ytimg.com/vi/${vid}/hqdefault.jpg` : undefined)} type="article" schema={schema}>
+  <article>
+    <header class="day-head">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/becoming-kaffy/">{settings.documentaryName}</a></nav>
+        <span class="eyebrow">Day {d.day} &middot; <time datetime={d.date.toISOString()}>{formatDate(d.date)}</time></span>
+        <h1>{d.title}</h1>
+        <p class="lead">{d.summary}</p>
+      </div>
+    </header>
+    <div class="wrap narrow">
+      <YouTube url={d.youtube} title={d.title} />
+      <div class="prose reflection"><Content /></div>
+
+      {d.lessons.length > 0 && (
+        <section class="lessons">
+          <h2>What today taught me</h2>
+          <ul class="ticks">{d.lessons.map((l) => <li>{l}</li>)}</ul>
+        </section>
+      )}
+
+      {d.photos.length > 0 && (
+        <div class="grid g2 photos">
+          {d.photos.map((p) => <div class="photo"><img src={p} alt={`${settings.documentaryName}, Day ${d.day}`} loading="lazy" /></div>)}
+        </div>
+      )}
+
+      {articles.length > 0 && (
+        <section class="lessons">
+          <h2>Learn more</h2>
+          <ul>{articles.map((a) => <li><a href={`/articles/${a.id}/`}>{a.data.title}</a></li>)}</ul>
+        </section>
+      )}
+
+      <nav class="pager" aria-label="More days">
+        {prev ? <a href={`/becoming-kaffy/${prev.id}/`}>&larr; Day {prev.data.day}</a> : <span></span>}
+        {next ? <a href={`/becoming-kaffy/${next.id}/`}>Day {next.data.day} &rarr;</a> : <span></span>}
+      </nav>
+      <Share title={`${settings.documentaryName}, Day ${d.day}: ${d.title}`} />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .day-head { padding: clamp(48px, 8vw, 96px) 0 40px; }
+  .crumbs { font-size: 14px; margin-bottom: 18px; }
+  .reflection { margin-top: 40px; }
+  .lessons { margin-top: 40px; }
+  .lessons h2 { font-size: clamp(28px, 3.4vw, 38px); }
+  .photos { margin-top: 40px; }
+  .pager { display: flex; justify-content: space-between; margin-top: 56px; font-weight: 600; }
+  article { padding-bottom: 96px; }
+</style>

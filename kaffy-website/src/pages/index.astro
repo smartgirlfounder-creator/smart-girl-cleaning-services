@@ -1,0 +1,215 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import settings from '../data/settings.json';
+import speaking from '../data/speaking.json';
+import { published, formatDate } from '../lib/utils';
+
+const podcast = published(await getCollection('podcast'));
+const documentary = published(await getCollection('documentary'));
+const articles = published(await getCollection('articles')).slice(0, 3);
+const site = Astro.site!.toString().replace(/\/$/, '');
+
+const expertise = [
+  { title: 'Business and Entrepreneurship', hook: 'Passion starts a business. Systems keep it alive.', href: '/articles/category/entrepreneurship/' },
+  { title: 'Marketing and Sales', hook: 'Good products don’t sell themselves. People sell them.', href: '/articles/category/marketing/' },
+  { title: 'Consumer Psychology', hook: 'People buy the person they hope to become.', href: '/articles/category/consumer-behaviour/' },
+  { title: 'Women and Economic Empowerment', hook: 'Financial independence isn’t a mindset. It’s a skill set.', href: '/articles/category/women-in-business/' },
+];
+const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: settings.name, url: site + '/', publisher: { '@id': site + '/#person' } };
+---
+<Base
+  title="Kaffy Olaitan | Business Educator, Entrepreneur and Public Speaker"
+  description="Kaffy Olaitan helps entrepreneurs think better, market smarter, sell effectively and build profitable businesses. Business educator and speaker based in Ilorin, Nigeria."
+  schema={[website]}
+>
+  <!-- HERO: the doubt, then the answer -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">{settings.titles}</p>
+        <h1 class="hero-quote">&ldquo;{settings.heroQuote}&rdquo;</h1>
+        <p class="attrib">{settings.heroAttribution}</p>
+        <hr class="rule" />
+        <p class="hero-answer">{settings.heroAnswer}</p>
+        <p class="hero-punch">{settings.heroPunchline}</p>
+        <div class="btn-row">
+          <a class="btn" href="/speaking/#book">Book Kaffy to speak</a>
+          <a class="btn ghost" href="/about/">Explore my work</a>
+        </div>
+        <p class="watch"><a class="link-arrow" href="/podcast/">Watch my content</a></p>
+      </div>
+      <div class="photo hero-photo">
+        <img src="/images/photos/kaffy-olaitan-portrait-yellow.webp" srcset="/images/photos/kaffy-olaitan-portrait-yellow-800.webp 800w, /images/photos/kaffy-olaitan-portrait-yellow.webp 1600w" sizes="(min-width: 900px) 45vw, 100vw" alt="Kaffy Olaitan, business educator and entrepreneur, in a yellow dress" width="1600" height="2000" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section white">
+    <div class="wrap split">
+      <div class="photo intro-photo"><img src="/images/photos/kaffy-olaitan-the-small-room-800.webp" alt="Kaffy Olaitan smiling in a blazer in the small room where she lived for two years" width="800" height="1067" loading="lazy" /></div>
+      <div>
+        <span class="eyebrow">Hello, I'm Kaffy</span>
+        <h2>I studied Environmental Biology. I taught primary school. Nobody handed me a business manual.</h2>
+        <p class="lead">Everything I know about marketing, sales and building a business, I learned by doing it: from one small room in Ilorin, with four children, starting a cleaning business on 1 November 2023.</p>
+        <p>Now I teach the part of business most people are never taught: how customers think, why they buy, and how to build something that pays you properly. No hype. Just the thinking that works on Monday morning.</p>
+        <a class="link-arrow" href="/about/">Read my story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERTISE -->
+  <section class="section">
+    <div class="wrap">
+      <div class="center narrow-center">
+        <span class="eyebrow">What I teach</span>
+        <h2>The thinking behind businesses that work</h2>
+      </div>
+      <div class="grid g4 expertise">
+        {expertise.map((e, i) => (
+          <a class="card" href={e.href}>
+            <span class="num">0{i + 1}</span>
+            <h3>{e.title}</h3>
+            <p>{e.hook}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE BAND -->
+  <section class="section dark">
+    <div class="wrap center">
+      <p class="pull">A woman with a skill is talented.<br />A woman who can sell her skill is free.</p>
+      <p class="attrib">Kaffy Olaitan</p>
+    </div>
+  </section>
+
+  <!-- MEDIA -->
+  <section class="section white">
+    <div class="wrap">
+      <span class="eyebrow">Watch, listen, read</span>
+      <h2>Learning out loud</h2>
+      <div class="grid g3 media-grid">
+        <a class="card" href="/podcast/">
+          <span class="num">Podcast</span>
+          <h3>{settings.podcastName}</h3>
+          {podcast[0]
+            ? <p>Latest: Episode {podcast[0].data.episode}, {podcast[0].data.title}</p>
+            : <p>{settings.podcastTagline} Episode 1 is on its way.</p>}
+          <span class="link-arrow">Listen</span>
+        </a>
+        <a class="card" href="/becoming-kaffy/">
+          <span class="num">Documentary</span>
+          <h3>{settings.documentaryName}</h3>
+          {documentary[0]
+            ? <p>Latest: Day {documentary[0].data.day}, {documentary[0].data.title}</p>
+            : <p>{settings.documentaryTagline} The first episode is coming soon.</p>}
+          <span class="link-arrow">Follow the journey</span>
+        </a>
+        <a class="card" href="/articles/">
+          <span class="num">Articles</span>
+          <h3>Articles and Insights</h3>
+          {articles[0]
+            ? <p>Latest: {articles[0].data.title}</p>
+            : <p>Business, marketing, sales and the decisions that shape a business.</p>}
+          <span class="link-arrow">Read</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPEAKING -->
+  <section class="section">
+    <div class="wrap split wide-left">
+      <div>
+        <span class="eyebrow">Speaking and engagements</span>
+        <h2>Your audience has heard &ldquo;believe in yourself&rdquo; a hundred times.</h2>
+        <p class="lead">Give them something they can use on Monday morning. Practical talks on business, marketing, sales and women's economic independence, from someone who is building in real time.</p>
+        <ul class="ticks">
+          {speaking.topics.slice(0, 4).map((t) => <li>{t.title}</li>)}
+        </ul>
+        <div class="btn-row">
+          <a class="btn" href="/speaking/#book">Book Kaffy to speak</a>
+          <a class="btn ghost" href="/speaking/">See all topics</a>
+        </div>
+      </div>
+      <div class="photo speak-photo"><img src="/images/photos/kaffy-olaitan-portrait-yellow-seated-800.webp" alt="Kaffy Olaitan seated at a table in yellow" width="800" height="1000" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="section dark">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Community</span>
+        <h2>Smart Girl cleaned.<br />Someone got fed.</h2>
+        <p class="lead">On 7 November 2025, we took food to 150 elderly women across Ipata, Mandate and Ago markets in Ilorin. Every bag carried the same message, because it is how I see business: what we build should feed more than ourselves.</p>
+        <a class="link-arrow light" href="/about/#community">See the outreach</a>
+      </div>
+      <video class="community-video" src="/video/community-food-outreach-ilorin.mp4" poster="/images/photos/community-food-outreach-poster.webp" autoplay muted loop playsinline preload="none" aria-label="Kaffy Olaitan handing out food from the Smart Girl van at a market in Ilorin"></video>
+    </div>
+  </section>
+
+  <!-- DOCUMENTARY -->
+  <section class="section white">
+    <div class="wrap center">
+      <span class="eyebrow">The documentary</span>
+      <h2>{settings.documentaryName}</h2>
+      <p class="attrib">{settings.documentaryTagline}</p>
+      <p class="lead">Not a highlight reel. The real, day-by-day process of a woman becoming who she said she would be: the work, the doubts, the wins and the lessons.</p>
+      <div class="btn-row center-row"><a class="btn" href="/becoming-kaffy/">Follow the journey</a></div>
+    </div>
+  </section>
+
+  {articles.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <span class="eyebrow">Articles and insights</span>
+        <h2>Latest thinking</h2>
+        <div class="grid g3">
+          {articles.map((a) => (
+            <a class="card" href={`/articles/${a.id}/`}>
+              <span class="num">{a.data.category} &middot; {formatDate(a.data.date)}</span>
+              <h3>{a.data.title}</h3>
+              <p>{a.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- FINAL CTA -->
+  <section class="section white">
+    <div class="wrap center">
+      <h2>Ready when you are.</h2>
+      <p class="lead">Invite me to speak, bring me in to train your team, or simply start learning.</p>
+      <div class="btn-row center-row">
+        <a class="btn" href="/speaking/#book">Book Kaffy</a>
+        <a class="btn ghost" href="/contact/">Contact</a>
+        <a class="btn ghost" href="#newsletter">Join the letter</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: clamp(40px, 7vw, 96px) 0 clamp(56px, 8vw, 104px); }
+  .hero-grid { display: grid; gap: clamp(36px, 6vw, 72px); align-items: center; }
+  @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.1fr 0.9fr; } }
+  .hero-quote { font-size: clamp(46px, 7.4vw, 96px); line-height: 1; margin: 0; }
+  .hero-answer { font-size: 18px; color: var(--muted); max-width: 560px; }
+  .hero-punch { font: 500 clamp(24px, 2.6vw, 32px)/1.2 var(--serif); color: var(--black); max-width: 560px; }
+  .hero-photo { aspect-ratio: 4 / 5; }
+  .watch { margin-top: 22px; }
+  .intro-photo { aspect-ratio: 3 / 4; }
+  .speak-photo { aspect-ratio: 4 / 5; }
+  .narrow-center { max-width: 760px; margin: 0 auto 48px; }
+  .media-grid { margin-top: 40px; }
+  .media-grid .link-arrow { display: inline-block; margin-top: 12px; }
+  .community-video { width: 100%; max-width: 420px; aspect-ratio: 9 / 16; object-fit: cover; justify-self: center; background: #222; }
+  .link-arrow.light { color: var(--white); border-color: var(--white); }
+  .center-row { justify-content: center; }
+</style>

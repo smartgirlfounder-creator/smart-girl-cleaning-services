@@ -1,0 +1,19 @@
+---
+interface Props { title: string }
+const { title } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const t = encodeURIComponent(title);
+const u = encodeURIComponent(url);
+---
+<div class="share">
+  <span class="eyebrow">Share</span>
+  <a href={`https://wa.me/?text=${t}%20${u}`} target="_blank" rel="noopener">WhatsApp</a>
+  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${u}`} target="_blank" rel="noopener">LinkedIn</a>
+  <a href={`https://x.com/intent/post?text=${t}&url=${u}`} target="_blank" rel="noopener">X</a>
+  <a href={`https://www.facebook.com/sharer/sharer.php?u=${u}`} target="_blank" rel="noopener">Facebook</a>
+</div>
+<style>
+  .share { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin: 48px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+  .share .eyebrow { margin: 0; }
+  .share a { font-size: 14px; }
+</style>

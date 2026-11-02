@@ -1,0 +1,180 @@
+---
+import '../styles/global.css';
+import settings from '../data/settings.json';
+import Newsletter from '../components/Newsletter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  schema?: object[];
+  noindex?: boolean;
+}
+const { title, description, image = '/images/photos/kaffy-olaitan-portrait-yellow.webp', type = 'website', schema = [], noindex = false } = Astro.props;
+const site = Astro.site!.toString().replace(/\/$/, '');
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = image.startsWith('http') ? image : site + image;
+const path = Astro.url.pathname;
+
+const nav = [
+  { href: '/about/', label: 'About' },
+  { href: '/speaking/', label: 'Speaking' },
+  { href: '/podcast/', label: 'Podcast' },
+  { href: '/becoming-kaffy/', label: settings.documentaryName },
+  { href: '/articles/', label: 'Articles' },
+  { href: '/work-with-kaffy/', label: 'Work With Me' },
+];
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': site + '/#person',
+  name: settings.name,
+  url: site + '/',
+  image: site + '/images/photos/kaffy-olaitan-portrait-yellow.webp',
+  jobTitle: 'Business Educator, Entrepreneur and Public Speaker',
+  description: 'Kaffy Olaitan is a business educator, entrepreneur and public speaker based in Ilorin, Nigeria, and the founder of Smart Girl Cleaning Services.',
+  homeLocation: { '@type': 'Place', name: 'Ilorin, Kwara State, Nigeria' },
+  knowsAbout: ['Entrepreneurship', 'Marketing', 'Sales', 'Consumer psychology', 'Business strategy', "Women's economic empowerment", 'Public speaking'],
+  founder: { '@type': 'Organization', name: 'Smart Girl Cleaning Services', foundingDate: '2023-11-01' },
+  sameAs: settings.socials.map((s) => s.url),
+};
+const ld = [person, ...schema];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#0d0d0d" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={settings.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {ld.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href="/" aria-label={`${settings.name}, home`}>
+          <span class="brand-name">Kaffy Olaitan</span>
+          <span class="brand-sub">{settings.titles}</span>
+        </a>
+        <button class="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
+        <nav id="site-nav" class="site-nav" aria-label="Main">
+          <ul>
+            {nav.map((n) => (
+              <li><a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a></li>
+            ))}
+            <li class="nav-cta"><a class="btn" href="/speaking/#book">Book Kaffy</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main"><slot /></main>
+
+    <Newsletter />
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <p class="foot-name">Kaffy Olaitan</p>
+            <p class="foot-sub">{settings.titles}</p>
+            <p class="foot-text">Helping entrepreneurs think better, market smarter, sell effectively and build profitable businesses. {settings.location}.</p>
+          </div>
+          <div>
+            <p class="foot-h">Explore</p>
+            <ul>
+              <li><a href="/about/">About Kaffy</a></li>
+              <li><a href="/podcast/">{settings.podcastName}</a></li>
+              <li><a href="/becoming-kaffy/">{settings.documentaryName}</a></li>
+              <li><a href="/articles/">Articles and Insights</a></li>
+              <li><a href="/resources/">Resources</a></li>
+              <li><a href="/gallery/">Gallery</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="foot-h">Work together</p>
+            <ul>
+              <li><a href="/speaking/">Speaking and Engagements</a></li>
+              <li><a href="/work-with-kaffy/">Work With Me</a></li>
+              <li><a href="/media/">Media and Press</a></li>
+              <li><a href="/contact/">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="foot-h">Follow</p>
+            <ul>
+              {settings.socials.map((s) => <li><a href={s.url} rel="me noopener" target="_blank">{s.name}</a></li>)}
+            </ul>
+          </div>
+        </div>
+        <div class="legal">
+          <span>© {new Date().getFullYear()} Kaffy Olaitan. All rights reserved.</span>
+          <span><a href="/privacy/">Privacy</a></span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.querySelector('.menu-btn');
+      const nav = document.getElementById('site-nav');
+      btn?.addEventListener('click', () => {
+        const open = nav!.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 12px; z-index: 100; background: var(--white); padding: 10px 14px; }
+  .site-header { position: sticky; top: 0; z-index: 50; background: rgba(250, 247, 242, 0.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .site-header .bar { display: flex; align-items: center; gap: 24px; min-height: 76px; }
+  .brand { text-decoration: none; display: flex; flex-direction: column; line-height: 1.1; }
+  .brand-name { font: 600 25px/1 var(--serif); letter-spacing: 0.06em; text-transform: uppercase; color: var(--black); }
+  .brand-sub { white-space: nowrap; font: 500 9.5px/1.4 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--taupe); margin-top: 6px; }
+  .site-nav { margin-left: auto; }
+  .site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 4px; }
+  .site-nav a:not(.btn) { display: block; padding: 10px 11px; font: 500 14px/1 var(--sans); text-decoration: none; color: var(--charcoal); white-space: nowrap; }
+  .site-nav a[aria-current] { text-decoration: underline; text-decoration-color: var(--champagne); text-underline-offset: 8px; }
+  .site-nav .nav-cta { margin-left: 10px; }
+  .site-nav .btn { min-height: 44px; padding: 12px 20px; font-size: 12px; white-space: nowrap; }
+  .menu-btn { display: none; margin-left: auto; background: none; border: 1px solid var(--black); padding: 10px 16px; font: 600 12px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; cursor: pointer; color: var(--black); }
+  @media (max-width: 1320px) { .brand-sub { display: none; } }
+  @media (max-width: 1060px) {
+    .menu-btn { display: block; }
+    .site-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--ivory); border-bottom: 1px solid var(--line); }
+    .site-nav.open { display: block; }
+    .site-nav ul { flex-direction: column; align-items: stretch; padding: 12px var(--gutter) 24px; }
+    .site-nav a:not(.btn) { padding: 14px 0; font-size: 17px; border-bottom: 1px solid var(--line); }
+    .site-nav .nav-cta { margin: 16px 0 0; }
+    .site-nav .btn { width: 100%; }
+  }
+  .site-footer { background: var(--black); color: #a8a196; font-size: 15px; }
+  .site-footer .wrap { padding-top: 72px; padding-bottom: 32px; }
+  .foot-grid { display: grid; gap: 36px; }
+  @media (min-width: 820px) { .foot-grid { grid-template-columns: 1.5fr 1fr 1fr 0.8fr; } }
+  .foot-name { font: 600 28px/1 var(--serif); letter-spacing: .06em; text-transform: uppercase; color: var(--white); margin-bottom: 10px; }
+  .foot-sub { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--champagne); }
+  .foot-text { max-width: 360px; }
+  .foot-h { font: 600 11px/1 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--white); margin-bottom: 18px; }
+  .site-footer ul { list-style: none; margin: 0; padding: 0; }
+  .site-footer li { margin: 0 0 10px; }
+  .site-footer a { text-decoration: none; color: #d8d3cb; }
+  .site-footer a:hover { color: var(--white); text-decoration: underline; }
+  .legal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid #2c2a27; margin-top: 56px; padding-top: 24px; font-size: 13px; }
+</style>

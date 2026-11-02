@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ArticleList from '../../components/ArticleList.astro';
+import { published, breadcrumbs } from '../../lib/utils';
+
+const articles = published(await getCollection('articles'));
+---
+<Base
+  title="Articles and Insights on Business, Marketing and Sales | Kaffy Olaitan"
+  description="Practical articles on entrepreneurship, marketing, sales, consumer behaviour and women in business by business educator Kaffy Olaitan."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Articles', '/articles/']])]}
+>
+  <PageHero eyebrow="Articles and insights" title="Think better. Market smarter. Sell with confidence." lead="Notes from building a business in real time: what works, what doesn't, and why people buy." />
+  <section class="section white"><div class="wrap"><ArticleList articles={articles} /></div></section>
+</Base>

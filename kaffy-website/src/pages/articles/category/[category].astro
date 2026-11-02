@@ -1,0 +1,28 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import ArticleList from '../../../components/ArticleList.astro';
+import categories from '../../../data/categories.json';
+import { published, slugify, breadcrumbs } from '../../../lib/utils';
+
+export async function getStaticPaths() {
+  const all = published(await getCollection('articles'));
+  return categories.articles.map((name) => ({
+    params: { category: slugify(name) },
+    props: { name, articles: all.filter((a) => a.data.category === name) },
+  }));
+}
+interface Props { name: string; articles: CollectionEntry<'articles'>[] }
+const { name, articles } = Astro.props;
+const path = `/articles/category/${slugify(name)}/`;
+---
+<Base
+  title={`${name} Articles | Kaffy Olaitan`}
+  description={`Articles on ${name.toLowerCase()} for entrepreneurs and business owners, by business educator Kaffy Olaitan.`}
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Articles', '/articles/'], [name, path]])]}
+  noindex={articles.length === 0}
+>
+  <PageHero eyebrow="Articles and insights" title={name} />
+  <section class="section white"><div class="wrap"><ArticleList articles={articles} current={name} /></div></section>
+</Base>

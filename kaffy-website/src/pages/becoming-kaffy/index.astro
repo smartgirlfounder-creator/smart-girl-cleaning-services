@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import YouTube from '../../components/YouTube.astro';
+import settings from '../../data/settings.json';
+import milestones from '../../data/milestones.json';
+import { published, formatDate, breadcrumbs } from '../../lib/utils';
+
+const site = Astro.site!;
+// Oldest first, so the archive reads like a diary.
+const days = published(await getCollection('documentary')).reverse();
+const latest = days[days.length - 1];
+const timeline = [...milestones.items].sort((a, b) => a.date.localeCompare(b.date));
+const series = {
+  '@context': 'https://schema.org', '@type': 'CreativeWorkSeries', name: settings.documentaryName,
+  description: `${settings.documentaryTagline} A documentary following Kaffy Olaitan's personal and professional growth.`,
+  url: new URL('/becoming-kaffy/', site).toString(), author: { '@id': site.toString().replace(/\/$/, '') + '/#person' },
+};
+---
+<Base
+  title={`${settings.documentaryName}: ${settings.documentaryTagline} | Kaffy Olaitan`}
+  description="Becoming Kaffy is a real-time documentary following Kaffy Olaitan's journey as an entrepreneur, educator and mother of four: the work, the lessons and the milestones."
+  schema={[series, breadcrumbs(site, [['Home', '/'], [settings.documentaryName, '/becoming-kaffy/']])]}
+>
+  <section class="doc-hero">
+    <div class="wrap">
+      <span class="eyebrow">The documentary</span>
+      <h1>{settings.documentaryName}</h1>
+      <p class="tagline">{settings.documentaryTagline}</p>
+      <p class="lead">This is not a highlight reel. It is the day-by-day process of a woman becoming who she said she would be: building a business, raising four children, learning in public and aiming for stages she hasn't stood on yet. Watch it happen.</p>
+    </div>
+  </section>
+
+  {latest ? (
+    <>
+      <section class="section dark">
+        <div class="wrap split">
+          <YouTube url={latest.data.youtube} title={latest.data.title} />
+          <div>
+            <span class="eyebrow">Latest &middot; Day {latest.data.day}</span>
+            <h2>{latest.data.title}</h2>
+            <p class="lead">{latest.data.summary}</p>
+            <a class="btn" href={`/becoming-kaffy/${latest.id}/`}>Read the reflection</a>
+          </div>
+        </div>
+      </section>
+      <section class="section white">
+        <div class="wrap">
+          <span class="eyebrow">Every day so far</span>
+          <h2>The archive</h2>
+          <ol class="days">
+            {days.map((e) => (
+              <li>
+                <a href={`/becoming-kaffy/${e.id}/`}>
+                  <span class="day">Day {e.data.day}</span>
+                  <span class="t">{e.data.title}</span>
+                  <time datetime={e.data.date.toISOString()}>{formatDate(e.data.date)}</time>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    </>
+  ) : (
+    <section class="section white">
+      <div class="wrap">
+        <div class="empty">
+          <span class="eyebrow">Day 1</span>
+          <h2>The first episode is coming soon</h2>
+          <p>Subscribe on YouTube or join {settings.newsletterName} to watch from the very first day.</p>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="journey">
+    <div class="wrap">
+      <span class="eyebrow">The journey so far</span>
+      <h2>Milestones</h2>
+      <p class="lead">Talks, media, business moments and personal wins, added as they happen.</p>
+      <ol class="timeline">
+        {timeline.map((m) => (
+          <li>
+            <time datetime={m.date}>{formatDate(new Date(m.date))}</time>
+            <div><span class="cat">{m.category}</span><h3>{m.title}</h3><p>{m.description}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .doc-hero { background: var(--black); color: #cfc8bd; padding: clamp(72px, 12vw, 160px) 0 clamp(56px, 9vw, 120px); text-align: center; }
+  .doc-hero h1 { color: var(--white); font-size: clamp(54px, 10vw, 128px); letter-spacing: .04em; text-transform: uppercase; }
+  .doc-hero .tagline { font: italic 500 clamp(22px, 2.6vw, 32px)/1.3 var(--serif); color: var(--champagne); }
+  .doc-hero .lead { margin: 24px auto 0; color: #b9b2a7; }
+  .days { list-style: none; padding: 0; margin: 32px 0 0; border-top: 1px solid var(--line); }
+  .days a { display: grid; gap: 4px 24px; padding: 20px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+  @media (min-width: 720px) { .days a { grid-template-columns: 110px 1fr auto; align-items: baseline; } }
+  .days .day { font: italic 500 20px/1 var(--serif); color: var(--taupe); }
+  .days .t { font: 500 24px/1.25 var(--serif); color: var(--black); }
+  .days time { font-size: 14px; color: var(--muted); }
+  .timeline { list-style: none; padding: 0; margin: 32px 0 0; border-left: 1px solid var(--champagne); }
+  .timeline li { display: grid; gap: 6px; padding: 0 0 36px 28px; position: relative; }
+  .timeline li::before { content: ''; position: absolute; left: -5px; top: 8px; width: 9px; height: 9px; background: var(--black); border-radius: 50%; }
+  @media (min-width: 720px) { .timeline li { grid-template-columns: 200px 1fr; gap: 24px; } }
+  .timeline time { font: italic 500 20px/1.3 var(--serif); color: var(--taupe); }
+  .timeline .cat { font: 600 11px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--taupe); }
+  .timeline h3 { font-size: 26px; margin: 8px 0 6px; }
+  .timeline p { color: var(--muted); margin: 0; }
+</style>

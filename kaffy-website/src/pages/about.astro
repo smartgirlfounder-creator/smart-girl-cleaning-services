@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import milestones from '../data/milestones.json';
+import { breadcrumbs, formatDate } from '../lib/utils';
+
+const site = Astro.site!;
+const timeline = [...milestones.items].sort((a, b) => a.date.localeCompare(b.date));
+const outreach = [
+  { src: '/images/photos/outreach-rice-bags-ready.webp', alt: 'Rows of food bags with Smart Girl stickers ready for the outreach' },
+  { src: '/images/photos/outreach-packing-food-bags.webp', alt: 'A volunteer packing food bags labelled Smart Girl cleaned, Someone got fed' },
+  { src: '/images/photos/kaffy-serving-elderly-woman.webp', alt: 'Kaffy Olaitan serving food into a woman’s bowl at a market stall' },
+];
+---
+<Base
+  title="About Kaffy Olaitan | From One Small Room to Business Educator"
+  description="Kaffy Olaitan studied Environmental Biology, taught primary school, and built Smart Girl Cleaning Services from one small room in Ilorin. Now she teaches business, marketing and sales."
+  type="profile"
+  schema={[{ '@context': 'https://schema.org', '@type': 'AboutPage', url: new URL('/about/', site).toString(), mainEntity: { '@id': site.toString().replace(/\/$/, '') + '/#person' } }, breadcrumbs(site, [['Home', '/'], ['About', '/about/']])]}
+>
+  <PageHero
+    eyebrow="About Kaffy"
+    title="Nothing about where you start decides where you finish."
+    lead="Entrepreneur. Teacher at heart. A single mother of four who is fascinated by how businesses work and how people decide. This is the story so far, still being written."
+    image="/images/photos/kaffy-olaitan-maroon-800.webp"
+    imageAlt="Kaffy Olaitan smiling in a maroon outfit"
+  />
+
+  <section class="section white" id="where-it-started">
+    <div class="wrap split">
+      <div class="photo tall"><img src="/images/photos/kaffy-olaitan-the-small-room-800.webp" alt="Kaffy Olaitan in a blazer in the small room where she lived with her four children" width="800" height="1067" loading="lazy" /></div>
+      <div class="prose">
+        <span class="eyebrow">Where it started</span>
+        <h2>For two years, home was one small room in Ilorin.</h2>
+        <p>Four children. One mattress against the wall. And plans much bigger than the room.</p>
+        <p>I tried renovating it. No amount of money made it feel like the place I was meant to be. By then, people were starting to know me online, and I was growing out of that room faster than I could fix it.</p>
+        <p>So I moved, into my first rented three-bedroom apartment. A room for my children. A room for me. A room for my help. And a small corner where I create the content you watch today.</p>
+        <blockquote>I didn't wait for a better room to start building a better life.</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap narrow prose-center">
+      <div class="prose">
+        <span class="eyebrow">Before business</span>
+        <h2>A degree in the &ldquo;wrong&rdquo; subject, and a classroom</h2>
+        <p>I graduated in Environmental Biology. Not business, not marketing, not sales. My first job was teaching in a primary school, and even then I found myself organising people and taking the lead.</p>
+        <p>Teaching never really left me. It just changed subjects. Today I teach adults how businesses grow, how customers think and how to sell with confidence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section white">
+    <div class="wrap split">
+      <div class="prose">
+        <span class="eyebrow">Smart Girl Cleaning Services</span>
+        <h2>A business built by doing</h2>
+        <p>On 1 November 2023, I launched Smart Girl Cleaning Services in Ilorin. Nobody handed me a manual. I learned how to find customers, how to price, how to sell, how to lead a team and how to keep going when things went wrong, by doing every one of those things.</p>
+        <p>That is where my obsession started: why does one business grow while another, just as good, struggles? The answer was almost never the product. It was marketing, sales and understanding people.</p>
+      </div>
+      <figure class="early">
+        <div class="photo"><img src="/images/photos/smart-girl-early-days-2023.webp" alt="Kaffy Olaitan in a Smart Girl Cleaning T-shirt in the early days of the business" width="790" height="810" loading="lazy" /></div>
+        <figcaption class="caption">Early days, 2023.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section dark">
+    <div class="wrap narrow prose-center">
+      <span class="eyebrow">Why women</span>
+      <p class="pull">Financial independence isn't a mindset. It's a skill set.</p>
+      <hr class="rule" />
+      <div class="prose dark-prose">
+        <p>My commitment to women is personal. It comes from my mother, from watching the women around me, and from my own life as a woman and a single mother.</p>
+        <p>I've seen how limited opportunities, financial dependence and unequal access to resources hold capable women back. I don't believe the answer is more motivation. It's knowledge, skills and the confidence to use them. That's what I want to give.</p>
+        <p>My platform is for every entrepreneur who wants to think better and sell smarter. But I will always keep the door wide open for the woman who is just starting.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section white" id="community">
+    <div class="wrap">
+      <div class="split">
+        <div>
+          <span class="eyebrow">Community</span>
+          <h2>Smart Girl cleaned.<br />Someone got fed.</h2>
+          <p class="lead">On 7 November 2025, we took food to 150 elderly women across Ipata, Mandate and Ago markets in Ilorin, Kwara State.</p>
+          <p>Every bag carried the same message. It is a reminder of what business is for: what we build should feed more than ourselves.</p>
+        </div>
+        <video class="community-video" src="/video/community-food-outreach-ilorin.mp4" poster="/images/photos/community-food-outreach-poster.webp" autoplay muted loop playsinline preload="none" aria-label="Kaffy Olaitan handing out food from the Smart Girl van"></video>
+      </div>
+      <div class="grid g3 outreach">
+        {outreach.map((p) => <div class="photo square"><img src={p.src} alt={p.alt} width="600" height="600" loading="lazy" /></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">The journey so far</span>
+      <h2>Milestones</h2>
+      <ol class="timeline">
+        {timeline.map((m) => (
+          <li>
+            <time datetime={m.date}>{formatDate(new Date(m.date))}</time>
+            <div><h3>{m.title}</h3><p>{m.description}</p></div>
+          </li>
+        ))}
+      </ol>
+      <a class="link-arrow" href="/becoming-kaffy/#journey">Follow the full journey</a>
+    </div>
+  </section>
+
+  <section class="section white">
+    <div class="wrap narrow prose-center">
+      <div class="prose">
+        <span class="eyebrow">What I'm building next</span>
+        <h2>Footprints on the sands of time</h2>
+        <p>I want to stand on international stages and teach business in a way people remember. I'm building a podcast about how businesses grow and how people decide, a documentary that follows my journey in real time, and, one day, books.</p>
+        <p>I'm not there yet. That is exactly the point. You can watch it happen, and learn alongside me.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn" href="/speaking/">Invite me to speak</a>
+        <a class="btn ghost" href="/becoming-kaffy/">Watch {`Becoming Kaffy`}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tall { aspect-ratio: 3 / 4; }
+  .square { aspect-ratio: 1; }
+  .early .photo { aspect-ratio: 790 / 810; max-width: 460px; }
+  .prose-center { margin: 0 auto; }
+  .dark-prose { color: #cfc8bd; }
+  .community-video { width: 100%; max-width: 380px; aspect-ratio: 9 / 16; object-fit: cover; justify-self: center; background: #222; }
+  .outreach { margin-top: 48px; }
+  .timeline { list-style: none; padding: 0; margin: 32px 0 40px; border-left: 1px solid var(--champagne); }
+  .timeline li { display: grid; gap: 6px; padding: 0 0 36px 28px; position: relative; }
+  .timeline li::before { content: ''; position: absolute; left: -5px; top: 8px; width: 9px; height: 9px; background: var(--black); border-radius: 50%; }
+  @media (min-width: 720px) { .timeline li { grid-template-columns: 200px 1fr; gap: 24px; } }
+  .timeline time { font: italic 500 20px/1.3 var(--serif); color: var(--taupe); }
+  .timeline h3 { font-size: 26px; margin-bottom: 6px; }
+  .timeline p { color: var(--muted); margin: 0; }
+</style>

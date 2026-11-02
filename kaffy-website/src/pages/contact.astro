@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import settings from '../data/settings.json';
+import { breadcrumbs } from '../lib/utils';
+
+const types = [
+  ['speaking', 'Speaking invitation'],
+  ['training', 'Corporate training or workshop'],
+  ['consulting', 'Consulting'],
+  ['podcast-guest', 'Podcast guest pitch'],
+  ['media', 'Media and press'],
+  ['partnership', 'Brand partnership'],
+  ['general', 'General enquiry'],
+];
+---
+<Base
+  title="Contact Kaffy Olaitan | Speaking, Training, Media and Partnerships"
+  description="Contact Kaffy Olaitan for speaking invitations, corporate training, consulting, podcast guests, media and brand partnerships."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Contact', '/contact/']])]}
+>
+  <PageHero eyebrow="Contact" title="Let's talk." lead="Choose what your message is about so it reaches the right place. I read every message and reply as quickly as I can." />
+  <section class="section white">
+    <div class="wrap split wide-left top">
+      <form class="form" name="contact" method="POST" action="/thank-you/?form=contact" data-netlify="true" netlify-honeypot="company">
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+        <div><label for="c-type">What is this about? *</label>
+          <select id="c-type" name="enquiry_type" required>{types.map(([v, l]) => <option value={v}>{l}</option>)}</select>
+        </div>
+        <div class="row">
+          <div><label for="c-name">Your name *</label><input id="c-name" name="name" required autocomplete="name" /></div>
+          <div><label for="c-org">Organisation</label><input id="c-org" name="organisation" autocomplete="organization" /></div>
+        </div>
+        <div class="row">
+          <div><label for="c-email">Email *</label><input id="c-email" name="email" type="email" required autocomplete="email" /></div>
+          <div><label for="c-phone">Phone or WhatsApp</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" /></div>
+        </div>
+        <div><label for="c-msg">Message *</label><textarea id="c-msg" name="message" required></textarea></div>
+        <label class="consent"><input type="checkbox" name="consent" value="yes" required /> <span>I agree that my details are used to reply to this message. See the <a href="/privacy/">privacy policy</a>.</span></label>
+        <div><button class="btn" type="submit">Send message</button></div>
+      </form>
+      <aside>
+        <span class="eyebrow">Other ways</span>
+        {settings.email && <p><strong>Email</strong><br /><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}
+        <p><strong>Based in</strong><br />Ilorin, Nigeria. Available for engagements across Nigeria, internationally and online.</p>
+        <p><strong>Follow</strong><br />{settings.socials.map((s, i) => <>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener">{s.name}</a></>)}</p>
+        <p><strong>Booking a talk?</strong><br />The <a href="/speaking/#book">speaking form</a> asks everything I need to reply quickly.</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .top { align-items: start; }
+  aside p { color: var(--muted); }
+  aside strong { color: var(--black); font-weight: 600; }
+</style>
+
+<script>
+  // Pre-select the enquiry type from links such as /contact/?type=media
+  const t = new URLSearchParams(location.search).get('type');
+  const sel = document.getElementById('c-type') as HTMLSelectElement | null;
+  if (t && sel && [...sel.options].some((o) => o.value === t)) sel.value = t;
+</script>

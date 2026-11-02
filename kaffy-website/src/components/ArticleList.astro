@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import categories from '../data/categories.json';
+import { formatDate, slugify } from '../lib/utils';
+interface Props { articles: CollectionEntry<'articles'>[]; current?: string }
+const { articles, current } = Astro.props;
+---
+<nav class="chips" aria-label="Article categories">
+  <a class="chip" href="/articles/" aria-current={!current ? 'page' : undefined}>All</a>
+  {categories.articles.map((c) => (
+    <a class="chip" href={`/articles/category/${slugify(c)}/`} aria-current={current === c ? 'page' : undefined}>{c}</a>
+  ))}
+</nav>
+{articles.length > 0 ? (
+  <div class="grid g3 list">
+    {articles.map((a) => (
+      <a class="card post" href={`/articles/${a.id}/`}>
+        {a.data.image && <div class="photo thumb"><img src={a.data.image} alt={a.data.imageAlt ?? ''} loading="lazy" /></div>}
+        <span class="num">{a.data.category} &middot; {formatDate(a.data.date)}</span>
+        <h3>{a.data.title}</h3>
+        <p>{a.data.description}</p>
+      </a>
+    ))}
+  </div>
+) : (
+  <div class="empty list"><p>No articles here yet. New writing is added regularly, so check back soon or join the letter below.</p></div>
+)}
+<style>
+  .list { margin-top: 36px; }
+  .thumb { aspect-ratio: 16 / 10; margin: -32px -32px 24px; }
+</style>
