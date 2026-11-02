@@ -6,16 +6,16 @@
 @import '@fontsource/inter/600.css';
 
 :root {
-  --white: #ffffff;
-  --ivory: #faf7f2;
-  --ivory-2: #f2ede4;
-  --black: #0d0d0d;
-  --charcoal: #1e1e1e;
-  --ink: #2a2a2a;
-  --muted: #6b665f;
-  --taupe: #a39483;
-  --champagne: #cdb894;
-  --line: #e4ddd2;
+  --white: #fcf7f0;
+  --ivory: #f5ebdd;
+  --ivory-2: #ead9c4;
+  --black: #2b1b14;
+  --charcoal: #3a2a21;
+  --ink: #3b2f28;
+  --muted: #7a6656;
+  --taupe: #a9744a;
+  --champagne: #d9a86c;
+  --line: #e3d2be;
   --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --wrap: 1180px;
@@ -41,11 +41,11 @@ em { font-style: italic; }
 .narrow { max-width: 760px; }
 .section { padding: clamp(64px, 10vw, 128px) 0; }
 .section.white { background: var(--white); }
-.section.dark { background: var(--black); color: #d8d3cb; }
+.section.dark { background: var(--black); color: #eedfcc; }
 .section.dark h1, .section.dark h2, .section.dark h3 { color: var(--white); }
 .eyebrow { display: block; font: 600 12px/1.4 var(--sans); letter-spacing: 0.22em; text-transform: uppercase; color: var(--taupe); margin-bottom: 18px; }
 .lead { font-size: clamp(18px, 1.6vw, 21px); color: var(--muted); max-width: 640px; }
-.dark .lead { color: #b9b2a7; }
+.dark .lead { color: #d6c2ab; }
 .center { text-align: center; }
 .center .lead { margin-left: auto; margin-right: auto; }
 .rule { width: 56px; height: 1px; background: var(--champagne); border: 0; margin: 28px 0; }
@@ -94,15 +94,15 @@ a.card:hover { border-color: var(--taupe); transform: translateY(-2px); }
 .form .row { display: grid; gap: 18px; }
 @media (min-width: 720px) { .form .row { grid-template-columns: 1fr 1fr; } }
 .form label { display: block; font: 600 12px/1.4 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 8px; }
-.form input, .form select, .form textarea { width: 100%; font: 400 16px/1.5 var(--sans); color: var(--ink); background: var(--white); border: 1px solid #cfc7ba; border-radius: 0; padding: 13px 14px; min-height: 50px; }
+.form input, .form select, .form textarea { width: 100%; font: 400 16px/1.5 var(--sans); color: var(--ink); background: var(--white); border: 1px solid #d6c1a9; border-radius: 0; padding: 13px 14px; min-height: 50px; }
 .form textarea { min-height: 130px; resize: vertical; }
 .form input:focus, .form select:focus, .form textarea:focus { outline: 2px solid var(--black); outline-offset: 0; border-color: var(--black); }
 .form .hint { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
 .form .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--muted); }
 .form .consent input { width: 20px; min-height: 20px; margin-top: 3px; flex: none; }
 .hp { position: absolute; left: -10000px; }
-.dark .form input, .dark .form textarea { background: transparent; color: var(--white); border-color: #4a4640; }
-.dark .form label { color: #d8d3cb; }
+.dark .form input, .dark .form textarea { background: transparent; color: var(--white); border-color: #6b5242; }
+.dark .form label { color: #eedfcc; }
 
 /* Prose (articles, episodes) */
 .prose { max-width: 720px; font-size: 18px; }
@@ -121,7 +121,11 @@ a.card:hover { border-color: var(--taupe); transform: translateY(-2px); }
 .chip { font: 600 11px/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; padding: 10px 14px; border: 1px solid var(--line); text-decoration: none; color: var(--charcoal); background: var(--white); }
 .chip[aria-current] { background: var(--black); color: var(--white); border-color: var(--black); }
 
-.empty { border: 1px dashed #cfc7ba; padding: 40px 32px; text-align: center; background: transparent; }
+.empty { border: 1px dashed #d6c1a9; padding: 40px 32px; text-align: center; background: transparent; }
 .empty p { color: var(--muted); margin: 0 auto; max-width: 520px; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+
+/* Warmth */
+.section.dark { background: linear-gradient(150deg, #2b1b14 0%, #4a2e1f 100%); }
+.site-footer { background: #241610 !important; }
