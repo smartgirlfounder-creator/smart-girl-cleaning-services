@@ -4,8 +4,29 @@
       "title": "Cleaning Business Calculator",
       "description": "Price cleaning jobs properly: labour, products, transport and profit, in a few taps. Built for cleaning business owners.",
       "category": "Tools and Templates",
-      "url": "",
-      "cta": "Ask for access"
+      "url": "https://linktr.ee/Smartgirlclean",
+      "cta": "Get the calculator"
+    },
+    {
+      "title": "Smart Cleaners Academy app",
+      "description": "Learn professional cleaning step by step, from safety and products to real cleaning missions, in an app built for cleaners and cleaning teams.",
+      "category": "Courses and Masterclasses",
+      "url": "https://linktr.ee/Smartgirlclean",
+      "cta": "Open the app"
+    },
+    {
+      "title": "The cleaning game",
+      "description": "Learn cleaning by playing. A game that teaches the right products, tools and order of work, one mission at a time.",
+      "category": "Courses and Masterclasses",
+      "url": "https://linktr.ee/Smartgirlclean",
+      "cta": "Play the game"
+    },
+    {
+      "title": "Books and guides",
+      "description": "Kaffy's books and guides for entrepreneurs and cleaning business owners.",
+      "category": "Books and Publications",
+      "url": "https://linktr.ee/Smartgirlclean",
+      "cta": "See the books"
     }
   ]
 }

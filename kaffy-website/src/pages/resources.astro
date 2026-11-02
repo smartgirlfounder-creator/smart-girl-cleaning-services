@@ -18,7 +18,9 @@ const shelves = [
   description="Business education resources from Kaffy Olaitan: guides, marketing and sales frameworks, tools and templates for entrepreneurs and small business owners."
   schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Resources', '/resources/']])]}
 >
-  <PageHero eyebrow="Resources" title="Tools for people who build." lead="Practical guides, templates and tools to help you think better about your business. The library grows as new resources are released." />
+  <PageHero eyebrow="Resources" title="Tools for people who build." lead="Practical guides, templates and tools to help you think better about your business. The library grows as new resources are released.">
+    <div class="btn-row"><a class="btn" href="https://linktr.ee/Smartgirlclean" target="_blank" rel="noopener">All my links in one place</a></div>
+  </PageHero>
   <section class="section white">
     <div class="wrap">
       {shelves.map((s) => {
@@ -32,7 +34,7 @@ const shelves = [
                   <article class="card">
                     <h3>{r.title}</h3>
                     <p>{r.description}</p>
-                    <a class="link-arrow" href={r.url || '/contact/?type=general'}>{r.cta}</a>
+                    <a class="link-arrow" href={r.url || '/contact/?type=general'} target={r.url ? '_blank' : undefined} rel={r.url ? 'noopener' : undefined}>{r.cta}</a>
                   </article>
                 ))}
               </div>
