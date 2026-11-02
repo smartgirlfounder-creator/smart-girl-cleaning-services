@@ -32,17 +32,17 @@
       "description": "Learn professional cleaning step by step, from safety and products to real cleaning missions, in an app built for cleaners and cleaning teams.",
       "category": "Courses and Masterclasses",
       "url": "https://www.smartgirlspace.world",
-      "cta": "Open the app",
-      "badge": "",
+      "cta": "Open the app for free",
+      "badge": "Free",
       "featured": false
     },
     {
       "title": "Smart Sweep: the cleaning game",
-      "description": "Learn cleaning by playing. A game that teaches the right products, tools and order of work, one mission at a time.",
+      "description": "Learn cleaning by playing. A game that teaches the right products, tools and order of work, one mission at a time. Free to start, with advanced levels available to unlock.",
       "category": "Courses and Masterclasses",
       "url": "https://smartsweepgamer.netlify.app/",
-      "cta": "Play the game",
-      "badge": "",
+      "cta": "Play for free",
+      "badge": "Free to start",
       "featured": false
     },
     {
