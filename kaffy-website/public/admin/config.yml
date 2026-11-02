@@ -173,6 +173,8 @@ collections:
               - { label: "Shelf", name: category, widget: select, options: ["Business Education", "Marketing and Sales", "Women and Entrepreneurship", "Books and Publications", "Tools and Templates", "Courses and Masterclasses"] }
               - { label: "Link (leave empty to send people to Contact)", name: url, widget: string, required: false }
               - { label: "Button text", name: cta, widget: string }
+              - { label: "Label (e.g. Free or Paid)", name: badge, widget: string, required: false }
+              - { label: "Feature at the top of the Resources page", name: featured, widget: boolean, default: false }
       - label: "Speaking topics"
         name: speaking
         file: kaffy-website/src/data/speaking.json
