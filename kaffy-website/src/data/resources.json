@@ -10,6 +10,15 @@
       "featured": true
     },
     {
+      "title": "Your Roadmap to Becoming a Clean Guru",
+      "description": "Kaffy's first book, for anyone who wants to build a cleaning business. Written from the experience of starting Smart Girl Cleaning Services from one small room in Ilorin.",
+      "category": "Books and Publications",
+      "url": "https://selar.com/4p652f",
+      "cta": "Buy the book",
+      "badge": "Paid",
+      "featured": false
+    },
+    {
       "title": "Cleaning Business Calculator",
       "description": "Price cleaning jobs properly: labour, products, transport and profit, in a few taps. Built for cleaning business owners.",
       "category": "Tools and Templates",
@@ -33,15 +42,6 @@
       "category": "Courses and Masterclasses",
       "url": "https://linktr.ee/Smartgirlclean",
       "cta": "Play the game",
-      "badge": "",
-      "featured": false
-    },
-    {
-      "title": "Books and guides",
-      "description": "Kaffy's books and guides for entrepreneurs and cleaning business owners.",
-      "category": "Books and Publications",
-      "url": "https://linktr.ee/Smartgirlclean",
-      "cta": "See the books",
       "badge": "",
       "featured": false
     }
