@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import settings from '../data/settings.json';
 import speaking from '../data/speaking.json';
 import { published, formatDate } from '../lib/utils';
+import DiagnosticCall from '../components/DiagnosticCall.astro';
 
 const podcast = published(await getCollection('podcast'));
 const documentary = published(await getCollection('documentary'));
@@ -193,7 +194,8 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: se
     </section>
   )}
 
-  <!-- FINAL CTA -->
+  <!-- FINAL CTA: the free diagnostic call -->
+  <DiagnosticCall dark />
   <section class="section white">
     <div class="wrap center">
       <h2>Ready when you are.</h2>

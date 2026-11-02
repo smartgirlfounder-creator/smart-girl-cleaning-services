@@ -13,7 +13,14 @@
   "documentaryTagline": "A Woman's Journey in Real Time.",
   "newsletterName": "The Business Growth Letter",
   "socials": [
-    { "name": "YouTube", "url": "https://www.youtube.com/@kaffyolaitan" },
-    { "name": "TikTok", "url": "https://www.tiktok.com/@smartgrlcleaninginilorin" }
-  ]
+    {
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@kaffyolaitan"
+    },
+    {
+      "name": "TikTok",
+      "url": "https://www.tiktok.com/@smartgrlcleaninginilorin"
+    }
+  ],
+  "diagnosticUrl": "https://diagnostic10mincallform.netlify.app"
 }

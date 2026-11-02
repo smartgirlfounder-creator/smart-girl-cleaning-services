@@ -42,6 +42,7 @@ const types = [
       </form>
       <aside>
         <span class="eyebrow">Other ways</span>
+        <p><strong>Business owner?</strong><br />Book a <a href={settings.diagnosticUrl} target="_blank" rel="noopener">free 10-minute diagnostic call</a> and I'll recommend your best next step.</p>
         {settings.email && <p><strong>Email</strong><br /><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}
         <p><strong>Based in</strong><br />Ilorin, Nigeria. Available for engagements across Nigeria, internationally and online.</p>
         <p><strong>Follow</strong><br />{settings.socials.map((s, i) => <>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener">{s.name}</a></>)}</p>

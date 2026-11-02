@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import { breadcrumbs } from '../lib/utils';
+import settings from '../data/settings.json';
+import DiagnosticCall from '../components/DiagnosticCall.astro';
 
 const services = [
   { title: 'Public Speaking', text: 'Keynotes and talks on entrepreneurship, marketing, the psychology of selling and women’s economic independence, adapted to your audience.', href: '/speaking/', cta: 'See speaking topics' },
@@ -19,7 +21,9 @@ const services = [
   description="Work with Kaffy Olaitan: public speaking, corporate training, business education, marketing and sales consulting, workshops, hosting and brand partnerships."
   schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Work With Me', '/work-with-kaffy/']])]}
 >
-  <PageHero eyebrow="Work with me" title="Bring practical business thinking to your people." lead="Whether it's a stage, a team or a single business, I help people understand how customers think and how businesses grow, and then act on it." />
+  <PageHero eyebrow="Work with me" title="Bring practical business thinking to your people." lead="Whether it's a stage, a team or a single business, I help people understand how customers think and how businesses grow, and then act on it.">
+    <div class="btn-row"><a class="btn" href={settings.diagnosticUrl} target="_blank" rel="noopener">Book a free 10-minute call</a></div>
+  </PageHero>
   <section class="section white">
     <div class="wrap grid g2">
       {services.map((s, i) => (
@@ -32,11 +36,5 @@ const services = [
       ))}
     </div>
   </section>
-  <section class="section">
-    <div class="wrap center">
-      <h2>Not sure which fits?</h2>
-      <p class="lead">Tell me what you're trying to achieve and I'll suggest the best format.</p>
-      <div class="btn-row" style="justify-content:center"><a class="btn" href="/contact/">Start a conversation</a></div>
-    </div>
-  </section>
+  <DiagnosticCall dark />
 </Base>

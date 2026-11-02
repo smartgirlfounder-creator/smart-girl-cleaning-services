@@ -1,0 +1,22 @@
+---
+import settings from '../data/settings.json';
+interface Props { dark?: boolean }
+const { dark = false } = Astro.props;
+---
+<section class:list={['section', { dark }]} id="free-call">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">Free 10-minute diagnostic call</span>
+      <h2>Not sure what your business needs next?</h2>
+      <p class="lead">In 10 minutes, we'll find exactly where you're stuck and what your next level looks like. Then I'll recommend the right next step for you, whether that's a consultation or an offer built around your business.</p>
+    </div>
+    <div>
+      <a class="btn" href={settings.diagnosticUrl} target="_blank" rel="noopener">Book my free 10-minute call</a>
+      <p class="small-note">Free. No obligation. Just clarity.</p>
+    </div>
+  </div>
+</section>
+<style>
+  .small-note { font-size: 14px; color: var(--muted); margin-top: 14px; }
+  .dark .small-note { color: #d6c2ab; }
+</style>
