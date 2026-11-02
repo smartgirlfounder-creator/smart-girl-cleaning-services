@@ -39,7 +39,7 @@ Milestones, gallery photos, resources and speaking topics are edited from the sa
    - Base directory: `kaffy-website`
    - Build command: `npm run build`
    - Publish directory: `kaffy-website/dist`
-   - Branch: `main`
+   - Branch: `claude/video-editor-setup-coach-qultfy` (the repository's default branch)
 2. **Forms**: Netlify → Forms → enable form detection, then add an email notification for each form.
 3. **Admin login**:
    - Create a GitHub OAuth app with the callback URL `https://api.netlify.com/auth/done`.
@@ -50,5 +50,5 @@ Milestones, gallery photos, resources and speaking topics are edited from the sa
 ## For developers
 
 - Astro 5, static output, content collections in `src/content/`, editable data in `src/data/`.
-- Admin: Decap CMS (`public/admin/`), GitHub backend, publishing straight to `main`.
+- Admin: Decap CMS (`public/admin/`), GitHub backend, publishing straight to the default branch.
 - `npm install`, then `npm run dev` to preview locally, or `npm run build` to build.

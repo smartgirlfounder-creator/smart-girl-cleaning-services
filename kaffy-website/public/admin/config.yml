@@ -3,7 +3,7 @@
 backend:
   name: github
   repo: smartgirlfounder-creator/smart-girl-cleaning-services
-  branch: main
+  branch: claude/video-editor-setup-coach-qultfy
 
 publish_mode: simple
 media_folder: kaffy-website/public/images/uploads
@@ -115,6 +115,7 @@ collections:
         name: settings
         file: kaffy-website/src/data/settings.json
         fields:
+          - { label: "Colour theme", name: theme, widget: select, options: [{ label: "Espresso and gold", value: espresso }, { label: "Burgundy and champagne", value: burgundy }, { label: "Forest and cream", value: forest }] }
           - { label: "Name", name: name, widget: string }
           - { label: "Titles", name: titles, widget: string }
           - { label: "Location line", name: location, widget: string }
