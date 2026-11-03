@@ -81,27 +81,11 @@
       "featured": false
     },
     {
-      "quote": "Her book is well loaded. I purchased it and am still going through. More grace, ma, you are a blessing to me.",
-      "name": "Ngozi",
+      "quote": "Her book Booked and Busy is well loaded. I purchased it and am still going through. You are a blessing to me. / Ma, you truly inspire me to start this business. Thank you for being so honest and a great teacher. / I got your book earlier today and I am so glad I did.",
+      "name": "Ngozi, Nhaza and Ezinne",
       "source": "YouTube",
       "category": "Books and tools",
       "image": "/images/testimonials/book-booked-and-busy-youtube.webp",
-      "featured": false
-    },
-    {
-      "quote": "You are such a blessing. I got your book earlier today and I am so glad I did.",
-      "name": "Ezinne",
-      "source": "YouTube",
-      "category": "Books and tools",
-      "image": "",
-      "featured": false
-    },
-    {
-      "quote": "Ma, you truly inspire me to start this business. Thank you for being so honest and a great teacher.",
-      "name": "Nhaza",
-      "source": "YouTube",
-      "category": "Learning from the content",
-      "image": "",
       "featured": false
     },
     {
@@ -133,7 +117,7 @@
       "name": "Peter",
       "source": "YouTube",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/youtube-number-one-fan.webp",
       "featured": false
     },
     {
@@ -157,7 +141,7 @@
       "name": "Cynthia",
       "source": "YouTube",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/youtube-role-model-cynthia.webp",
       "featured": false
     },
     {
@@ -165,7 +149,7 @@
       "name": "Tosin",
       "source": "YouTube",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/youtube-started-business-today.webp",
       "featured": false
     },
     {
@@ -173,7 +157,7 @@
       "name": "Abeeb",
       "source": "WhatsApp",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/whatsapp-sharing-knowledge-freely.webp",
       "featured": false
     },
     {
@@ -181,7 +165,7 @@
       "name": "Allie",
       "source": "TikTok",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/tiktok-allie-five-dollars.webp",
       "featured": false
     },
     {
@@ -189,7 +173,7 @@
       "name": "A YouTube viewer in Uganda",
       "source": "YouTube",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/youtube-inspire-me-from-uganda.webp",
       "featured": false
     },
     {
@@ -197,7 +181,7 @@
       "name": "A mentee",
       "source": "WhatsApp",
       "category": "Coaching and mentorship",
-      "image": "",
+      "image": "/images/testimonials/whatsapp-open-an-academy.webp",
       "featured": false
     },
     {
@@ -205,7 +189,7 @@
       "name": "Motola",
       "source": "Smart Girl Cleaning Services client",
       "category": "Cleaning clients",
-      "image": "",
+      "image": "/images/testimonials/whatsapp-cleaning-client-thank-you.webp",
       "featured": false
     },
     {
@@ -213,7 +197,7 @@
       "name": "Martins",
       "source": "WhatsApp",
       "category": "Community",
-      "image": "",
+      "image": "/images/testimonials/whatsapp-proud-of-you.webp",
       "featured": false
     },
     {
@@ -221,7 +205,7 @@
       "name": "Cent Vault Deep Cleaning Services",
       "source": "TikTok",
       "category": "Learning from the content",
-      "image": "",
+      "image": "/images/testimonials/tiktok-inspiring-and-helpful.webp",
       "featured": false
     }
   ],

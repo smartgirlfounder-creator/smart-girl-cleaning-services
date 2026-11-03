@@ -1,17 +1,19 @@
 ---
-interface Props { t: { quote: string; name: string; source: string } }
+// Shows the original screenshot. The typed quote is kept as alt text so search engines can read it.
+interface Props { t: { quote: string; name: string; source: string; image?: string } }
 const { t } = Astro.props;
 ---
-<figure class="tcard">
-  <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
-  <figcaption><strong>{t.name}</strong><span>{t.source}</span></figcaption>
+<figure class="tshot">
+  {t.image
+    ? <img src={t.image} alt={`${t.name} on ${t.source}: "${t.quote}"`} loading="lazy" />
+    : <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>}
+  <figcaption><strong>{t.name}</strong> &middot; {t.source}</figcaption>
 </figure>
 <style>
-  .tcard { margin: 0; background: var(--white); border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; break-inside: avoid; }
-  .tcard blockquote { margin: 0; font: 500 21px/1.4 var(--serif); color: var(--black); }
-  .tcard figcaption { font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
-  .tcard strong { color: var(--ink); font-weight: 600; }
-  .dark .tcard { background: transparent; border-color: var(--dark-line); }
-  .dark .tcard blockquote { color: var(--on-dark); }
-  .dark .tcard figcaption, .dark .tcard strong { color: var(--on-dark-muted); }
+  .tshot { margin: 0; background: var(--white); border: 1px solid var(--line); padding: 10px 10px 14px; break-inside: avoid; }
+  .tshot img { width: 100%; display: block; }
+  .tshot blockquote { margin: 8px; font: 500 20px/1.4 var(--serif); color: var(--black); }
+  .tshot figcaption { font-size: 13px; color: var(--muted); padding: 10px 4px 0; }
+  .tshot strong { color: var(--ink); font-weight: 600; }
+  .dark .tshot { background: var(--white); }
 </style>

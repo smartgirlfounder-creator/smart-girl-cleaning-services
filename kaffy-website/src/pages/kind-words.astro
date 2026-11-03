@@ -8,14 +8,13 @@ import { breadcrumbs, slugify } from '../lib/utils';
 
 const order = ['Coaching and mentorship', 'Learning from the content', 'Books and tools', 'Community', 'Cleaning clients'];
 const cats = order.filter((c) => data.items.some((t) => t.category === c));
-const shots = data.items.filter((t) => t.image);
 ---
 <Base
   title="Kind Words: What People Say About Kaffy Olaitan"
   description="Real messages from entrepreneurs, mentees and cleaning business owners who have learned from Kaffy Olaitan's coaching, videos and books."
   schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Kind Words', '/kind-words/']])]}
 >
-  <PageHero eyebrow="Kind words" title="In their own words." lead="Real messages from mentees, community members, viewers and clients. Unedited, apart from hiding private details." />
+  <PageHero eyebrow="Kind words" title="In their own words." lead="Real screenshots from mentees, community members, viewers and clients. Unedited, apart from hiding phone numbers and private details." />
 
   <section class="section white">
     <div class="wrap">
@@ -46,17 +45,6 @@ const shots = data.items.filter((t) => t.image);
     </section>
   )}
 
-  <section class="section">
-    <div class="wrap">
-      <span class="eyebrow">The receipts</span>
-      <h2>Screenshots</h2>
-      <p class="lead">The original messages and comments, with phone numbers and private details hidden.</p>
-      <div class="shots">
-        {shots.map((t) => <img src={t.image} alt={`Screenshot of a message from ${t.name} on ${t.source}`} loading="lazy" />)}
-      </div>
-    </div>
-  </section>
-
   <DiagnosticCall dark />
 </Base>
 
@@ -70,9 +58,6 @@ const shots = data.items.filter((t) => t.image);
   .videos { margin-top: 32px; }
   .videos figure { margin: 0; }
   .videos video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: var(--dark-deep); }
-  .shots { columns: 2; column-gap: 14px; margin-top: 28px; }
-  @media (min-width: 900px) { .shots { columns: 4; } }
-  .shots img { width: 100%; margin: 0 0 14px; border: 1px solid var(--line); break-inside: avoid; }
 </style>
 
 <script>
