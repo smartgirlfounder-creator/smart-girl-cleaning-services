@@ -3,8 +3,8 @@ title: "This Is the Beginning"
 description: "My first article on my own website. I don't know exactly where the next five to ten years will take me, but I know one thing: I'm not backing down."
 date: 2026-11-03
 category: Personal Reflections
-image: /images/photos/kaffy-olaitan-the-small-room.webp
-imageAlt: Kaffy Olaitan smiling in a blazer in the small room where she lived with her four children
+image: /images/photos/designing-kaffyolaitan-website.webp
+imageAlt: "Three colour designs considered while creating kaffyolaitan.com: espresso, wine and forest"
 ---
 
 Today is 3 November 2026, and you are reading the first article on my own website.
