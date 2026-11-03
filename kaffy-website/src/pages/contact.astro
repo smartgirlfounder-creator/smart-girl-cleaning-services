@@ -22,9 +22,12 @@ const types = [
   <PageHero eyebrow="Contact" title="Let's talk." lead="Choose what your message is about so it reaches the right place. I read every message and reply as quickly as I can." />
   <section class="section white">
     <div class="wrap split wide-left top">
-      <form class="form" name="contact" method="POST" action="/thank-you/?form=contact" data-netlify="true" netlify-honeypot="company">
-        <input type="hidden" name="form-name" value="contact" />
-        <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+      <form class="form" name="contact" method="POST" action={`https://formsubmit.co/${settings.formEmail}`}>
+        <input type="hidden" name="_subject" value="New contact message from kaffyolaitan.com" />
+        <input type="hidden" name="_next" value="https://kaffyolaitan.com/thank-you/?form=contact" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <p class="hp"><label>Leave this empty <input name="_honey" tabindex="-1" autocomplete="off" /></label></p>
         <div><label for="c-type">What is this about? *</label>
           <select id="c-type" name="enquiry_type" required>{types.map(([v, l]) => <option value={v}>{l}</option>)}</select>
         </div>

@@ -8,9 +8,12 @@ import settings from '../data/settings.json';
       <h2 id="nl-title">One email. Every week. The business lessons I had to learn the expensive way.</h2>
       <p class="lead">Business insights, marketing ideas, sales lessons and honest reflections from building in real time. Free, and you can leave whenever you like.</p>
     </div>
-    <form class="form" name="newsletter" method="POST" action="/thank-you/?form=newsletter" data-netlify="true" netlify-honeypot="company">
-      <input type="hidden" name="form-name" value="newsletter" />
-      <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+    <form class="form" name="newsletter" method="POST" action={`https://formsubmit.co/${settings.formEmail}`}>
+      <input type="hidden" name="_subject" value="New newsletter sign-up" />
+        <input type="hidden" name="_next" value="https://kaffyolaitan.com/thank-you/?form=newsletter" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+      <p class="hp"><label>Leave this empty <input name="_honey" tabindex="-1" autocomplete="off" /></label></p>
       <div>
         <label for="nl-name">First name</label>
         <input id="nl-name" name="first_name" autocomplete="given-name" />

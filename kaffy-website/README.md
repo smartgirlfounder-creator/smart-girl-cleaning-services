@@ -18,7 +18,9 @@ The personal brand website of Kaffy Olaitan: business educator, entrepreneur and
 | Work With Me | `/work-with-kaffy/` | Services |
 | Contact | `/contact/` | Enquiry form by type |
 
-Forms (speaking bookings, contact and the newsletter) are handled by Netlify Forms and arrive by email.
+Forms (speaking bookings, contact and the newsletter) are sent by FormSubmit (formsubmit.co) to the email in Site settings.
+
+Hosting: GitHub Pages, published by `.github/workflows/kaffy-website.yml` on every change.
 
 ## How to post (from a phone or laptop)
 
@@ -35,20 +37,16 @@ Milestones, gallery photos, resources and speaking topics are edited from the sa
 
 ## One-time setup (to do together)
 
-1. **Netlify**: Add new site → Import from GitHub → this repository.
-   - Base directory: `kaffy-website`
-   - Build command: `npm run build`
-   - Publish directory: `kaffy-website/dist`
-   - Branch: `claude/video-editor-setup-coach-qultfy` (the repository's default branch)
-2. **Forms**: Netlify → Forms → enable form detection, then add an email notification for each form.
-3. **Admin login**:
-   - Create a GitHub OAuth app with the callback URL `https://api.netlify.com/auth/done`.
-   - In Netlify, go to Access & security → OAuth and install the GitHub provider with that app's ID and secret.
-4. **Domain**: after buying kaffyolaitan.com, add it in Netlify → Domain management.
-5. **Google**: add the site to Google Search Console and submit `sitemap-index.xml`.
+1. **GitHub Pages**: repository Settings → Pages → Source: **GitHub Actions**. Custom domain: `kaffyolaitan.com`, then tick **Enforce HTTPS**.
+2. **Namecheap → Advanced DNS** (leave Mail Settings, SPF, DKIM and the verification records alone):
+   - A records for `@`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - CNAME `www` → `smartgirlfounder-creator.github.io`
+3. **Forms**: send one test from each form, then click FormSubmit's activation email (sent once to the form email).
+4. **Admin login**: uses the GitHub OAuth app installed on the Netlify project `kaffy-olaitan` (builds stopped, no credits used). Keep that Netlify project.
+5. **Google**: Search Console property for `kaffyolaitan.com`, sitemap `https://kaffyolaitan.com/sitemap-index.xml`.
 
 ## For developers
 
 - Astro 5, static output, content collections in `src/content/`, editable data in `src/data/`.
-- Admin: Decap CMS (`public/admin/`), GitHub backend, publishing straight to the default branch.
+- Admin: Decap CMS (`public/admin/`), GitHub backend (login via Netlify's OAuth service), publishing straight to the default branch.
 - `npm install`, then `npm run dev` to preview locally, or `npm run build` to build.

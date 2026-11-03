@@ -1,9 +1,13 @@
 # Content admin for kaffyolaitan.com (Decap CMS).
-# Kaffy signs in with GitHub. Every "Publish" saves to GitHub and Netlify rebuilds the site in about a minute.
+# Kaffy signs in with GitHub. Every "Publish" saves to GitHub, and GitHub Pages rebuilds the site in a minute or two.
 backend:
   name: github
   repo: smartgirlfounder-creator/smart-girl-cleaning-services
   branch: claude/video-editor-setup-coach-qultfy
+  # The site is hosted on GitHub Pages; the GitHub login still goes through the
+  # (build-free) Netlify project, which costs no credits.
+  base_url: https://api.netlify.com
+  site_domain: kaffy-olaitan.netlify.app
 
 publish_mode: simple
 media_folder: kaffy-website/public/images/uploads
@@ -132,6 +136,7 @@ collections:
           - { label: "Free 10-minute diagnostic call link", name: diagnosticUrl, widget: string }
           - { label: "Online store link (Selar)", name: storeUrl, widget: string }
           - { label: "Smart Entrepreneurs Community link (WhatsApp)", name: communityUrl, widget: string }
+          - { label: "Email that receives form messages", name: formEmail, widget: string }
           - label: "Social links"
             name: socials
             widget: list
