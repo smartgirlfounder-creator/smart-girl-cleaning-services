@@ -1,0 +1,17 @@
+---
+interface Props { t: { quote: string; name: string; source: string } }
+const { t } = Astro.props;
+---
+<figure class="tcard">
+  <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
+  <figcaption><strong>{t.name}</strong><span>{t.source}</span></figcaption>
+</figure>
+<style>
+  .tcard { margin: 0; background: var(--white); border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; break-inside: avoid; }
+  .tcard blockquote { margin: 0; font: 500 21px/1.4 var(--serif); color: var(--black); }
+  .tcard figcaption { font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+  .tcard strong { color: var(--ink); font-weight: 600; }
+  .dark .tcard { background: transparent; border-color: var(--dark-line); }
+  .dark .tcard blockquote { color: var(--on-dark); }
+  .dark .tcard figcaption, .dark .tcard strong { color: var(--on-dark-muted); }
+</style>

@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import DiagnosticCall from '../components/DiagnosticCall.astro';
+import data from '../data/testimonials.json';
+import { breadcrumbs, slugify } from '../lib/utils';
+
+const order = ['Coaching and mentorship', 'Learning from the content', 'Books and tools', 'Community', 'Cleaning clients'];
+const cats = order.filter((c) => data.items.some((t) => t.category === c));
+const shots = data.items.filter((t) => t.image);
+---
+<Base
+  title="Kind Words: What People Say About Kaffy Olaitan"
+  description="Real messages from entrepreneurs, mentees and cleaning business owners who have learned from Kaffy Olaitan's coaching, videos and books."
+  schema={[breadcrumbs(Astro.site!, [['Home', '/'], ['Kind Words', '/kind-words/']])]}
+>
+  <PageHero eyebrow="Kind words" title="In their own words." lead="Real messages from mentees, community members, viewers and clients. Unedited, apart from hiding private details." />
+
+  <section class="section white">
+    <div class="wrap">
+      <nav class="chips" aria-label="Filter testimonials">
+        <button class="chip" type="button" data-filter="all" aria-current="true">All</button>
+        {cats.map((c) => <button class="chip" type="button" data-filter={slugify(c)}>{c}</button>)}
+      </nav>
+      <div class="wall">
+        {data.items.map((t) => <div data-cat={slugify(t.category)}><TestimonialCard t={t} /></div>)}
+      </div>
+    </div>
+  </section>
+
+  {data.videos.length > 0 && (
+    <section class="section dark">
+      <div class="wrap">
+        <span class="eyebrow">Video messages</span>
+        <h2>Hear it from them</h2>
+        <div class="grid g3 videos">
+          {data.videos.map((v) => (
+            <figure>
+              <video src={v.src} poster={v.poster} controls preload="none" playsinline></video>
+              <figcaption class="caption">{v.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">The receipts</span>
+      <h2>Screenshots</h2>
+      <p class="lead">The original messages and comments, with phone numbers and private details hidden.</p>
+      <div class="shots">
+        {shots.map((t) => <img src={t.image} alt={`Screenshot of a message from ${t.name} on ${t.source}`} loading="lazy" />)}
+      </div>
+    </div>
+  </section>
+
+  <DiagnosticCall dark />
+</Base>
+
+<style>
+  .wall { columns: 1; column-gap: 20px; margin-top: 32px; }
+  .wall > div { break-inside: avoid; margin-bottom: 20px; }
+  .wall > div[hidden] { display: none; }
+  @media (min-width: 720px) { .wall { columns: 2; } }
+  @media (min-width: 1100px) { .wall { columns: 3; } }
+  button.chip { cursor: pointer; }
+  .videos { margin-top: 32px; }
+  .videos figure { margin: 0; }
+  .videos video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: var(--dark-deep); }
+  .shots { columns: 2; column-gap: 14px; margin-top: 28px; }
+  @media (min-width: 900px) { .shots { columns: 4; } }
+  .shots img { width: 100%; margin: 0 0 14px; border: 1px solid var(--line); break-inside: avoid; }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  chips.forEach((chip) => chip.addEventListener('click', () => {
+    chips.forEach((c) => c.removeAttribute('aria-current'));
+    chip.setAttribute('aria-current', 'true');
+    const f = chip.dataset.filter;
+    document.querySelectorAll<HTMLElement>('[data-cat]').forEach((el) => { el.hidden = f !== 'all' && el.dataset.cat !== f; });
+  }));
+</script>

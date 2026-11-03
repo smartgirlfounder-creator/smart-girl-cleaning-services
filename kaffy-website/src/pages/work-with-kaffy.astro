@@ -4,6 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import { breadcrumbs } from '../lib/utils';
 import settings from '../data/settings.json';
 import DiagnosticCall from '../components/DiagnosticCall.astro';
+import KindWords from '../components/KindWords.astro';
 
 const services = [
   { title: 'Public Speaking', text: 'Keynotes and talks on entrepreneurship, marketing, the psychology of selling and women’s economic independence, adapted to your audience.', href: '/speaking/', cta: 'See speaking topics' },
@@ -37,5 +38,6 @@ const services = [
       ))}
     </div>
   </section>
+  <KindWords category="Coaching and mentorship" limit={3} title="What coaching clients say" />
   <DiagnosticCall dark />
 </Base>

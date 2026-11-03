@@ -1,0 +1,23 @@
+---
+import TestimonialCard from './TestimonialCard.astro';
+import data from '../data/testimonials.json';
+interface Props { category?: string; limit?: number; dark?: boolean; title?: string }
+const { category, limit = 3, dark = false, title = 'Real words from real people' } = Astro.props;
+const pool = data.items.filter((t) => t.featured && (!category || t.category === category));
+const items = (pool.length >= limit ? pool : data.items.filter((t) => !category || t.category === category)).slice(0, limit);
+---
+{items.length > 0 && (
+  <section class:list={['section', { dark, white: !dark }]}>
+    <div class="wrap">
+      <span class="eyebrow">Kind words</span>
+      <h2>{title}</h2>
+      <div class="grid g3 kw">{items.map((t) => <TestimonialCard t={t} />)}</div>
+      <p class="more"><a class="link-arrow" href="/kind-words/">Read more kind words</a></p>
+    </div>
+  </section>
+)}
+<style>
+  .kw { margin-top: 32px; }
+  .more { margin-top: 32px; }
+  .dark .link-arrow { color: var(--on-dark); border-color: var(--champagne); }
+</style>

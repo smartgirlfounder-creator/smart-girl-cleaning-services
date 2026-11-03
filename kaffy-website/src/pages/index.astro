@@ -5,6 +5,7 @@ import settings from '../data/settings.json';
 import speaking from '../data/speaking.json';
 import { published, formatDate } from '../lib/utils';
 import DiagnosticCall from '../components/DiagnosticCall.astro';
+import KindWords from '../components/KindWords.astro';
 
 const podcast = published(await getCollection('podcast'));
 const documentary = published(await getCollection('documentary'));
@@ -81,6 +82,8 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: se
       </div>
     </div>
   </section>
+
+  <KindWords limit={3} />
 
   <!-- QUOTE BAND -->
   <section class="section dark">

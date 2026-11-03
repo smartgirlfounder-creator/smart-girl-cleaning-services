@@ -164,6 +164,29 @@ collections:
               - { label: "Describe the photo (for accessibility)", name: alt, widget: string }
               - { label: "Caption (optional)", name: caption, widget: string, required: false }
               - { label: "Category", name: category, widget: select, options: ["Professional Portraits", "Community and Philanthropy", "Business and Entrepreneurship", "Podcast and Media", "Speaking Engagements", "Behind the Scenes", "Personal Journey"] }
+      - label: "Kind Words (testimonials)"
+        name: testimonials
+        file: kaffy-website/src/data/testimonials.json
+        fields:
+          - label: "Testimonials"
+            name: items
+            widget: list
+            summary: "{{fields.name}} ({{fields.source}})"
+            fields:
+              - { label: "What they said", name: quote, widget: text }
+              - { label: "Name (first name or business only)", name: name, widget: string }
+              - { label: "Where (YouTube, TikTok, WhatsApp...)", name: source, widget: string }
+              - { label: "Category", name: category, widget: select, options: ["Coaching and mentorship", "Learning from the content", "Books and tools", "Community", "Cleaning clients"] }
+              - { label: "Screenshot (hide phone numbers first)", name: image, widget: image, required: false }
+              - { label: "Show on home page", name: featured, widget: boolean, default: false }
+          - label: "Video messages"
+            name: videos
+            widget: list
+            required: false
+            fields:
+              - { label: "Video file", name: src, widget: file }
+              - { label: "Cover image", name: poster, widget: image, required: false }
+              - { label: "Caption", name: caption, widget: string }
       - label: "Resources"
         name: resources
         file: kaffy-website/src/data/resources.json
