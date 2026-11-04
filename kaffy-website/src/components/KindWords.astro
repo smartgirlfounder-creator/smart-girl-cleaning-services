@@ -2,17 +2,17 @@
 import TestimonialCard from './TestimonialCard.astro';
 import data from '../data/testimonials.json';
 interface Props { category?: string; limit?: number; dark?: boolean; title?: string }
-const { category, limit = 3, dark = false, title = 'Real words from real people' } = Astro.props;
+const { category, limit = 3, dark = false, title = 'What people are saying' } = Astro.props;
 const pool = data.items.filter((t) => t.featured && (!category || t.category === category));
 const items = (pool.length >= limit ? pool : data.items.filter((t) => !category || t.category === category)).slice(0, limit);
 ---
 {items.length > 0 && (
   <section class:list={['section', { dark, white: !dark }]}>
     <div class="wrap">
-      <span class="eyebrow">Kind words</span>
+      <span class="eyebrow">Testimonials</span>
       <h2>{title}</h2>
       <div class="kw">{items.map((t) => <TestimonialCard t={t} />)}</div>
-      <p class="more"><a class="link-arrow" href="/kind-words/">Read more kind words</a></p>
+      <p class="more"><a class="link-arrow" href="/testimonials/">See all testimonials</a></p>
     </div>
   </section>
 )}

@@ -170,7 +170,7 @@ collections:
               - { label: "Describe the photo (for accessibility)", name: alt, widget: string }
               - { label: "Caption (optional)", name: caption, widget: string, required: false }
               - { label: "Category", name: category, widget: select, options: ["Professional Portraits", "Community and Philanthropy", "Business and Entrepreneurship", "Podcast and Media", "Speaking Engagements", "Behind the Scenes", "Personal Journey"] }
-      - label: "Kind Words (testimonials)"
+      - label: "Testimonials"
         name: testimonials
         file: kaffy-website/src/data/testimonials.json
         fields:
