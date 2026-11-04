@@ -137,6 +137,7 @@ collections:
           - { label: "Online store link (Selar)", name: storeUrl, widget: string }
           - { label: "Smart Entrepreneurs Community link (WhatsApp)", name: communityUrl, widget: string }
           - { label: "Email that receives form messages", name: formEmail, widget: string }
+          - { label: "Web3Forms access key (forms)", name: formAccessKey, widget: string, required: false }
           - label: "Social links"
             name: socials
             widget: list

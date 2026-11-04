@@ -1,4 +1,6 @@
 ---
+import FormFields from './FormFields.astro';
+import { formAction } from '../lib/forms';
 import settings from '../data/settings.json';
 ---
 <section class="section dark newsletter" id="newsletter" aria-labelledby="nl-title">
@@ -8,12 +10,8 @@ import settings from '../data/settings.json';
       <h2 id="nl-title">One email. Every week. The business lessons I had to learn the expensive way.</h2>
       <p class="lead">Business insights, marketing ideas, sales lessons and honest reflections from building in real time. Free, and you can leave whenever you like.</p>
     </div>
-    <form class="form" name="newsletter" method="POST" action={`https://formsubmit.co/${settings.formEmail}`}>
-      <input type="hidden" name="_subject" value="New newsletter sign-up" />
-        <input type="hidden" name="_next" value="https://kaffyolaitan.com/thank-you/?form=newsletter" />
-        <input type="hidden" name="_template" value="table" />
-        <input type="hidden" name="_captcha" value="false" />
-      <p class="hp"><label>Leave this empty <input name="_honey" tabindex="-1" autocomplete="off" /></label></p>
+    <form class="form" name="newsletter" method="POST" action={formAction}>
+        <FormFields subject="New newsletter sign-up" next="https://kaffyolaitan.com/thank-you/?form=newsletter" />
       <div>
         <label for="nl-name">First name</label>
         <input id="nl-name" name="first_name" autocomplete="given-name" />

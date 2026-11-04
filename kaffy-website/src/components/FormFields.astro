@@ -1,0 +1,23 @@
+---
+// Hidden fields that tell the form service where to send the message and where to go afterwards.
+import { useWeb3Forms, formAccessKey } from '../lib/forms';
+interface Props { subject: string; next: string }
+const { subject, next } = Astro.props;
+---
+{useWeb3Forms ? (
+  <>
+    <input type="hidden" name="access_key" value={formAccessKey} />
+    <input type="hidden" name="subject" value={subject} />
+    <input type="hidden" name="from_name" value="kaffyolaitan.com" />
+    <input type="hidden" name="redirect" value={next} />
+    <p class="hp"><label>Leave this empty <input type="checkbox" name="botcheck" tabindex="-1" /></label></p>
+  </>
+) : (
+  <>
+    <input type="hidden" name="_subject" value={subject} />
+    <input type="hidden" name="_next" value={next} />
+    <input type="hidden" name="_template" value="table" />
+    <input type="hidden" name="_captcha" value="false" />
+    <p class="hp"><label>Leave this empty <input name="_honey" tabindex="-1" autocomplete="off" /></label></p>
+  </>
+)}
