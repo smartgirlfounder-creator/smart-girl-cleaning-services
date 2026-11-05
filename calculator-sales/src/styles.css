@@ -161,6 +161,7 @@ p { margin: 0 0 1em; }
 .faq summary::after { content: "+"; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--burgundy-2); }
 .faq details[open] summary::after { content: "–"; }
 .faq details p { padding: 0 20px 18px; margin: 0; color: var(--muted); }
+.faq-video { max-width: 260px; margin: 0 20px 20px; }
 
 /* Final */
 .final { background: radial-gradient(100% 120% at 50% 0%, #6b1d31 0%, var(--deep) 60%); color: var(--on-dark); padding: 80px 0; }

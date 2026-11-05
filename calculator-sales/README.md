@@ -23,8 +23,7 @@ Do not change the repository-root `netlify.toml` (that hosts Smart Cleaners Acad
 - Founder photo: copied from `kaffy-website/public/images/photos/`.
 - Free PDF: `Cleaning-Calculator-Pro-Complete-Guide.pdf`, supplied by Kaffy (no access link or code inside).
   Do **not** use the buyer "Access Guide" PDF here; it contains the private access-page address.
-- Videos: Kaffy Olaitan YouTube channel. The "install on your phone" Short (TGUItYzt17M) is left out on purpose until
-  it's confirmed it doesn't show the access page address.
+- Videos: Kaffy Olaitan YouTube channel (9 videos; the install Short sits in the FAQ, confirmed safe by Kaffy).
 
 ## Adding testimonial screenshots
 Put images in `src/assets/testimonials/` and add `<figure><img ...></figure>` cards inside the
