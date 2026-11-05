@@ -124,8 +124,15 @@ p { margin: 0 0 1em; }
 .tint { background: var(--tint); }
 .review-in { display: grid; gap: 36px; align-items: center; }
 .review-copy p { font-size: 17px; color: var(--muted); }
-.review-in .yt-short { max-width: 340px; margin: 0 auto; width: 100%; }
-@media (min-width: 900px) { .review-in { grid-template-columns: 1.2fr .8fr; gap: 64px; } }
+.review-in .yt-short { max-width: 300px; margin: 0 auto; width: 100%; }
+@media (min-width: 900px) { .review-in { grid-template-columns: 1.3fr .7fr; gap: 64px; max-width: 980px; margin: 0 auto; } }
+
+.shots-reviews { display: grid; gap: 16px; max-width: 640px; margin: 0 auto 56px; }
+.review-card { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; box-shadow: 0 14px 30px -24px rgba(46,10,21,.5); }
+.review-card img { border-radius: 8px; width: 100%; }
+.review-card figcaption { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.stars { color: #f5a623; letter-spacing: 1px; margin-right: 6px; }
+.review-title { font: 600 clamp(26px, 5vw, 36px)/1.15 var(--serif); }
 
 /* YouTube facades */
 .yt { position: relative; aspect-ratio: 16 / 9; background: #120308 center/cover no-repeat; border-radius: 14px; overflow: hidden; cursor: pointer; box-shadow: 0 18px 40px -22px rgba(46,10,21,.6); }
