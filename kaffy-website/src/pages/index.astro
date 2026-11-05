@@ -6,6 +6,7 @@ import speaking from '../data/speaking.json';
 import { published, formatDate } from '../lib/utils';
 import DiagnosticCall from '../components/DiagnosticCall.astro';
 import KindWords from '../components/KindWords.astro';
+import SocialIcons from '../components/SocialIcons.astro';
 
 const podcast = published(await getCollection('podcast'));
 const documentary = published(await getCollection('documentary'));
@@ -45,7 +46,7 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: se
           <a class="btn" href="/speaking/#book">Book Kaffy to speak</a>
           <a class="btn ghost" href="/about/">Explore my work</a>
         </div>
-        <p class="watch"><a class="link-arrow light" href="/podcast/">Watch my content</a></p>
+        <div class="watch"><a class="link-arrow light" href="/podcast/">Watch my content</a><SocialIcons tone="light" /></div>
       </div>
     </div>
   </section>
@@ -227,7 +228,7 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: se
   .hero-quote { font-size: clamp(44px, 6.4vw, 88px); line-height: 1; margin: 0; color: var(--on-dark); }
   .hero-answer { font-size: 18px; color: var(--on-dark-muted); max-width: 560px; }
   .hero-punch { font: 500 clamp(24px, 2.4vw, 30px)/1.25 var(--serif); color: var(--on-dark); max-width: 560px; }
-  .watch { margin-top: 22px; }
+  .watch { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
   @media (min-width: 900px) {
     .hero-grid { grid-template-columns: 1fr 1fr; min-height: calc(100vh - 77px); }
     .hero-photo { aspect-ratio: auto; max-height: none; height: 100%; min-height: 640px; }

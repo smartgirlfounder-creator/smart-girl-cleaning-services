@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import settings from '../data/settings.json';
 import Newsletter from '../components/Newsletter.astro';
+import SocialIcons from '../components/SocialIcons.astro';
 
 interface Props {
   title: string;
@@ -81,6 +82,7 @@ const ld = [person, ...schema];
             {nav.map((n) => (
               <li><a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a></li>
             ))}
+            <li class="nav-social"><SocialIcons size={16} /></li>
             <li class="nav-cta"><a class="btn" href="/speaking/#book">Book Kaffy</a></li>
           </ul>
         </nav>
@@ -160,6 +162,9 @@ const ld = [person, ...schema];
   .site-nav a:not(.btn) { display: block; padding: 10px 9px; font: 500 14px/1 var(--sans); text-decoration: none; color: var(--charcoal); white-space: nowrap; }
   .site-nav a[aria-current] { text-decoration: underline; text-decoration-color: var(--champagne); text-underline-offset: 8px; }
   .site-nav .nav-cta { margin-left: 10px; }
+  .site-nav .nav-social { margin-left: 6px; }
+  @media (max-width: 1500px) and (min-width: 1261px) { .site-nav .nav-social { display: none; } }
+  .site-nav .nav-social a { display: grid; width: 32px; height: 32px; padding: 0; border-bottom: 0; }
   .site-nav .btn { min-height: 44px; padding: 12px 20px; font-size: 12px; white-space: nowrap; }
   .menu-btn { display: none; margin-left: auto; background: none; border: 1px solid var(--black); padding: 10px 16px; font: 600 12px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; cursor: pointer; color: var(--black); }
   @media (max-width: 1560px) { .brand-sub { display: none; } }
@@ -169,6 +174,9 @@ const ld = [person, ...schema];
     .site-nav.open { display: block; }
     .site-nav ul { flex-direction: column; align-items: stretch; padding: 12px var(--gutter) 24px; }
     .site-nav a:not(.btn) { padding: 14px 0; font-size: 17px; border-bottom: 1px solid var(--line); }
+    .site-nav .nav-social { margin: 16px 0 0; }
+    .site-nav ul.social-icons { flex-direction: row; padding: 0; gap: 10px; }
+    .site-nav .nav-social a { width: 40px; height: 40px; border-bottom: 1px solid var(--line-strong); }
     .site-nav .nav-cta { margin: 16px 0 0; }
     .site-nav .btn { width: 100%; }
   }

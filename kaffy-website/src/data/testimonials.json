@@ -1,6 +1,22 @@
 {
   "items": [
     {
+      "quote": "I'm so glad I came across your posts. It is very difficult to see cleaning business owners and founders share valuable information to those coming up. I was so scared that I won't see a useful template to start out, but there you were.",
+      "name": "Daniel Vincent, Rivers State",
+      "source": "WhatsApp",
+      "category": "Learning from the content",
+      "image": "/images/testimonials/whatsapp-daniel-so-glad-i-came-across.webp",
+      "featured": false
+    },
+    {
+      "quote": "These are my jottings so far from the premium information you have been giving. Mama, you are truly a blessing! Thank you for showing us that this path is actually worth walking.",
+      "name": "Daniel Vincent",
+      "source": "WhatsApp",
+      "category": "Learning from the content",
+      "image": "/images/testimonials/whatsapp-daniel-jottings-truly-a-blessing.webp",
+      "featured": true
+    },
+    {
       "quote": "For almost 5 to 6 hours I was consuming your contents. It ignited a new fire in me and really spurred me into instant actions. Today, I was able to secure a contract I didn't see coming, just because your words pushed me into action.",
       "name": "Cleaning business owner",
       "source": "WhatsApp",
@@ -206,6 +222,22 @@
       "source": "TikTok",
       "category": "Learning from the content",
       "image": "/images/testimonials/tiktok-inspiring-and-helpful.webp",
+      "featured": false
+    },
+    {
+      "quote": "I've been following your YouTube page, and it has helped me a whole lot! I want to kickstart my cleaning business. I've really been motivated and pushed by your videos to finally start!",
+      "name": "Daniel Vincent",
+      "source": "WhatsApp",
+      "category": "Learning from the content",
+      "image": "/images/testimonials/whatsapp-daniel-kickstart-my-business.webp",
+      "featured": false
+    },
+    {
+      "quote": "The client gave me the job. Thanks so much ma, I really appreciate.",
+      "name": "Skin Aura Beauty",
+      "source": "WhatsApp (after a referral from Kaffy)",
+      "category": "Community",
+      "image": "/images/testimonials/whatsapp-referral-client-gave-me-the-job.webp",
       "featured": false
     }
   ],
