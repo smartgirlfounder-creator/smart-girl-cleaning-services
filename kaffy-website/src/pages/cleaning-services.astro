@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FormFields from '../components/FormFields.astro';
+import { formAction } from '../lib/forms';
+import { breadcrumbs } from '../lib/utils';
+
+const site = Astro.site!.toString().replace(/\/$/, '');
+const residential = ['Regular home cleaning', 'Deep cleaning', 'Move-in / move-out cleaning', 'Post-construction cleaning', 'Sofa and upholstery cleaning', 'Carpet and rug cleaning', 'Fumigation'];
+const commercial = ['Office cleaning', 'Recurring cleaning contracts', 'Post-construction and handover cleaning', 'Shops, schools and facilities', 'Short-let and Airbnb turnovers'];
+const services = [...residential, ...commercial, 'Not sure yet'];
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'HouseCleaningService',
+  name: 'Smart Girl Cleaning Services',
+  url: site + '/cleaning-services/',
+  foundingDate: '2023-11-01',
+  founder: { '@id': site + '/#person' },
+  areaServed: { '@type': 'City', name: 'Ilorin' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Ilorin', addressRegion: 'Kwara State', addressCountry: 'NG' },
+};
+---
+<Base
+  title="Smart Girl Cleaning Services, Ilorin | Book a Cleaning or Commercial Contract"
+  description="Book Smart Girl Cleaning Services, Kaffy Olaitan's cleaning company in Ilorin: home and deep cleaning, post-construction cleaning, and office and commercial cleaning contracts."
+  schema={[business, breadcrumbs(Astro.site!, [['Home', '/'], ['Book a Cleaning', '/cleaning-services/']])]}
+>
+  <PageHero
+    eyebrow="Smart Girl Cleaning Services"
+    title="The business where it all started."
+    lead="I founded Smart Girl Cleaning Services in Ilorin on 1 November 2023. Today my team cleans homes, new builds and workplaces. If you need a cleaning, or a reliable cleaning partner for your business, we'd love to help."
+    image="/images/photos/kaffy-outreach-smart-girl-van.webp"
+    imageAlt="Kaffy Olaitan beside the Smart Girl Cleaning Services van"
+  >
+    <div class="btn-row"><a class="btn" href="#book-cleaning">Book a cleaning</a><a class="btn ghost" href="#book-cleaning">Request a commercial quote</a></div>
+  </PageHero>
+
+  <section class="section white">
+    <div class="wrap grid g2">
+      <article class="card">
+        <span class="num">For homes</span>
+        <h3>Residential cleaning</h3>
+        <ul class="ticks">{residential.map((s) => <li>{s}</li>)}</ul>
+      </article>
+      <article class="card">
+        <span class="num">For businesses</span>
+        <h3>Commercial cleaning and contracts</h3>
+        <ul class="ticks">{commercial.map((s) => <li>{s}</li>)}</ul>
+        <p>Weekly, monthly or long-term contracts, with a clear proposal before we start.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section dark">
+    <div class="wrap center">
+      <p class="pull">Smart Girl cleaned.<br />Someone got fed.</p>
+      <p class="lead">With every booking, a small token goes toward feeding someone in need. In November 2025, we fed 150 elderly women across three markets in Ilorin.</p>
+    </div>
+  </section>
+
+  <section class="section" id="book-cleaning">
+    <div class="wrap narrow">
+      <span class="eyebrow">Book a cleaning</span>
+      <h2>Tell us what you need</h2>
+      <p class="lead">Share a few details and we'll get back to you with a clear quote.</p>
+      <form class="form" name="cleaning-booking" method="POST" action={formAction}>
+        <FormFields subject="New cleaning booking request (Smart Girl Cleaning Services)" next="https://kaffyolaitan.com/thank-you/?form=cleaning" />
+        <div class="row">
+          <div><label for="cl-type">Type of client *</label><select id="cl-type" name="client_type" required><option>Home / individual</option><option>Business / organisation</option></select></div>
+          <div><label for="cl-service">Service needed *</label><select id="cl-service" name="service" required>{services.map((s) => <option>{s}</option>)}</select></div>
+        </div>
+        <div class="row">
+          <div><label for="cl-name">Your name *</label><input id="cl-name" name="name" required autocomplete="name" /></div>
+          <div><label for="cl-org">Company (if a business)</label><input id="cl-org" name="company_name" autocomplete="organization" /></div>
+        </div>
+        <div class="row">
+          <div><label for="cl-phone">Phone or WhatsApp *</label><input id="cl-phone" name="phone" type="tel" required autocomplete="tel" /></div>
+          <div><label for="cl-email">Email</label><input id="cl-email" name="email" type="email" autocomplete="email" /></div>
+        </div>
+        <div class="row">
+          <div><label for="cl-loc">Location (area, city) *</label><input id="cl-loc" name="location" required placeholder="e.g. Tanke, Ilorin" /></div>
+          <div><label for="cl-date">Preferred date</label><input id="cl-date" name="preferred_date" type="date" /></div>
+        </div>
+        <div class="row">
+          <div><label for="cl-size">Size of the space</label><input id="cl-size" name="size" placeholder="e.g. 3 bedrooms, or 2-floor office" /></div>
+          <div><label for="cl-freq">How often?</label><select id="cl-freq" name="frequency"><option>One-off</option><option>Weekly</option><option>Twice a month</option><option>Monthly</option><option>Long-term contract</option></select></div>
+        </div>
+        <div><label for="cl-msg">Anything else?</label><textarea id="cl-msg" name="message"></textarea></div>
+        <label class="consent"><input type="checkbox" name="consent" value="yes" required /> <span>I agree that my details are used to reply to this request. See the <a href="/privacy/">privacy policy</a>.</span></label>
+        <div><button class="btn" type="submit">Send booking request</button></div>
+      </form>
+    </div>
+  </section>
+</Base>

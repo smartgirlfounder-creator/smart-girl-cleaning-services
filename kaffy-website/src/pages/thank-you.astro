@@ -12,7 +12,11 @@ import Base from '../layouts/Base.astro';
   </section>
 </Base>
 <script>
-  if (new URLSearchParams(location.search).get('form') === 'newsletter') {
+  const f = new URLSearchParams(location.search).get('form');
+  if (f === 'cleaning') {
+    document.getElementById('ty-text')!.textContent = 'Your cleaning request has been received. Smart Girl Cleaning Services will contact you shortly with a quote.';
+  }
+  if (f === 'newsletter') {
     document.getElementById('ty-title')!.textContent = 'You’re in.';
     document.getElementById('ty-text')!.textContent = 'Welcome to The Business Growth Letter. Look out for the next one in your inbox.';
   }

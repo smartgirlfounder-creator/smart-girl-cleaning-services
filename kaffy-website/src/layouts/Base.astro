@@ -27,6 +27,7 @@ const nav = [
   { href: '/resources/', label: 'Resources' },
   { href: '/work-with-kaffy/', label: 'Work With Me' },
   { href: '/testimonials/', label: 'Testimonials' },
+  { href: '/cleaning-services/', label: 'Book a Cleaning' },
 ];
 const person = {
   '@context': 'https://schema.org',
@@ -119,6 +120,7 @@ const ld = [person, ...schema];
             <ul>
               <li><a href="/speaking/">Speaking and Engagements</a></li>
               <li><a href="/work-with-kaffy/">Work With Me</a></li>
+              <li><a href="/cleaning-services/">Smart Girl Cleaning Services</a></li>
               <li><a href="/testimonials/">Testimonials</a></li>
               <li><a href="/media/">Media and Press</a></li>
               <li><a href="/contact/">Contact</a></li>
@@ -163,12 +165,12 @@ const ld = [person, ...schema];
   .site-nav a[aria-current] { text-decoration: underline; text-decoration-color: var(--champagne); text-underline-offset: 8px; }
   .site-nav .nav-cta { margin-left: 10px; }
   .site-nav .nav-social { margin-left: 6px; }
-  @media (max-width: 1500px) and (min-width: 1261px) { .site-nav .nav-social { display: none; } }
+  @media (max-width: 1640px) and (min-width: 1361px) { .site-nav .nav-social { display: none; } }
   .site-nav .nav-social a { display: grid; width: 32px; height: 32px; padding: 0; border-bottom: 0; }
   .site-nav .btn { min-height: 44px; padding: 12px 20px; font-size: 12px; white-space: nowrap; }
   .menu-btn { display: none; margin-left: auto; background: none; border: 1px solid var(--black); padding: 10px 16px; font: 600 12px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; cursor: pointer; color: var(--black); }
-  @media (max-width: 1560px) { .brand-sub { display: none; } }
-  @media (max-width: 1260px) {
+  @media (max-width: 1760px) { .brand-sub { display: none; } }
+  @media (max-width: 1360px) {
     .menu-btn { display: block; }
     .site-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--ivory); border-bottom: 1px solid var(--line); }
     .site-nav.open { display: block; }
