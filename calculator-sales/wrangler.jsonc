@@ -1,0 +1,10 @@
+// Cloudflare Workers settings for the sales page (static files only, no server code).
+// "name" must match the Worker in Cloudflare: cleaningcalssales.smartgirlfounder.workers.dev
+{
+  "name": "cleaningcalssales",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

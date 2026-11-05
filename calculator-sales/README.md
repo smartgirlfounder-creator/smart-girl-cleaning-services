@@ -13,9 +13,11 @@ npm run build      # copies src/ to dist/, fills in config.json, then runs the s
 The build fails if any purchase button doesn't go to `selarUrl`, if the page or the free PDF contains a link,
 web address or access code for the paid app, if a YouTube ID is malformed, or if a referenced file is missing.
 
-## Deploy (when you're ready)
-Create a **new** Netlify site from this repository with **Base directory = `calculator-sales`**.
-`calculator-sales/netlify.toml` sets the build command and `dist` publish folder.
+## Hosting (Cloudflare Worker, connected to GitHub)
+Live at https://cleaningcalssales.smartgirlfounder.workers.dev/ . `wrangler.jsonc` serves `dist/` as static files.
+In Cloudflare: Worker **cleaningcalssales** → Settings → Build → Connect to this repository with
+root directory `calculator-sales`, build command `npm run build`, deploy command `npx wrangler deploy`.
+Every push to the production branch then rebuilds, re-runs the safety checks and updates the live page.
 Do not change the repository-root `netlify.toml` (that hosts Smart Cleaners Academy).
 
 ## Where things come from
