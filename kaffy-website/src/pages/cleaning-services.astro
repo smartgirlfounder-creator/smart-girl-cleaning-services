@@ -4,6 +4,8 @@ import PageHero from '../components/PageHero.astro';
 import FormFields from '../components/FormFields.astro';
 import { formAction } from '../lib/forms';
 import { breadcrumbs } from '../lib/utils';
+import settings from '../data/settings.json';
+const cleanWa = `https://wa.me/${settings.cleaningWhatsApp}?text=${encodeURIComponent('Hello Smart Girl Cleaning Services, I would like to book a cleaning.')}`;
 
 const site = Astro.site!.toString().replace(/\/$/, '');
 const residential = ['Regular home cleaning', 'Deep cleaning', 'Move-in / move-out cleaning', 'Post-construction cleaning', 'Sofa and upholstery cleaning', 'Carpet and rug cleaning', 'Fumigation'];
@@ -13,6 +15,7 @@ const business = {
   '@context': 'https://schema.org',
   '@type': 'HouseCleaningService',
   name: 'Smart Girl Cleaning Services',
+  telephone: '+2347067725511',
   url: site + '/cleaning-services/',
   foundingDate: '2023-11-01',
   founder: { '@id': site + '/#person' },
@@ -32,7 +35,8 @@ const business = {
     image="/images/photos/kaffy-outreach-smart-girl-van.webp"
     imageAlt="Kaffy Olaitan beside the Smart Girl Cleaning Services van"
   >
-    <div class="btn-row"><a class="btn" href="#book-cleaning">Book a cleaning</a><a class="btn ghost" href="#book-cleaning">Request a commercial quote</a></div>
+    <div class="btn-row"><a class="btn" href="#book-cleaning">Book a cleaning</a><a class="btn ghost" href={cleanWa} target="_blank" rel="noopener">Chat with the Smart Girl office</a></div>
+    <p class="office-note">Smart Girl Cleaning Services office line (WhatsApp): <a href={cleanWa} target="_blank" rel="noopener">0706 772 5511</a></p>
   </PageHero>
 
   <section class="section white">
@@ -62,7 +66,7 @@ const business = {
     <div class="wrap narrow">
       <span class="eyebrow">Book a cleaning</span>
       <h2>Tell us what you need</h2>
-      <p class="lead">Share a few details and we'll get back to you with a clear quote.</p>
+      <p class="lead">Share a few details and we'll get back to you with a clear quote. Prefer to chat? Message the <a href={cleanWa} target="_blank" rel="noopener">Smart Girl office on WhatsApp</a> (0706 772 5511).</p>
       <form class="form" name="cleaning-booking" method="POST" action={formAction}>
         <FormFields subject="New cleaning booking request (Smart Girl Cleaning Services)" next="https://kaffyolaitan.com/thank-you/?form=cleaning" />
         <div class="row">
@@ -92,3 +96,7 @@ const business = {
     </div>
   </section>
 </Base>
+
+<style>
+  .office-note { margin-top: 18px; font-size: 15px; color: var(--muted); }
+</style>

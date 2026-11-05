@@ -13,6 +13,7 @@ const { dark = false } = Astro.props;
     <div>
       <a class="btn" href={settings.diagnosticUrl} target="_blank" rel="noopener">Book my free 10-minute call</a>
       <p class="small-note">Free. No obligation. Just clarity.</p>
+      <p class="small-note">Want a one-on-one consultation with Kaffy? <a href={`https://wa.me/${settings.consultWhatsApp}?text=${encodeURIComponent('Hello Kaffy, I would like to book a one-on-one consultation.')}`} target="_blank" rel="noopener">Book on WhatsApp</a> (0707 912 6565).</p>
     </div>
   </div>
 </section>

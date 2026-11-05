@@ -44,6 +44,8 @@ const types = [
       <aside>
         <span class="eyebrow">Other ways</span>
         <p><strong>Business owner?</strong><br />Book a <a href={settings.diagnosticUrl} target="_blank" rel="noopener">free 10-minute diagnostic call</a> and I'll recommend your best next step.</p>
+        <p><strong>One-on-one consultation with Kaffy</strong><br /><a href={`https://wa.me/${settings.consultWhatsApp}`} target="_blank" rel="noopener">WhatsApp 0707 912 6565</a></p>
+        <p><strong>Book a cleaning (Smart Girl Cleaning Services office)</strong><br /><a href={`https://wa.me/${settings.cleaningWhatsApp}`} target="_blank" rel="noopener">WhatsApp 0706 772 5511</a></p>
         {settings.email && <p><strong>Email</strong><br /><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}
         <p><strong>Based in</strong><br />Ilorin, Nigeria. Available for engagements across Nigeria, internationally and online.</p>
         <p><strong>Follow</strong><br />{settings.socials.map((s, i) => <>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noopener">{s.name}</a></>)}</p>

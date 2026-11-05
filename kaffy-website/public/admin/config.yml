@@ -138,6 +138,8 @@ collections:
           - { label: "Smart Entrepreneurs Community link (WhatsApp)", name: communityUrl, widget: string }
           - { label: "Email that receives form messages", name: formEmail, widget: string }
           - { label: "Web3Forms access key (forms)", name: formAccessKey, widget: string, required: false }
+          - { label: "Smart Girl Cleaning office WhatsApp (international, digits only)", name: cleaningWhatsApp, widget: string }
+          - { label: "Consultation WhatsApp (international, digits only)", name: consultWhatsApp, widget: string }
           - label: "Social links"
             name: socials
             widget: list
