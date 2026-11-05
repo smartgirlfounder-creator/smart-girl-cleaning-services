@@ -1,0 +1,10 @@
+{
+  "name": "cleaning-calculator-pro-sales-page",
+  "private": true,
+  "type": "module",
+  "description": "Public sales landing page for Cleaning Calculator Pro. Every purchase button goes to Selar. Contains no part of the paid app.",
+  "scripts": {
+    "build": "node scripts/build.mjs && node scripts/check.mjs",
+    "check": "node scripts/check.mjs"
+  }
+}
