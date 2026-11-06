@@ -1,0 +1,11 @@
+// Cloudflare Worker for the Cleaning Calculator Pro sales page, used when Cloudflare builds
+// from the repository root. It serves the built files in calculator-sales/dist.
+// "name" must match the Worker in Cloudflare: cleaningcalssales.smartgirlfounder.workers.dev
+{
+  "name": "cleaningcalssales",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./calculator-sales/dist",
+    "not_found_handling": "404-page"
+  }
+}
