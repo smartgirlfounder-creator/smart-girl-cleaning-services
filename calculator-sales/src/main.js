@@ -29,3 +29,13 @@ if (bar && heroBtn && 'IntersectionObserver' in window) {
   new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; update(); }).observe(heroBtn);
   if (finalSection) new IntersectionObserver(([e]) => { atFinal = e.isIntersecting; update(); }).observe(finalSection);
 }
+
+// Meta Pixel: record a checkout start when any buy button is tapped, then continue to Selar.
+document.querySelectorAll('a[data-buy]').forEach((link) => {
+  link.addEventListener('click', (e) => {
+    if (typeof window.fbq !== 'function' || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+    window.fbq('track', 'InitiateCheckout', { value: {{PRICE_VALUE}}, currency: 'NGN', content_name: 'Cleaning Calculator Pro' });
+    e.preventDefault();
+    setTimeout(() => { window.location.href = link.href; }, 250);
+  });
+});

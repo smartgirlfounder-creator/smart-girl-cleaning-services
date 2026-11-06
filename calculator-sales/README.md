@@ -3,8 +3,9 @@
 A standalone marketing page that sells Cleaning Calculator Pro. **It contains no part of the paid app.**
 Every purchase button goes to the Selar checkout; the buyer gets access through the existing paid delivery process.
 
-## Change the checkout link or price
-Edit `config.json` (`selarUrl`, `price`). Every button updates on the next build.
+## Change the checkout link, price or Meta Pixel
+Edit `config.json` (`selarUrl`, `price`, `metaPixelId`). Every button and the Pixel update on the next build.
+The Meta Pixel records `PageView` on every visit and `InitiateCheckout` (with the price in NGN) when any buy button is tapped.
 
 ## Build
 ```bash

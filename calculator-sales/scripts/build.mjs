@@ -8,6 +8,9 @@ const config = JSON.parse(readFileSync(join(root, 'config.json'), 'utf8'));
 const src = join(root, 'src');
 const dist = join(root, 'dist');
 
+if (!/^\d{10,20}$/.test(config.metaPixelId || '')) {
+  throw new Error(`config.json metaPixelId must be the numeric Meta Pixel ID: ${config.metaPixelId}`);
+}
 if (!/^https:\/\/selar\.com\/[A-Za-z0-9]+$/.test(config.selarUrl)) {
   throw new Error(`config.json selarUrl is not a Selar product link: ${config.selarUrl}`);
 }
@@ -21,6 +24,8 @@ const tokens = {
   PRICE_NOTE: config.priceNote,
   CONTACT_EMAIL: config.contactEmail,
   WHATSAPP: config.whatsApp,
+  META_PIXEL_ID: config.metaPixelId,
+  PRICE_VALUE: String(config.price).replace(/[^0-9]/g, ''),
   YEAR: String(new Date().getFullYear()),
 };
 
