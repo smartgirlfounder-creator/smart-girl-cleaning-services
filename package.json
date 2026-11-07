@@ -1,0 +1,8 @@
+{
+  "name": "smart-girl-cleaning-services",
+  "private": true,
+  "description": "Repository root. The build script here only builds the Cleaning Calculator Pro sales page (calculator-sales/) for Cloudflare.",
+  "scripts": {
+    "build": "npm --prefix calculator-sales run build"
+  }
+}
