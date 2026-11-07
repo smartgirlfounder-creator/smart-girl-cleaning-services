@@ -1,7 +1,7 @@
 // All business facts in one place. Anything marked TODO must be confirmed by the client before launch.
 export const site = {
-  // TODO: replace with the real domain once bought (e.g. https://www.chimexluxe.com). Used for canonical URLs, sitemap and schema.
-  url: "https://chimexluxe.netlify.app",
+  // The live domain. Used for canonical URLs, sitemap and schema.
+  url: "https://chimexprime.com.ng",
   brand: "Chimex Luxe Marble & Interiors",
   brandShort: "Chimex Luxe",
   legalName: "Chimexprime Global Ventures", // name on the Google Business Profile
