@@ -49,7 +49,7 @@ const business = {
   telephone: site.phoneDisplay.replace(/\s/g, ""),
   image: abs("/assets/img/black-stone-kitchen-island.jpg"),
   address: { "@type": "PostalAddress", streetAddress: site.street, addressLocality: site.locality, addressRegion: site.region, postalCode: site.postalCode, addressCountry: site.country },
-  areaServed: { "@type": "City", name: "Lagos" },
+  areaServed: [{ "@type": "City", name: "Lagos" }, { "@type": "AdministrativeArea", name: "Ajeromi-Ifelodun" }, ...site.localAreas.map((n) => ({ "@type": "Place", name: `${n}, Lagos` }))],
   ...(site.googleBusinessUrl ? { hasMap: site.googleBusinessUrl } : {}),
   ...([site.googleBusinessUrl, site.facebookUrl].filter(Boolean).length ? { sameAs: [site.googleBusinessUrl, site.facebookUrl].filter(Boolean) } : {}),
   ...(site.email ? { email: site.email } : {}),
@@ -117,7 +117,7 @@ ${body}
         </address>
       </div>
       <div><h3>Countertops</h3><ul>${services.slice(0, 5).map((s) => `<li><a href="/services/${s.slug}/">${esc(s.nav)}</a></li>`).join("")}</ul></div>
-      <div><h3>More services</h3><ul>${services.slice(5).map((s) => `<li><a href="/services/${s.slug}/">${esc(s.nav)}</a></li>`).join("")}<li><a href="/our-work/">Our Work</a></li></ul></div>
+      <div><h3>More services</h3><ul>${services.slice(5).map((s) => `<li><a href="/services/${s.slug}/">${esc(s.nav)}</a></li>`).join("")}<li><a href="/our-work/">Our Work</a></li><li><a href="/marble-granite-countertops-ajegunle-ajeromi-ifelodun/">Ajegunle &amp; Ajeromi-Ifelodun</a></li></ul></div>
       <div><h3>Company</h3><ul><li><a href="/about/">About</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li>${site.googleBusinessUrl ? `<li><a href="${site.googleBusinessUrl}" target="_blank" rel="noopener">Find us on Google</a></li>` : ""}</ul></div>
     </div>
     <small>© ${year} ${esc(site.brand)} (${esc(site.alsoKnownAs)}). All project photos show our own work.</small>
@@ -164,7 +164,7 @@ marked.use({ renderer });
 
 // ---------- HOME ----------
 const generalFaqs = [
-  { q: "Which areas do you serve?", a: "We are based in Ajeromi-Ifelodun, Lagos, and work on homes and projects in Lagos. Send your location on WhatsApp to confirm availability for your area." },
+  { q: "Which areas do you serve?", a: "We are based on Alafia Street, Ajeromi-Ifelodun (Ajegunle area), close to Apapa, Orile, Amukoko and Surulere, and we work on homes and projects across Lagos. Send your location on WhatsApp to arrange a visit." },
   { q: "Which materials do you work with?", a: "Marble, granite and quartz, for kitchen countertops, islands, vanity tops, tabletops, backsplashes and custom stone pieces, as well as tombstones and grave monuments." },
   { q: "How do I get a quotation?", a: "Send photos of your space, rough measurements and the look you want on WhatsApp. We will advise on materials and arrange measurement for an accurate quotation." },
   { q: "Do you supply the stone as well as install it?", a: "Yes. We source the stone, fabricate it and install it, so you deal with one team from selection to finishing." },
@@ -177,14 +177,14 @@ add("/", {
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <p class="eyebrow">Marble · Granite · Quartz · Lagos</p>
+      <p class="eyebrow">Marble · Granite · Quartz · Ajeromi-Ifelodun, Lagos</p>
       <h1>Premium Marble, Granite &amp; Quartz Kitchen Countertops in Lagos</h1>
       <p class="lede">We supply, fabricate and install stone countertops, islands, vanity tops and backsplashes, measured for your space and finished by hand on site.</p>
       <div class="btns">${waBtn(WA_GENERAL, "Get a Free Quotation", "btn btn-wa", "hero")}<a class="btn btn-line" href="/our-work/">See Our Work</a></div>
       <ul class="trust">
         <li>${stars()} 5.0 on Google</li>
         <li>Supply · Fabrication · Installation</li>
-        <li>Ajeromi-Ifelodun, Lagos</li>
+        <li>Ajegunle · Ajeromi-Ifelodun · Lagos</li>
       </ul>
     </div>
     <div class="hero-photo">${pic("black-stone-kitchen-island", { eager: true })}</div>
@@ -196,7 +196,7 @@ add("/", {
     <div>
       <p class="eyebrow">Chimexprime Global Ventures</p>
       <h2>Stone surfaces that make a home feel finished</h2>
-      <p class="lede">A kitchen countertop is the surface you touch every day. We help homeowners, builders and designers in Lagos choose the right stone and then cut and fit it with care, from the first measurement to the final polish.</p>
+      <p class="lede">A kitchen countertop is the surface you touch every day. From our base in Ajeromi-Ifelodun, we help homeowners, builders and designers choose the right stone for luxury kitchen countertops and then cut and fit it with care, from the first measurement to the final polish. If you need marble countertops in Lagos, granite or quartz, we can help.</p>
       <ul class="ticks"><li>Marble, granite and quartz kitchen countertops</li><li>Islands, upstands and backsplashes</li><li>Bathroom vanity tops and tabletops</li><li>Tombstones and custom stonework</li></ul>
       <a class="btn btn-dark" href="/services/">Explore Our Services</a>
     </div>
@@ -242,6 +242,19 @@ add("/", {
       <div><h3>Easy to reach</h3><p>Send photos and questions on WhatsApp and get clear answers about your project.</p></div>
       <div><h3>Trusted by clients</h3><p>Rated 5.0 on Google by our customers. Read their reviews below.</p></div>
     </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow">Where we work</p>
+      <h2>Based in Ajeromi-Ifelodun, working across Lagos</h2>
+      <p>Our workshop is on ${esc(site.street)}, ${esc(site.locality)}, in the Ajegunle area of Lagos. We are close to ${site.localAreas.slice(1, -1).join(", ")} and ${site.localAreas.at(-1)}, and we take on kitchen countertop, vanity top and stone projects across Lagos.</p>
+      <p>Send us your location on WhatsApp and we will confirm a measurement visit.</p>
+      <div class="btns">${waBtn("Hello, I'm in [your area] and I'd like a countertop quotation.", "Ask About Your Area", "btn btn-wa", "where-we-work")}<a class="btn btn-line" href="/marble-granite-countertops-ajegunle-ajeromi-ifelodun/">Countertops in Ajegunle &amp; Ajeromi-Ifelodun</a></div>
+    </div>
+    <iframe class="map" title="Map: ${esc(site.brand)} in Ajeromi-Ifelodun, Lagos" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&output=embed"></iframe>
   </div>
 </section>
 
@@ -389,13 +402,53 @@ for (const a of articles) {
   <p class="meta">By ${esc(site.brand)} · <time datetime="${a.date}">${nice}</time></p>
   <div class="cover">${pic(a.image, { eager: true, sizes: "(min-width: 820px) 780px, 100vw" })}</div>
   <div class="prose">${marked.parse(a.md)}</div>
-  <aside class="callout"><h3>Need help with your kitchen?</h3><p>Send us photos and measurements on WhatsApp for advice and a quotation.</p>${waBtn(a.wa, "Chat With Us on WhatsApp", "btn btn-wa", "article-" + a.slug)}</aside>
+  <aside class="callout"><h3>Need help with your kitchen?</h3><p>We supply, fabricate and install marble, granite and quartz from our workshop in Ajeromi-Ifelodun (Ajegunle), Lagos. Send us photos and measurements on WhatsApp for advice and a quotation.</p>${waBtn(a.wa, "Chat With Us on WhatsApp", "btn btn-wa", "article-" + a.slug)}</aside>
   <h2 style="font-size:26px">Related services</h2>
   <div class="grid g2" style="margin:20px 0 40px">${relSvc.map(svcCard).join("")}</div>
   <h2 style="font-size:26px">More guides</h2>
   <ul class="ticks">${more.map((m) => `<li><a href="/blog/${m.slug}/">${esc(m.title)}</a></li>`).join("")}</ul>
 </article>
 ${ctaBand(a.wa)}`,
+  });
+}
+
+// ---------- LOCAL PAGE: home area ----------
+{
+  const path = "/marble-granite-countertops-ajegunle-ajeromi-ifelodun/";
+  const crumbs = [["Home", "/"], ["Ajegunle & Ajeromi-Ifelodun", path]];
+  const msg = "Hello, I'm in Ajegunle / Ajeromi-Ifelodun and I'd like a countertop quotation.";
+  const localFaqs = [
+    { q: "Where is your workshop?", a: `On ${site.street}, ${site.locality}, Lagos ${site.postalCode}, in the Ajegunle area. Send us a WhatsApp message before you come so we can be ready for you.` },
+    { q: "Do you cover areas near Ajegunle?", a: `Yes. We are close to ${site.localAreas.slice(1).join(", ")} and work on projects across Lagos. Share your location on WhatsApp to arrange a measurement visit.` },
+    { q: "Where can I buy marble kitchen tops near Ajegunle?", a: "From us. We supply marble, granite and quartz kitchen tops and can cut and install them for you." },
+  ];
+  add(path, {
+    title: "Countertops in Ajegunle & Ajeromi-Ifelodun, Lagos | Chimexprime",
+    description: "Marble, granite and quartz kitchen countertops in Ajegunle, Ajeromi-Ifelodun and nearby Apapa, Orile and Surulere. Visit our workshop or WhatsApp us for a quote.",
+    waMsg: msg, ogImage: "white-countertop-and-backsplash",
+    schema: [crumbsSchema(crumbs)],
+    body: `${crumbsHtml(crumbs)}
+<section class="page-hero"><div class="wrap page-hero-grid">
+  <div><p class="eyebrow">Our home area</p><h1>Marble, Granite &amp; Quartz Countertops in Ajegunle and Ajeromi-Ifelodun</h1><p class="lede">Our workshop is right here on ${esc(site.street)}, ${esc(site.locality)}. For homes and projects in Ajegunle and nearby areas, we can arrange a visit to measure, then fabricate and install your countertops.</p><div class="btns">${waBtn(msg, "Get a Local Quotation", "btn btn-wa", "local-hero")}<a class="btn btn-line" href="${site.phoneHref}" data-track="phone_click" data-label="local">Call ${esc(site.phoneDisplay)}</a></div></div>
+  <div class="ph-img">${pic("white-countertop-and-backsplash", { eager: true })}</div>
+</div></section>
+<section class="section"><div class="wrap split">
+  <div>
+    <h2>What we do for local homes and builders</h2>
+    <ul class="ticks">${services.map((s) => `<li><a href="/services/${s.slug}/">${esc(s.nav)}</a></li>`).join("")}</ul>
+    <h2>Areas near our workshop</h2>
+    <p>We are based in Ajeromi-Ifelodun and close to ${site.localAreas.map(esc).join(", ")}. We also take on projects across Lagos.</p>
+  </div>
+  <iframe class="map" title="Map: ${esc(site.brand)}, ${esc(site.street)}, ${esc(site.locality)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&output=embed"></iframe>
+</div></section>
+<section class="section stone"><div class="wrap">
+  <h2>Recent work</h2>
+  <div class="mosaic" style="margin-top:24px">${["grey-veined-stone-island", "black-stone-kitchen-island", "undermount-sink-cutout", "stone-bathroom-vanity-top"].map((n) => `<figure>${pic(n, { sizes: "(min-width: 980px) 33vw, 50vw" })}<figcaption>${esc(photos[n].alt)}</figcaption></figure>`).join("")}</div>
+  <a class="btn btn-dark" href="/our-work/">See all projects</a>
+</div></section>
+<section class="section"><div class="wrap narrow"><h2>Frequently asked questions</h2>${faqHtml(localFaqs)}</div></section>
+<section class="section stone"><div class="wrap"><div class="center"><h2>What our clients say</h2></div><div style="margin-top:28px">${reviewsHtml}</div></div></section>
+${ctaBand(msg, "Need countertops in Ajegunle or nearby?")}`,
   });
 }
 

@@ -11,7 +11,8 @@ Nothing below was invented on the website. Where something was unknown, it was l
 6. **Black granite tombstone photo** ("Amb. Stephen Olufemi Akinlade"): it looks AI-generated (the small inscription text is garbled) and was **not** used. Include it only if it is a real completed project, with the family's permission.
 7. **Memorial privacy.** Names and dates on the white tombstone were blurred. Get the family's permission before showing them.
 8. **Opening hours: resolved.** Shown as "Open 24 hours", matching the Google Business Profile. If the real hours differ, change them on Google and in `site.hours` together.
-9. **Founder name.** Online sources mention a founder/CEO; not used until confirmed.
+9. **Nearby areas.** The site says the workshop is close to Ajegunle, Olodi-Apapa, Amukoko, Apapa, Orile, Surulere, Amuwo-Odofin and Festac, and that projects are taken across Lagos. Confirm, or edit `site.localAreas`.
+10. **Founder name.** Online sources mention a founder/CEO; not used until confirmed.
 
 ## Nice to have
 - Logo file (high resolution)

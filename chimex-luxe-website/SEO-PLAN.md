@@ -12,6 +12,7 @@
 | `/services/marble-granite-installation-services-lagos/` | marble installation services | marble and granite installation, marble fabricators in Lagos | Commercial |
 | `/services/bathroom-countertops-vanity-tops-lagos/` | marble bathroom countertops | vanity tops in Lagos | Commercial |
 | `/services/granite-tombstones-lagos/` | granite tombstones in Lagos | custom granite tombstones, grave monuments | Commercial |
+| `/marble-granite-countertops-ajegunle-ajeromi-ifelodun/` | countertops in Ajegunle | marble/granite/quartz Ajeromi-Ifelodun, near Apapa, Orile, Surulere | Local: provider near me |
 | `/our-work/` | marble countertop projects Lagos | kitchen countertop gallery | Trust/visual |
 | `/blog/marble-vs-granite-kitchen-countertops-lagos/` | marble vs granite kitchen countertops | which is better for Nigerian kitchens | Informational |
 | `/blog/how-much-do-marble-kitchen-countertops-cost-in-lagos/` | marble kitchen countertop cost Nigeria | price of kitchen marble top Lagos | Informational → commercial |
@@ -19,6 +20,10 @@
 | `/blog/quartz-vs-marble-vs-granite-kitchen-countertops/` | quartz vs marble vs granite | best kitchen countertop material | Informational |
 | `/blog/kitchen-countertop-installation-guide-lagos/` | kitchen countertop installation in Lagos | installation process | Informational → commercial |
 | `/blog/how-to-clean-and-maintain-marble-kitchen-countertops/` | how to clean marble countertops | marble care | Informational |
+
+**Long-tail questions answered as FAQs:** "Where can I buy marble kitchen tops in Lagos?" (Stone Supply), "Who installs granite kitchen countertops in Lagos?" (Granite), "How much does a marble kitchen countertop cost in Nigeria?" (Marble + cost article), "What is the best material for a luxury kitchen countertop?" (Quartz), "Where can I get quartz countertops installed in Lagos?" (Quartz), "Marble vs granite: which is better for Nigerian kitchens?" (comparison article).
+
+Run `node scripts/keyword-audit.mjs keywords.json` after a build to see where each keyword appears.
 
 ## 2. Remaining articles (content calendar, 1 to 2 per month)
 Write each only when you can add real value, ideally with your own project photos.
