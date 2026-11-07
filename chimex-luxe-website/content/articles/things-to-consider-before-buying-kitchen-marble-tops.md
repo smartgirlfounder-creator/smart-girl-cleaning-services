@@ -1,6 +1,6 @@
 ---
 title: 7 Things to Consider Before Buying Kitchen Marble Tops
-seoTitle: 7 Things to Consider Before Buying Kitchen Marble Tops | Chimex Luxe
+seoTitle: 7 Things to Consider Before Buying Kitchen Marble Tops | Chimexprime
 description: Planning kitchen marble tops? Check these 7 things first: how you cook, slab choice, finish, cut-outs, cabinets, joints and the installer you hire.
 keyword: kitchen marble tops
 date: 2026-11-07

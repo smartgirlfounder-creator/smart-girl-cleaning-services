@@ -1,6 +1,6 @@
 ---
 title: The Complete Guide to Kitchen Countertop Installation in Lagos
-seoTitle: Kitchen Countertop Installation in Lagos: Complete Guide | Chimex Luxe
+seoTitle: Kitchen Countertop Installation in Lagos: Complete Guide | Chimexprime
 description: What happens during kitchen countertop installation, from measuring and fabrication to cut-outs, fitting and aftercare, and how to prepare your kitchen.
 keyword: kitchen countertop installation in Lagos
 date: 2026-11-07

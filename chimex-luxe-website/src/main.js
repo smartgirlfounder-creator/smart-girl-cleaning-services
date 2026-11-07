@@ -55,7 +55,7 @@ if (form) {
     if (!name || !phone) { err.textContent = "Please enter your name and phone number."; return; }
     err.textContent = "";
     const lines = [
-      "Hello Chimex Luxe, I'd like a quotation.",
+      "Hello Chimexprime Global Ventures, I'd like a quotation.",
       `Name: ${name}`,
       `Phone: ${phone}`,
       f.get("email") ? `Email: ${f.get("email")}` : "",

@@ -42,7 +42,8 @@ const business = {
   "@type": "HomeAndConstructionBusiness",
   "@id": abs("/#business"),
   name: site.brand,
-  alternateName: site.legalName,
+  alternateName: site.alsoKnownAs,
+  openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "00:00", closes: "23:59" }],
   description: "Supply, fabrication and installation of marble, granite and quartz kitchen countertops, vanity tops, tabletops, backsplashes and stone tombstones in Lagos.",
   url: abs("/"),
   telephone: site.phoneDisplay.replace(/\s/g, ""),
@@ -91,7 +92,7 @@ ${ga}
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="wrap top-in">
-    <a class="logo" href="/" aria-label="${esc(site.brand)} home"><b>CHIMEX LUXE</b><span>Marble &amp; Interiors</span></a>
+    <a class="logo" href="/" aria-label="${esc(site.brand)} home"><b>CHIMEXPRIME</b><span>Global Ventures</span></a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Main">
       ${NAV.map(([h, l]) => `<a href="${h}"${path.startsWith(h) ? ' aria-current="page"' : ""}>${l}</a>`).join("")}
@@ -106,10 +107,11 @@ ${body}
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <a class="logo" href="/"><b>CHIMEX LUXE</b><span>Marble &amp; Interiors</span></a>
+        <a class="logo" href="/"><b>CHIMEXPRIME</b><span>Global Ventures</span></a>
         <p style="margin-top:16px">Marble, granite and quartz countertops, vanity tops, tabletops, backsplashes and tombstones. Supply, fabrication and installation in Lagos.</p>
         <address class="nap">
           <span>${esc(site.street)}, ${esc(site.locality)}, Lagos ${esc(site.postalCode)}, Nigeria</span>
+          <span>${esc(site.hours)}</span>
           <a href="${site.phoneHref}" data-track="phone_click" data-label="footer">${esc(site.phoneDisplay)}</a>
           <a href="${wa(waMsg)}" target="_blank" rel="noopener" data-track="whatsapp_click" data-label="footer">WhatsApp us</a>
         </address>
@@ -118,7 +120,7 @@ ${body}
       <div><h3>More services</h3><ul>${services.slice(5).map((s) => `<li><a href="/services/${s.slug}/">${esc(s.nav)}</a></li>`).join("")}<li><a href="/our-work/">Our Work</a></li></ul></div>
       <div><h3>Company</h3><ul><li><a href="/about/">About</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li>${site.googleBusinessUrl ? `<li><a href="${site.googleBusinessUrl}" target="_blank" rel="noopener">Find us on Google</a></li>` : ""}</ul></div>
     </div>
-    <small>© ${year} ${esc(site.brand)} · ${esc(site.legalName)}. All project photos show our own work.</small>
+    <small>© ${year} ${esc(site.brand)} (${esc(site.alsoKnownAs)}). All project photos show our own work.</small>
   </div>
 </footer>
 <a class="wa-float" href="${wa(waMsg)}" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp" data-track="whatsapp_click" data-label="floating">${WA_ICON}</a>
@@ -169,7 +171,7 @@ const generalFaqs = [
   { q: "Do you work with contractors and interior designers?", a: "Yes. We work with homeowners, builders, architects, interior designers and property developers." },
 ];
 add("/", {
-  title: "Marble, Granite & Quartz Countertops in Lagos | Chimex Luxe",
+  title: "Marble, Granite & Quartz Countertops in Lagos | Chimexprime",
   description: "Premium marble, granite and quartz kitchen countertops in Lagos: supply, fabrication and installation. See our real projects and get a quotation on WhatsApp.",
   body: `
 <section class="hero">
@@ -192,7 +194,7 @@ add("/", {
 <section class="section">
   <div class="wrap split">
     <div>
-      <p class="eyebrow">Chimex Luxe Marble &amp; Interiors</p>
+      <p class="eyebrow">Chimexprime Global Ventures</p>
       <h2>Stone surfaces that make a home feel finished</h2>
       <p class="lede">A kitchen countertop is the surface you touch every day. We help homeowners, builders and designers in Lagos choose the right stone and then cut and fit it with care, from the first measurement to the final polish.</p>
       <ul class="ticks"><li>Marble, granite and quartz kitchen countertops</li><li>Islands, upstands and backsplashes</li><li>Bathroom vanity tops and tabletops</li><li>Tombstones and custom stonework</li></ul>
@@ -262,7 +264,7 @@ ${ctaBand(WA_GENERAL)}`,
 
 // ---------- SERVICES INDEX ----------
 add("/services/", {
-  title: "Marble, Granite & Quartz Services in Lagos | Chimex Luxe",
+  title: "Marble, Granite & Quartz Services in Lagos | Chimexprime",
   description: "Kitchen countertops, slab supply, fabrication, installation, vanity tops and tombstones in marble, granite and quartz. Lagos. Request a quote on WhatsApp.",
   schema: [crumbsSchema([["Home", "/"], ["Services", "/services/"]])],
   body: `${crumbsHtml([["Home", "/"], ["Services", "/services/"]])}
@@ -313,14 +315,14 @@ ${ctaBand(s.wa, `Get a quotation for ${s.nav.toLowerCase()}`)}`,
 
 // ---------- OUR WORK ----------
 add("/our-work/", {
-  title: "Our Work: Kitchen Countertop Projects in Lagos | Chimex Luxe",
-  description: "See real marble, granite and quartz projects by Chimex Luxe: kitchen countertops, islands, vanity tops, fabrication on site and tombstones in Lagos.",
+  title: "Our Work: Kitchen Countertop Projects in Lagos | Chimexprime",
+  description: "See real marble, granite and quartz projects by Chimexprime Global Ventures: kitchen countertops, islands, vanity tops, fabrication on site and tombstones in Lagos.",
   ogImage: "grey-veined-stone-island",
-  schema: [crumbsSchema([["Home", "/"], ["Our Work", "/our-work/"]]), { "@type": "ImageGallery", name: "Chimex Luxe project gallery", url: abs("/our-work/"), image: Object.keys(photos).map((n) => ({ "@type": "ImageObject", contentUrl: abs(`/assets/img/${n}.jpg`), caption: photos[n].alt })) }],
+  schema: [crumbsSchema([["Home", "/"], ["Our Work", "/our-work/"]]), { "@type": "ImageGallery", name: "Chimexprime project gallery", url: abs("/our-work/"), image: Object.keys(photos).map((n) => ({ "@type": "ImageObject", contentUrl: abs(`/assets/img/${n}.jpg`), caption: photos[n].alt })) }],
   body: `${crumbsHtml([["Home", "/"], ["Our Work", "/our-work/"]])}
 <section class="section" style="padding-top:30px"><div class="wrap">
   <h1>Our Work</h1>
-  <p class="lede">Every photo and video here is from a real Chimex Luxe project. Tap a photo to view it larger.</p>
+  <p class="lede">Every photo and video here is from a real Chimexprime project. Tap a photo to view it larger.</p>
   <div class="filters" role="group" aria-label="Filter projects" style="margin-top:28px"><button type="button" data-cat="all" aria-pressed="true">All</button>${galleryCats.map((c) => `<button type="button" data-cat="${c.id}" aria-pressed="false">${esc(c.label)}</button>`).join("")}</div>
   <div class="mosaic">${Object.entries(photos).map(([n, p]) => `<figure data-cat="${p.cat}"><button type="button" data-full="${big(n)}" data-alt="${esc(p.alt)}" aria-label="View larger: ${esc(p.alt)}">${pic(n, { sizes: "(min-width: 980px) 33vw, 50vw" })}</button><figcaption>${esc(p.alt)}<br><a href="${wa(`Hello, I saw this on your website (“${p.alt}”) and I would like something similar. Please send me a quotation.`)}" target="_blank" rel="noopener" data-track="whatsapp_click" data-label="gallery">Ask about a similar project →</a></figcaption></figure>`).join("")}</div>
 </div></section>
@@ -337,12 +339,12 @@ ${ctaBand(WA_GENERAL, "Want a result like this?")}`,
 
 // ---------- ABOUT ----------
 add("/about/", {
-  title: "About Chimex Luxe Marble & Interiors | Stone Specialists in Lagos",
-  description: "Chimex Luxe Marble & Interiors (Chimexprime Global Ventures) supplies, fabricates and installs marble, granite and quartz surfaces in Lagos.",
+  title: "About Chimexprime Global Ventures | Stone Specialists in Lagos",
+  description: "Chimexprime Global Ventures (Chimex Luxe Marble & Interiors) supplies, fabricates and installs marble, granite and quartz surfaces in Lagos.",
   schema: [crumbsSchema([["Home", "/"], ["About", "/about/"]])],
   body: `${crumbsHtml([["Home", "/"], ["About", "/about/"]])}
 <section class="page-hero"><div class="wrap page-hero-grid">
-  <div><p class="eyebrow">About us</p><h1>Stone specialists for Lagos homes and projects</h1><p class="lede">Chimex Luxe Marble &amp; Interiors, registered as ${esc(site.legalName)}, supplies, fabricates and installs marble, granite and quartz surfaces from our base in Ajeromi-Ifelodun, Lagos.</p></div>
+  <div><p class="eyebrow">About us</p><h1>Stone specialists for Lagos homes and projects</h1><p class="lede">${esc(site.brand)}, also known as ${esc(site.alsoKnownAs)}, supplies, fabricates and installs marble, granite and quartz surfaces from our base in Ajeromi-Ifelodun, Lagos.</p></div>
   <div class="ph-img">${pic("polishing-countertop-edge", { eager: true })}</div>
 </div></section>
 <section class="section"><div class="wrap split">
@@ -362,9 +364,9 @@ ${ctaBand(WA_GENERAL, "Let's talk about your project")}`,
 // ---------- BLOG ----------
 const sorted = [...articles].sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
 add("/blog/", {
-  title: "Kitchen Countertop Guides & Advice | Chimex Luxe Blog",
+  title: "Kitchen Countertop Guides & Advice | Chimexprime Blog",
   description: "Practical guides on marble, granite and quartz kitchen countertops: comparisons, costs, installation and care, for homeowners in Lagos.",
-  schema: [crumbsSchema([["Home", "/"], ["Blog", "/blog/"]]), { "@type": "Blog", name: "Chimex Luxe Knowledge Centre", url: abs("/blog/"), publisher: { "@id": abs("/#business") } }],
+  schema: [crumbsSchema([["Home", "/"], ["Blog", "/blog/"]]), { "@type": "Blog", name: "Chimexprime Knowledge Centre", url: abs("/blog/"), publisher: { "@id": abs("/#business") } }],
   body: `${crumbsHtml([["Home", "/"], ["Blog", "/blog/"]])}
 <section class="section" style="padding-top:30px"><div class="wrap narrow">
   <h1>Countertop Guides &amp; Advice</h1>
@@ -399,8 +401,8 @@ ${ctaBand(a.wa)}`,
 
 // ---------- CONTACT ----------
 add("/contact/", {
-  title: "Contact Chimex Luxe | Request a Countertop Quotation in Lagos",
-  description: `Contact Chimex Luxe Marble & Interiors, ${site.street}, ${site.locality}, Lagos. Call or WhatsApp ${site.phoneDisplay} for marble, granite and quartz quotations.`,
+  title: "Contact Chimexprime | Request a Countertop Quotation in Lagos",
+  description: `Contact Chimexprime Global Ventures, ${site.street}, ${site.locality}, Lagos. Call or WhatsApp ${site.phoneDisplay} for marble, granite and quartz quotations.`,
   schema: [crumbsSchema([["Home", "/"], ["Contact", "/contact/"]]), { "@type": "ContactPage", url: abs("/contact/"), about: { "@id": abs("/#business") } }],
   body: `${crumbsHtml([["Home", "/"], ["Contact", "/contact/"]])}
 <section class="section" style="padding-top:30px"><div class="wrap">
@@ -420,7 +422,8 @@ add("/contact/", {
     <div>
       <h2 style="font-size:28px">Contact details</h2>
       <address class="nap">
-        <span><b>${esc(site.brand)}</b><br>${esc(site.legalName)}</span>
+        <span><b>${esc(site.brand)}</b><br>${esc(site.alsoKnownAs)}</span>
+        <span>${esc(site.hours)}</span>
         <span>${esc(site.street)}, ${esc(site.locality)},<br>Lagos ${esc(site.postalCode)}, Nigeria</span>
         <a href="${site.phoneHref}" data-track="phone_click" data-label="contact">Call ${esc(site.phoneDisplay)}</a>
         <a href="${wa(WA_GENERAL)}" target="_blank" rel="noopener" data-track="whatsapp_click" data-label="contact">WhatsApp ${esc(site.phoneDisplay)}</a>
@@ -434,7 +437,7 @@ add("/contact/", {
 });
 
 // ---------- 404 ----------
-write("404.html", layout({ path: "/404.html", title: "Page not found | Chimex Luxe", description: "This page could not be found.", body: `<section class="section"><div class="wrap narrow center"><h1>Page not found</h1><p class="lede">The page you are looking for has moved or does not exist.</p><div class="btns" style="justify-content:center"><a class="btn btn-dark" href="/">Go to the homepage</a>${waBtn(WA_GENERAL, "WhatsApp Us", "btn btn-wa", "404")}</div></div></section>` }).replace("<head>", '<head>\n<meta name="robots" content="noindex">'));
+write("404.html", layout({ path: "/404.html", title: "Page not found | Chimexprime", description: "This page could not be found.", body: `<section class="section"><div class="wrap narrow center"><h1>Page not found</h1><p class="lede">The page you are looking for has moved or does not exist.</p><div class="btns" style="justify-content:center"><a class="btn btn-dark" href="/">Go to the homepage</a>${waBtn(WA_GENERAL, "WhatsApp Us", "btn btn-wa", "404")}</div></div></section>` }).replace("<head>", '<head>\n<meta name="robots" content="noindex">'));
 
 // ---------- sitemap, robots, headers ----------
 const today = new Date().toISOString().slice(0, 10);

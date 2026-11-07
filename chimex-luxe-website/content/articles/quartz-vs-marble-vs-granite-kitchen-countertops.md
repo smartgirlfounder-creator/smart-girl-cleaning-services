@@ -1,6 +1,6 @@
 ---
 title: Quartz vs Marble vs Granite: Which Kitchen Countertop Should You Choose?
-seoTitle: Quartz vs Marble vs Granite Kitchen Countertops | Chimex Luxe
+seoTitle: Quartz vs Marble vs Granite Kitchen Countertops | Chimexprime
 description: Quartz, marble or granite? A clear comparison of looks, durability, heat, stains and maintenance to help you choose the best kitchen countertop.
 keyword: quartz vs marble vs granite
 date: 2026-11-07

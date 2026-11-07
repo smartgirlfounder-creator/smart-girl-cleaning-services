@@ -1,6 +1,6 @@
-# Chimex Luxe Marble & Interiors: website
+# Chimexprime Global Ventures: website
 
-A fast, static, SEO-focused website for **CHIMEX LUXE MARBLE & INTERIORS** (Google Business Profile name: Chimexprime Global Ventures), Ajeromi-Ifelodun, Lagos.
+A fast, static, SEO-focused website for **Chimexprime Global Ventures** (also known as Chimex Luxe Marble & Interiors), Ajeromi-Ifelodun, Lagos. Live domain: https://chimexprime.com.ng. Name, address, phone and hours match the Google Business Profile.
 
 - 20 pages: home, about, services hub + 8 service pages, project gallery, blog hub + 6 articles, contact, plus a 404 page
 - WhatsApp on every page (header, hero, floating button, service pages, gallery photos, articles, contact form)

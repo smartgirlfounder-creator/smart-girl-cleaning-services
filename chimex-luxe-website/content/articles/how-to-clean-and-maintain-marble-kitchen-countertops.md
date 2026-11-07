@@ -1,6 +1,6 @@
 ---
 title: How to Maintain and Clean Marble Kitchen Countertops
-seoTitle: How to Clean and Maintain Marble Kitchen Countertops | Chimex Luxe
+seoTitle: How to Clean and Maintain Marble Kitchen Countertops | Chimexprime
 description: Keep your marble kitchen countertop beautiful: daily cleaning, what to avoid, dealing with spills and stains, and when to reseal.
 keyword: how to clean marble countertops
 date: 2026-11-07

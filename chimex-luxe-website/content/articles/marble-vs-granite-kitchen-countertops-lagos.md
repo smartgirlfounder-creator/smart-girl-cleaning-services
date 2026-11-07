@@ -1,6 +1,6 @@
 ---
 title: Marble vs Granite Kitchen Countertops: Which Is Better for Your Lagos Home?
-seoTitle: Marble vs Granite Kitchen Countertops: Which Is Better? | Chimex Luxe
+seoTitle: Marble vs Granite Kitchen Countertops: Which Is Better? | Chimexprime
 description: Marble or granite for your kitchen? Compare looks, durability, heat, stains and care to choose the right countertop for a Lagos home.
 keyword: marble vs granite kitchen countertops
 date: 2026-11-07
