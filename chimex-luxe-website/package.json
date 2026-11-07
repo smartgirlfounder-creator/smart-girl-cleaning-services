@@ -1,0 +1,15 @@
+{
+  "name": "chimex-luxe-website",
+  "private": true,
+  "type": "module",
+  "description": "Website for CHIMEX LUXE MARBLE & INTERIORS (Chimexprime Global Ventures), Lagos.",
+  "scripts": {
+    "images": "node scripts/images.mjs",
+    "build": "node scripts/build.mjs && node scripts/check.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "marked": "14.1.4",
+    "sharp": "0.33.5"
+  }
+}
