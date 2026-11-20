@@ -20,7 +20,9 @@ Never send or schedule a campaign. Keep Mailchimp calls to about 5 per run (Zapi
    Then make one call `POST /lists/c51439d252/segments/287` with `{"members_to_add":[...]}`.
 4. Send each one the welcome email in `welcome-email.md` from Gmail.
 5. **"YES" replies:** on 20 Nov 2026, 13 Launch Guide people who hadn't ticked "send me tips" were emailed asking them to reply YES.
-   Search Gmail for `in:inbox subject:"Quick question" newer_than:14d`, then read each thread.
+   Search Gmail for `in:inbox subject:("Quick question" OR "did something go wrong") newer_than:14d`, then read each thread.
+   On 20 Nov 2026, Selar abandoned-checkout people got a "did something go wrong?" email that also asks them to reply YES for tips; handle those replies the same way, tagging them `abandoned-checkout` as well.
+   If someone asks about payment or the calculator, don't answer it yourself: list it in the report so Kaffy can reply personally.
    Add anyone who clearly said yes in the same batch call as step 3 (with the `launch-guide` tag), and send them the welcome email. Never add anyone who said no or didn't reply.
 
 ## Job 2: next newsletter draft
