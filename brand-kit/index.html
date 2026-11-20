@@ -1,0 +1,209 @@
+<title>Smart Girl Brand Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: one centred column of brand "sheets"; a deep-wine cover, then colours, type, buttons, logos, Mailchimp setup. */
+:root {
+  --bg: #FFFAF8; --surface: #FFFFFF; --tint: #F3E6E0; --ink: #34232A; --muted: #5F4A51;
+  --line: #EAD9D3; --accent: #5C1729; --accent-2: #8A3B4F; --gold: #E2BF9C; --cover: #2E0A15; --on-cover: #F8ECE6;
+  --script: 'Great Vibes', 'Brush Script MT', cursive;
+  --head: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A0B10; --surface: #241218; --tint: #2E161E; --ink: #F3E6E0; --muted: #CDB3AE;
+  --line: #43242D; --accent: #E2BF9C; --accent-2: #F0D4B6; --gold: #E2BF9C; --cover: #22070F; --on-cover: #F8ECE6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A0B10; --surface: #241218; --tint: #2E161E; --ink: #F3E6E0; --muted: #CDB3AE;
+  --line: #43242D; --accent: #E2BF9C; --accent-2: #F0D4B6; --gold: #E2BF9C; --cover: #22070F; --on-cover: #F8ECE6; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.65 var(--body); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.cover { background: var(--cover); color: var(--on-cover); margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 56px); padding-bottom: 56px; text-align: center; }
+.cover img { width: min(560px, 100%); margin: 0 auto; }
+.cover p { font: 500 12px/1.5 var(--head); letter-spacing: .3em; text-transform: uppercase; color: #E2BF9C; margin: 18px 0 0; }
+section { padding-block: 56px; border-bottom: 1px solid var(--line); }
+.eyebrow { font: 600 12px/1.4 var(--head); letter-spacing: .22em; text-transform: uppercase; color: var(--accent-2); margin: 0 0 8px; }
+h2 { font: 700 clamp(26px, 4vw, 34px)/1.15 var(--head); margin: 0 0 8px; text-wrap: balance; }
+h2 em { font: 400 1.35em/1 var(--script); color: var(--accent); font-style: normal; margin-left: 4px; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0 0 28px; }
+h3 { font: 600 14px/1.3 var(--head); letter-spacing: .14em; text-transform: uppercase; margin: 28px 0 14px; color: var(--muted); }
+
+.swatches { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.sw { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.sw .chip { height: 108px; display: flex; align-items: flex-end; padding: 12px 14px; font: 600 12px/1 var(--head); letter-spacing: .12em; text-transform: uppercase; }
+.sw .meta { padding: 12px 14px 14px; display: grid; gap: 2px; }
+.sw .name { font-weight: 600; }
+.sw .use { font-size: 13px; color: var(--muted); }
+.hex { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; font: 600 14px/1 var(--head); font-variant-numeric: tabular-nums; }
+.copy { font: 600 11px/1 var(--head); letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--line); background: var(--tint); color: var(--ink); border-radius: 999px; padding: 7px 10px; cursor: pointer; }
+.copy:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+
+.type { display: grid; gap: 16px; }
+.font-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: grid; gap: 10px; min-width: 0; }
+.font-card .label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 600 12px/1.4 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); }
+.font-card .label span:last-child { color: var(--muted); letter-spacing: .06em; text-transform: none; font-weight: 500; }
+.s-script { font: 400 clamp(48px, 9vw, 76px)/1.1 var(--script); color: var(--accent); }
+.s-head { font: 700 clamp(28px, 5vw, 44px)/1.1 var(--head); }
+.s-body { font: 400 17px/1.7 var(--body); max-width: 62ch; }
+.s-body i { font-style: italic; }
+.scale { width: 100%; border-collapse: collapse; font-size: 14px; }
+.scale-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.scale th, .scale td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.scale th { font: 600 11px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.scale tr:last-child td { border-bottom: 0; }
+
+.btn-stage { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.stage { border-radius: 14px; padding: 28px 24px; display: grid; gap: 14px; justify-items: start; border: 1px solid var(--line); }
+.stage.light { background: #FFFAF8; color: #34232A; }
+.stage.dark { background: #2E0A15; color: #E4C9C3; border-color: #2E0A15; }
+.stage small { font-size: 13px; }
+.btn { display: inline-flex; align-items: center; min-height: 48px; padding: 14px 28px; border-radius: 999px; font: 700 14px/1 var(--head); letter-spacing: .08em; text-transform: uppercase; border: 2px solid transparent; cursor: pointer; text-decoration: none; }
+.b-primary { background: #5C1729; color: #F8ECE6; }
+.b-outline { background: transparent; color: #5C1729; border-color: #5C1729; }
+.b-gold { background: #E2BF9C; color: #2E0A15; }
+.b-ghost-light { background: transparent; color: #F8ECE6; border-color: #F8ECE6; }
+.specs { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--muted); font-size: 14px; }
+.specs b { color: var(--ink); font-weight: 600; }
+
+.logos { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.logo-tile { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; display: grid; grid-template-rows: 1fr auto; background: var(--surface); }
+.logo-tile .art { display: grid; place-items: center; padding: 24px; min-height: 180px; }
+.logo-tile .art.l { background: #FFFAF8; } .logo-tile .art.d { background: #2E0A15; }
+.logo-tile .art img { max-height: 150px; width: auto; }
+.logo-tile .cap { padding: 12px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.logo-tile .cap b { display: block; color: var(--ink); font-weight: 600; font-size: 14px; }
+.banner { margin-top: 16px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.steps li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 16px 62px; position: relative; }
+.steps li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: var(--bg); display: grid; place-items: center; font: 700 14px/1 var(--head); }
+.steps b { font-weight: 600; }
+.note { margin-top: 20px; padding: 16px 18px; border-radius: 14px; background: var(--tint); font-size: 15px; }
+footer { padding-block: 36px; text-align: center; color: var(--muted); font-size: 13px; }
+@media (prefers-reduced-motion: no-preference) { .btn { transition: transform .15s ease; } .btn:hover { transform: translateY(-1px); } }
+</style>
+
+<header class="cover">
+  <div class="wrap">
+    <img src="logos/smart-girl-logo-stacked-white.png" alt="Smart Girl Cleaning Services logo">
+    <p>Brand kit · Ilorin, Nigeria · 2026</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <p class="eyebrow">01 · Colour</p>
+    <h2>Primary colours <em>&amp; secondary</em></h2>
+    <p class="lede">These are the burgundy and champagne colours already used on your website and Cleaning Calculator Pro page, so your emails will match everything else people see from you.</p>
+
+    <h3>Primary</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#5C1729;color:#F8ECE6">Main</div><div class="meta"><span class="name">Smart Burgundy</span><span class="use">Buttons, headlines, logo</span><div class="hex">#5C1729 <button class="copy" data-hex="#5C1729">Copy</button></div></div></div>
+      <div class="sw"><div class="chip" style="background:#E2BF9C;color:#2E0A15">Accent</div><div class="meta"><span class="name">Champagne Gold</span><span class="use">Sparkle, highlights, buttons on dark</span><div class="hex">#E2BF9C <button class="copy" data-hex="#E2BF9C">Copy</button></div></div></div>
+      <div class="sw"><div class="chip" style="background:#2E0A15;color:#E2BF9C">Dark</div><div class="meta"><span class="name">Deep Wine</span><span class="use">Header and footer backgrounds</span><div class="hex">#2E0A15 <button class="copy" data-hex="#2E0A15">Copy</button></div></div></div>
+    </div>
+
+    <h3>Secondary</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#8A3B4F;color:#F8ECE6">Support</div><div class="meta"><span class="name">Rose Wine</span><span class="use">Subheadings, links, labels</span><div class="hex">#8A3B4F <button class="copy" data-hex="#8A3B4F">Copy</button></div></div></div>
+      <div class="sw"><div class="chip" style="background:#F0D4B6;color:#2E0A15">Light accent</div><div class="meta"><span class="name">Soft Gold</span><span class="use">Button hover, dividers</span><div class="hex">#F0D4B6 <button class="copy" data-hex="#F0D4B6">Copy</button></div></div></div>
+      <div class="sw"><div class="chip" style="background:#F3E6E0;color:#5C1729">Section</div><div class="meta"><span class="name">Blush</span><span class="use">Boxed sections, quotes</span><div class="hex">#F3E6E0 <button class="copy" data-hex="#F3E6E0">Copy</button></div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFAF8;color:#5C1729;box-shadow:inset 0 -1px 0 #EAD9D3">Background</div><div class="meta"><span class="name">Ivory</span><span class="use">Email background</span><div class="hex">#FFFAF8 <button class="copy" data-hex="#FFFAF8">Copy</button></div></div></div>
+      <div class="sw"><div class="chip" style="background:#34232A;color:#F3E6E0">Text</div><div class="meta"><span class="name">Ink</span><span class="use">Body text</span><div class="hex">#34232A <button class="copy" data-hex="#34232A">Copy</button></div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">02 · Typography</p>
+    <h2>Font styles <em>with a little script</em></h2>
+    <p class="lede">Montserrat for headlines and buttons, Poppins for everything you read, and Great Vibes as the cursive touch. Use the cursive for one or two words at a time, like a name or a "thank you", never for whole sentences.</p>
+    <div class="type">
+      <div class="font-card"><div class="label"><span>Script accent · Great Vibes</span><span>Logo, signatures, one-word highlights</span></div><div class="s-script">Thank you, Smart Girl</div></div>
+      <div class="font-card"><div class="label"><span>Headings · Montserrat Bold</span><span>Titles, buttons, labels</span></div><div class="s-head">Your home, deep cleaned.</div></div>
+      <div class="font-card"><div class="label"><span>Body · Poppins Regular &amp; Italic</span><span>Paragraphs, lists, footer</span></div><div class="s-body">We clean homes, offices and new builds across Ilorin. Book a deep clean before the festive season and get your living room, kitchen and bathrooms done in one visit. <i>Italic Poppins works for short quotes and client testimonials.</i></div></div>
+    </div>
+    <h3>Email sizes</h3>
+    <div class="scale-wrap"><table class="scale">
+      <tr><th>Style</th><th>Font</th><th>Size</th><th>Colour</th></tr>
+      <tr><td>Heading 1</td><td>Montserrat Bold</td><td>32px</td><td>#5C1729</td></tr>
+      <tr><td>Heading 2</td><td>Montserrat SemiBold</td><td>24px</td><td>#5C1729</td></tr>
+      <tr><td>Heading 3 / label</td><td>Montserrat SemiBold, caps</td><td>14px, wide spacing</td><td>#8A3B4F</td></tr>
+      <tr><td>Paragraph</td><td>Poppins Regular</td><td>16px, line height 1.6</td><td>#34232A</td></tr>
+      <tr><td>Links</td><td>Poppins, underlined</td><td>16px</td><td>#8A3B4F</td></tr>
+      <tr><td>Footer</td><td>Poppins Regular</td><td>12px</td><td>#5F4A51</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <p class="eyebrow">03 · Buttons</p>
+    <h2>Button styles</h2>
+    <p class="lede">Rounded pill buttons, all caps, Montserrat Bold. Use one main button per email so people know exactly what to tap.</p>
+    <div class="btn-stage">
+      <div class="stage light">
+        <a class="btn b-primary" href="#buttons">Book a cleaning</a><small>Primary · on light backgrounds</small>
+        <a class="btn b-outline" href="#buttons">See our services</a><small>Secondary · outline</small>
+      </div>
+      <div class="stage dark">
+        <a class="btn b-gold" href="#buttons">Get my quote</a><small>Primary · on Deep Wine backgrounds</small>
+        <a class="btn b-ghost-light" href="#buttons">Chat on WhatsApp</a><small>Secondary · outline on dark</small>
+      </div>
+    </div>
+    <ul class="specs">
+      <li><b>Primary:</b> background #5C1729, text #F8ECE6, Montserrat Bold 14px caps</li>
+      <li><b>Secondary:</b> transparent background, 2px border #5C1729, text #5C1729</li>
+      <li><b>On dark:</b> background #E2BF9C, text #2E0A15</li>
+      <li><b>Shape:</b> fully rounded corners (pill), padding 14px top/bottom and 28px left/right</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">04 · Logo</p>
+    <h2>Logo files</h2>
+    <p class="lede">All files are transparent PNGs at high resolution, ready to upload. Use the burgundy versions on light backgrounds and the white versions on Deep Wine or photos.</p>
+    <div class="logos">
+      <div class="logo-tile"><div class="art l"><img src="logos/smart-girl-logo-horizontal-burgundy.png" alt="Horizontal logo, burgundy"></div><div class="cap"><b>Horizontal · burgundy</b>Main logo for the Mailchimp brand kit</div></div>
+      <div class="logo-tile"><div class="art d"><img src="logos/smart-girl-logo-horizontal-white.png" alt="Horizontal logo, white"></div><div class="cap"><b>Horizontal · white</b>For dark headers and photos</div></div>
+      <div class="logo-tile"><div class="art l"><img src="logos/smart-girl-logo-stacked-burgundy.png" alt="Stacked logo, burgundy"></div><div class="cap"><b>Stacked · burgundy</b>Flyers, signatures, square spaces</div></div>
+      <div class="logo-tile"><div class="art d"><img src="logos/smart-girl-logo-stacked-white.png" alt="Stacked logo, white"></div><div class="cap"><b>Stacked · white</b>Dark backgrounds</div></div>
+      <div class="logo-tile"><div class="art l"><img src="logos/smart-girl-monogram-burgundy.png" alt="SG monogram, burgundy"></div><div class="cap"><b>Monogram · burgundy</b>Profile pictures, favicon, stickers</div></div>
+      <div class="logo-tile"><div class="art d"><img src="logos/smart-girl-monogram-gold.png" alt="SG monogram, gold"></div><div class="cap"><b>Monogram · gold</b>Uniform badge, packaging</div></div>
+    </div>
+    <div class="banner"><img src="logos/smart-girl-email-header-1200x360.png" alt="Email header banner with Smart Girl logo on Deep Wine"></div>
+    <p class="lede" style="margin-top:12px">Ready-made email header (1200 × 360). Mailchimp shows it at 600px wide, sharp on phones.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">05 · Mailchimp</p>
+    <h2>Set it up in Mailchimp</h2>
+    <p class="lede">Mailchimp doesn't take a brand kit as one file, so you enter it once and it fills every new email. It takes about five minutes.</p>
+    <ol class="steps">
+      <li><b>Open your brand settings.</b> In Mailchimp go to <b>Content</b> (or Creative Assistant) → <b>Brand kit</b>.</li>
+      <li><b>Upload the logo.</b> Use <b>smart-girl-logo-horizontal-burgundy.png</b>.</li>
+      <li><b>Add the colours.</b> Paste these hex codes: #5C1729, #E2BF9C, #2E0A15, #8A3B4F, #F3E6E0, #FFFAF8.</li>
+      <li><b>Pick the fonts.</b> Headings: Montserrat. Body: Poppins. If one isn't in Mailchimp's font list, use Arial or Helvetica as the stand-in.</li>
+      <li><b>Style the buttons.</b> In the email builder set button colour #5C1729, text #F8ECE6, Montserrat bold, corner radius at the maximum.</li>
+      <li><b>Save a template.</b> Build one email with the header banner, then save it as a template so you never set this up again.</li>
+    </ol>
+    <p class="note"><b>About the cursive font:</b> email apps like Gmail don't load script fonts, so Great Vibes typed into Mailchimp will show up as plain text. Keep the cursive inside images (your logo and header banner already have it). For a cursive "Thank you" or sign-off, make it as a small image in Canva using Great Vibes.</p>
+  </section>
+</main>
+<footer class="wrap">Smart Girl Cleaning Services · Brand kit v1 · November 2026</footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+  const hex = b.dataset.hex;
+  const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1400); };
+  try {
+    navigator.clipboard.writeText(hex).then(done, () => { selectHex(b); });
+  } catch (e) { selectHex(b); }
+}));
+function selectHex(b) {
+  const r = document.createRange(); r.selectNodeContents(b.parentNode.firstChild);
+  const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+document.querySelectorAll('a[href="#buttons"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+</script>
