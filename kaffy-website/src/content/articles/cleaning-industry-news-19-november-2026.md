@@ -9,7 +9,10 @@ imageAlt: "Cleaning Industry News: the daily gist from Kaffy Olaitan"
 
 Here is what happened in the cleaning industry this week, and what I think it means for those of us running cleaning businesses. Click the links to read each full story.
 
-## 1. A Sydney cleaner said no to a $1.5 million job
+## A Sydney cleaner said no to a $1.5 million job
+
+![A gloved hand cleaning a bathroom sink (illustrative photo)](/images/articles/2026-11-19/bathroom-sink-cleaning.webp)
+*Illustrative photo: Kaboompics on [Pexels](https://www.pexels.com/photo/unrecognizable-person-washing-sink-in-bathroom-4239116/)*
 
 **What happened:** Sara Allan of Housekeeping Heroes, a cleaning company in Sydney, Australia, turned down a pre-handover clean at a block of new townhouses worth around $1.5 million each. She says the pay offered was far too low for the work, and that when buyers find problems in new homes, builders are quick to blame the cleaner. This is her side of the story; the builder's response wasn't reported.
 
@@ -17,7 +20,10 @@ Here is what happened in the cleaning industry this week, and what I think it me
 
 Read the full story: [Yahoo News Australia](https://au.news.yahoo.com/cleaner-refuses-to-work-in-new-15-million-home-after-seeing-bathroom-destroying-us-044253096.html)
 
-## 2. Robots and AI won the big awards at the ISSA Show
+## Robots and AI won the big awards at the ISSA Show
+
+![A robot vacuum cleaner on a wooden floor (illustrative photo)](/images/articles/2026-11-19/robot-vacuum.webp)
+*Illustrative photo: Kindel Media on [Pexels](https://www.pexels.com/photo/robot-vacuum-cleaner-on-wooden-flooring-8566426/)*
 
 **What happened:** The ISSA Show North America in Las Vegas is the biggest cleaning trade show of the year. Its 2026 Innovation Award winners, announced on 18 November, included:
 
@@ -30,7 +36,10 @@ Read the full story: [Yahoo News Australia](https://au.news.yahoo.com/cleaner-re
 
 Read the full announcement: [GlobeNewswire](https://www.globenewswire.com/news-release/2026/11/18/3406225/0/en/issa-show-north-america-redefines-innovation-with-2026-award-winners-shaping-the-future-of-clean.html)
 
-## 3. A robot built to clean public toilets is on show in Tokyo
+## A robot built to clean public toilets is on show in Tokyo
+
+![A row of cubicles in a public toilet (illustrative photo)](/images/articles/2026-11-19/public-toilets.webp)
+*Illustrative photo: Aibek Skakov on [Pexels](https://www.pexels.com/photo/design-of-public-toilets-18393228/)*
 
 **What happened:** Primech Holdings is showing HYTRON, a robot designed to clean toilets, urinals, sinks, floors and mirrors without a person controlling it, at the Building Maintenance & Clean Expo in Tokyo from 18 to 20 November.
 
@@ -38,7 +47,10 @@ Read the full announcement: [GlobeNewswire](https://www.globenewswire.com/news-r
 
 Read more: [Primech press release](https://www.helpareporter.com/news-releases/primech-holdings-nasdaq-pmec-announces-hytron-showcase-at-building)
 
-## 4. Cape Town cleaners went on strike for a 10% raise and settled for 5%
+## Cape Town cleaners went on strike for a 10% raise and settled for 5%
+
+![Two housekeepers in uniform making a bed (illustrative photo)](/images/articles/2026-11-19/housekeepers-making-bed.webp)
+*Illustrative photo: Liliana Drew on [Pexels](https://www.pexels.com/photo/housekeepers-changing-sheets-in-hotel-room-9462740/)*
 
 **What happened:** Housekeepers at Nox Cape Town, a company that services rental properties, went on strike for five days asking for a 10% pay rise. They accepted the 5% the company first offered, plus three months' back pay and payment for two of the strike days. Their shop steward, Vivienne Francisco, said: "The 5% increase is not going to help."
 
@@ -46,7 +58,10 @@ Read more: [Primech press release](https://www.helpareporter.com/news-releases/p
 
 Read the full story: [Bizcommunity (originally reported by GroundUp)](https://www.bizcommunity.com/article/luxury-rental-cleaners-end-strike-and-accept-5-raise-962814a)
 
-## 5. A client says Instagram-booked cleaners left her gas on
+## A client says Instagram-booked cleaners left her gas on
+
+![Blue flames on a gas stove burner (illustrative photo)](/images/articles/2026-11-19/gas-stove-burner.webp)
+*Illustrative photo: Magda Ehlers on [Pexels](https://www.pexels.com/photo/gas-stove-3722212/)*
 
 **What happened:** A woman in the Bronx, New York, posted on TikTok that a cleaning company she booked through Instagram left a stove burner on, so her home smelled of gas, and threw away her belongings, including food, a Pyrex bowl and silverware. These are her allegations, as reported by The Mary Sue.
 
@@ -60,7 +75,10 @@ Then tell clients you do this. Trust is a selling point.
 
 Read the full story: [The Mary Sue](https://www.themarysue.com/woman-says-she-found-her-purse-dishes-food-and-more-in-the-trash-after-a-cleaning-service-came-over-while-she-was-away/)
 
-## 6. It was World Toilet Day
+## It was World Toilet Day
+
+![A person in pink gloves spraying cleaner into a toilet (illustrative photo)](/images/articles/2026-11-19/toilet-cleaning.webp)
+*Illustrative photo: Liliana Drew on [Pexels](https://www.pexels.com/photo/spraying-liquid-cleaner-in-the-toilet-9462643/)*
 
 **What happened:** 19 November was World Toilet Day. This year's UN theme is "Safe toilets. Equal futures.", focusing on sanitation and gender equality.
 
