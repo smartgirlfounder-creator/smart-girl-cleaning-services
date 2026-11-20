@@ -55,6 +55,13 @@ h3 { font: 600 14px/1.3 var(--head); letter-spacing: .14em; text-transform: uppe
 .scale th { font: 600 11px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .scale tr:last-child td { border-bottom: 0; }
 
+.tlist { display: grid; gap: 12px; }
+.tl { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; display: grid; gap: 14px; grid-template-columns: 170px minmax(0,1fr); align-items: start; }
+.tl-name { display: grid; gap: 2px; } .tl-name b { font: 700 15px/1.3 var(--head); } .tl-name span { font-size: 13px; color: var(--muted); }
+.tl-demo { min-width: 0; overflow-wrap: anywhere; display: grid; }
+.tl-spec { grid-column: 2; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 13px; }
+.tl-spec div { display: flex; gap: 6px; } .tl-spec dt { color: var(--muted); } .tl-spec dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .tl { grid-template-columns: 1fr; } .tl-spec { grid-column: 1; } }
 .btn-stage { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 .stage { border-radius: 14px; padding: 28px 24px; display: grid; gap: 14px; justify-items: start; border: 1px solid var(--line); }
 .stage.light { background: #FFFAF8; color: #34232A; }
@@ -120,22 +127,67 @@ footer { padding-block: 36px; text-align: center; color: var(--muted); font-size
   <section>
     <p class="eyebrow">02 · Typography</p>
     <h2>Font styles <em>with a little script</em></h2>
-    <p class="lede">Montserrat for headlines and buttons, Poppins for everything you read, and Great Vibes as the cursive touch. Use the cursive for one or two words at a time, like a name or a "thank you", never for whole sentences.</p>
+    <p class="lede">Three fonts, each with one job. <b>Montserrat</b> for headings, subheadings and buttons. <b>Poppins</b> for everything people read. <b>Great Vibes</b> as the cursive touch, for one or two words at a time.</p>
     <div class="type">
-      <div class="font-card"><div class="label"><span>Script accent · Great Vibes</span><span>Logo, signatures, one-word highlights</span></div><div class="s-script">With love, Kaffy</div></div>
-      <div class="font-card"><div class="label"><span>Headings · Montserrat Bold</span><span>Titles, buttons, labels</span></div><div class="s-head">Get your first 10 customers.</div></div>
-      <div class="font-card"><div class="label"><span>Body · Poppins Regular &amp; Italic</span><span>Paragraphs, lists, footer</span></div><div class="s-body">Your product will not sell itself. This week I&#39;m breaking down how I priced my first cleaning jobs, what I said on WhatsApp, and why the first "yes" came from someone I already knew. <i>Italic Poppins works for short quotes and testimonials.</i></div></div>
+      <div class="font-card"><div class="label"><span>Headings · Montserrat</span><span>Headings, subheadings, labels, buttons</span></div><div class="s-head">Aa Bb Cc 123</div></div>
+      <div class="font-card"><div class="label"><span>Body · Poppins</span><span>Paragraphs, quotes, links, footer</span></div><div class="s-body" style="font-size:28px">Aa Bb Cc 123 <i>Italic</i></div></div>
+      <div class="font-card"><div class="label"><span>Accent · Great Vibes</span><span>Logo, sign-offs, one-word highlights</span></div><div class="s-script">Aa Bb Kaffy</div></div>
     </div>
-    <h3>Email sizes</h3>
-    <div class="scale-wrap"><table class="scale">
-      <tr><th>Style</th><th>Font</th><th>Size</th><th>Colour</th></tr>
-      <tr><td>Heading 1</td><td>Montserrat Bold</td><td>32px</td><td>#5C1729</td></tr>
-      <tr><td>Heading 2</td><td>Montserrat SemiBold</td><td>24px</td><td>#5C1729</td></tr>
-      <tr><td>Heading 3 / label</td><td>Montserrat SemiBold, caps</td><td>14px, wide spacing</td><td>#8A3B4F</td></tr>
-      <tr><td>Paragraph</td><td>Poppins Regular</td><td>16px, line height 1.6</td><td>#34232A</td></tr>
-      <tr><td>Links</td><td>Poppins, underlined</td><td>16px</td><td>#8A3B4F</td></tr>
-      <tr><td>Footer</td><td>Poppins Regular</td><td>12px</td><td>#5F4A51</td></tr>
-    </table></div>
+
+    <h3>Font hierarchy</h3>
+    <p class="lede">Each style below is shown in its real font and size. In Mailchimp, set Heading 1 to 4 and Paragraph to match.</p>
+    <div class="tlist">
+      <div class="tl">
+        <div class="tl-name"><b>Heading 1</b><span>Main email title</span></div>
+        <div class="tl-demo"><div style="font:700 32px/1.2 var(--head);color:var(--accent)">Get your first 10 customers</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Montserrat</dd></div><div><dt>Weight</dt><dd>Bold 700</dd></div><div><dt>Size</dt><dd>32px</dd></div><div><dt>Line height</dt><dd>1.2</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#5C1729</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Heading 2</b><span>Subheading</span></div>
+        <div class="tl-demo"><div style="font:600 24px/1.3 var(--head);color:var(--accent)">Start with the people who already know you</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Montserrat</dd></div><div><dt>Weight</dt><dd>SemiBold 600</dd></div><div><dt>Size</dt><dd>24px</dd></div><div><dt>Line height</dt><dd>1.3</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#5C1729</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Heading 3</b><span>Section title</span></div>
+        <div class="tl-demo"><div style="font:600 18px/1.4 var(--head)">Step 1: Write down 20 names</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Montserrat</dd></div><div><dt>Weight</dt><dd>SemiBold 600</dd></div><div><dt>Size</dt><dd>18px</dd></div><div><dt>Line height</dt><dd>1.4</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#34232A</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Heading 4</b><span>Small label above a heading</span></div>
+        <div class="tl-demo"><div style="font:600 13px/1.4 var(--head);letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2)">This week’s lesson</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Montserrat</dd></div><div><dt>Weight</dt><dd>SemiBold 600, ALL CAPS</dd></div><div><dt>Size</dt><dd>13px</dd></div><div><dt>Line height</dt><dd>1.4</dd></div><div><dt>Spacing</dt><dd>0.2em</dd></div><div><dt>Colour</dt><dd>#8A3B4F</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Paragraph</b><span>Body text</span></div>
+        <div class="tl-demo"><div style="font:400 16px/1.6 var(--body);max-width:60ch">Your product will not sell itself. The first “yes” usually comes from someone who already trusts you, so start there before you spend money on ads.</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Poppins</dd></div><div><dt>Weight</dt><dd>Regular 400</dd></div><div><dt>Size</dt><dd>16px</dd></div><div><dt>Line height</dt><dd>1.6</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#34232A</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Quote</b><span>Testimonials and pull quotes</span></div>
+        <div class="tl-demo"><div style="font:italic 400 18px/1.6 var(--body);color:var(--accent);max-width:60ch">“Your mentorship is second to none.”</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Poppins</dd></div><div><dt>Weight</dt><dd>Italic 400</dd></div><div><dt>Size</dt><dd>18px</dd></div><div><dt>Line height</dt><dd>1.6</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#5C1729</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Accent</b><span>One or two words only</span></div>
+        <div class="tl-demo"><div style="font:400 48px/1.1 var(--script);color:var(--accent)">With love, Kaffy</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Great Vibes</dd></div><div><dt>Weight</dt><dd>Regular (as an image)</dd></div><div><dt>Size</dt><dd>40–56px</dd></div><div><dt>Line height</dt><dd>1.1</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#5C1729</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Button</b><span>Call to action</span></div>
+        <div class="tl-demo"><a class="btn b-primary" href="#buttons" style="justify-self:start">Book a diagnostic call</a></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Montserrat</dd></div><div><dt>Weight</dt><dd>Bold 700, ALL CAPS</dd></div><div><dt>Size</dt><dd>14px</dd></div><div><dt>Line height</dt><dd>1</dd></div><div><dt>Spacing</dt><dd>0.08em</dd></div><div><dt>Colour</dt><dd>#F8ECE6 on #5C1729</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Link</b><span>Links inside text</span></div>
+        <div class="tl-demo"><div style="font:500 16px/1.6 var(--body);color:var(--accent-2);text-decoration:underline;text-underline-offset:3px">Read the full article</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Poppins</dd></div><div><dt>Weight</dt><dd>Medium 500, underlined</dd></div><div><dt>Size</dt><dd>16px</dd></div><div><dt>Line height</dt><dd>1.6</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#8A3B4F</dd></div></dl>
+      </div>
+      <div class="tl">
+        <div class="tl-name"><b>Caption / footer</b><span>Small print, unsubscribe</span></div>
+        <div class="tl-demo"><div style="font:400 12px/1.5 var(--body);color:var(--muted)">You’re receiving this because you joined The Business Growth Letter.</div></div>
+        <dl class="tl-spec"><div><dt>Font</dt><dd>Poppins</dd></div><div><dt>Weight</dt><dd>Regular 400</dd></div><div><dt>Size</dt><dd>12px</dd></div><div><dt>Line height</dt><dd>1.5</dd></div><div><dt>Spacing</dt><dd>0</dd></div><div><dt>Colour</dt><dd>#5F4A51</dd></div></dl>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -192,7 +244,7 @@ footer { padding-block: 36px; text-align: center; color: var(--muted); font-size
       <li><b>Open your brand settings.</b> In Mailchimp go to <b>Content</b> (or Creative Assistant) → <b>Brand kit</b>.</li>
       <li><b>Upload the logo.</b> Use <b>kaffy-olaitan-logo-horizontal-burgundy.png</b>.</li>
       <li><b>Add the colours.</b> Paste these hex codes: #5C1729, #E2BF9C, #2E0A15, #8A3B4F, #F3E6E0, #FFFAF8.</li>
-      <li><b>Pick the fonts.</b> Headings: Montserrat. Body: Poppins. If one isn't in Mailchimp's font list, use Arial or Helvetica as the stand-in.</li>
+      <li><b>Pick the fonts.</b> In the email builder's <b>Styles</b>, set Heading 1 (Montserrat Bold 32px, #5C1729), Heading 2 (Montserrat SemiBold 24px, #5C1729), Heading 3 (Montserrat SemiBold 18px, #34232A), Heading 4 (Montserrat SemiBold 13px caps, #8A3B4F) and Paragraph (Poppins 16px, #34232A). If a font isn't in Mailchimp's list, use Arial as the stand-in.</li>
       <li><b>Style the buttons.</b> In the email builder set button colour #5C1729, text #F8ECE6, Montserrat bold, corner radius at the maximum.</li>
       <li><b>Save a template.</b> Build one email with the header banner, then save it as a template so you never set this up again.</li>
     </ol>
