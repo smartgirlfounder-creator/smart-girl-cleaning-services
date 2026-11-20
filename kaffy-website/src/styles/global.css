@@ -181,3 +181,10 @@ a.card:hover { border-color: var(--taupe); transform: translateY(-2px); }
 /* Warmth */
 .section.dark { background: linear-gradient(150deg, var(--dark) 0%, var(--dark-2) 100%); }
 .site-footer { background: var(--dark-deep) !important; }
+
+/* Smart Cleaning Business Bosses sign-up band (inside the newsletter section) */
+.bosses { margin-top: clamp(40px, 6vw, 64px); padding-top: clamp(28px, 4vw, 40px); border-top: 1px solid var(--dark-line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; }
+.bosses > div { flex: 1 1 380px; min-width: 0; }
+.bosses .eyebrow { color: var(--champagne); margin-bottom: 10px; }
+.bosses-title { font: 500 clamp(26px, 3vw, 34px)/1.15 var(--serif); color: var(--on-dark); margin: 0 0 8px; }
+.bosses-text { margin: 0; max-width: 560px; }
