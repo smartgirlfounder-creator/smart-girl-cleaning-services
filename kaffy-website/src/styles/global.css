@@ -27,17 +27,18 @@
 }
 [data-theme="burgundy"] {
   /* Burgundy and champagne */
-  --white: #fffaf8;
-  --ivory: #f8f0ec;
-  --ivory-2: #f0e1da;
+  /* Deeper shaded background (was bright cream #f8f0ec) */
+  --white: #e6d2c8;
+  --ivory: #d8bfb2;
+  --ivory-2: #cbae9f;
   --black: #2e0a15;
   --charcoal: #3a1f27;
   --ink: #34232a;
-  --muted: #5f4a51;
-  --taupe: #8a3b4f;
+  --muted: #5a454c;
+  --taupe: #7a2f42;
   --champagne: #e2bf9c;
-  --line: #ead9d3;
-  --line-strong: #d3b8af;
+  --line: #c6a797;
+  --line-strong: #b08b7a;
   --dark: #2e0a15;
   --dark-2: #5c1729;
   --dark-deep: #22070f;
