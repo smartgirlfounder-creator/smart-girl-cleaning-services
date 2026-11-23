@@ -13,7 +13,7 @@ Never send or schedule a campaign. Keep Mailchimp calls to about 5 per run (Zapi
 - **Gmail connector:** sends the welcome emails.
 
 ## Job 1: new sign-ups
-1. Read the sheet. Candidates are rows with Submission ID > `6703913875216071709`, consent containing "Yes", and a valid email.
+1. **Source = Jotform notification emails in Gmail, not the sheet** (on 23 Nov 2026 the Drive read of the sheet was stale and missed 5 sign-ups). Search `from:noreply@jotform.com subject:"Launch Guide" newer_than:10d` and read each thread (PLAIN_TEXT): name, email, and whether "Yes, please send me tips" appears. Everyone up to and including Blessing Ifeanyi (20 Nov 2026) is already handled. You may also read the sheet as a cross-check. Candidates need consent "Yes" and a valid email.
    Skip typos (`@gmai.com`, `.comt`) and Kaffy's own addresses (smartgirlfounder@gmail.com, keffyola.ko@gmail.com). Lower-case and de-duplicate; Title Case the names.
 2. Drop anyone already welcomed: search Gmail `in:sent to:<email> subject:"Here's your first pricing lesson"`.
 3. If any are left, make one call `POST /lists/c51439d252` with `{"members":[...status "subscribed", FNAME, LNAME], "update_existing": false}`.
