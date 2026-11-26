@@ -74,5 +74,5 @@ abalosarafina20@gmail.com, appiahelsie40@gmail.com, chidinmaonyewuche@gmail.com,
 boakyeglay6@gmail.com, experiencesparkle360@gmail.com, princemuyea@gmail.com, sparklingoutlookcleaning@gmail.com,
 ademolalateef332@gmail.com, godakorf@gmail.com, mbsally47@gmail.com, whitneyvivian0@gmail.com, ethelakuagh@gmail.com,
 millymatt4422@gmail.com, hakeemmariam5@gmail.com, meemeelustre@gmail.com, qverafacilities@gmail.com (also moghaluhope@gmail.com, same buyer),
-deborahumoren2019@gmail.com
+deborahumoren2019@gmail.com, akuaasubonteng12@gmail.com (Akua Korama Asubonteng, Ghana, bought ~23 Nov 2026)
 When Kaffy shares new buyers, add them to this list; for any already in Mailchimp set CUSTOMER=yes (batch POST with update_existing true) and add to tag 289. Don't add buyers who aren't on the list just to tag them.
