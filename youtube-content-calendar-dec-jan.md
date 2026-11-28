@@ -8,9 +8,9 @@ _Built on the analytics in `youtube-4000-hours-plan.md` and the Jazmine Tates ti
 
 | | |
 |---|---|
-| Counting hours now (long + live, 27 Nov) | **≈ 3,223** |
+| Counting hours now (YouTube Studio, 28 Nov) | **3,199** (falling as last year's hours drop off) |
 | Hours that drop off by 31 Jan (Nov 28–30 2025, Dec 2025, Jan 2026 roll out of the window) | **≈ 625** |
-| New hours needed, 28 Nov → 31 Jan (65 days) | **≈ 1,400** |
+| New hours needed, 28 Nov → 31 Jan (65 days) | **≈ 1,425** (801 gap + ~625 drop-off) |
 | **Daily target** | **≈ 22 watch hours/day (aim for 25 to have a buffer)** |
 | What your library earns now on its own | ≈ 8 hrs/day |
 | **What the new videos must add** | **≈ 14–17 hrs/day** |
@@ -20,9 +20,9 @@ The number grows slower than you earn because old hours keep dropping off.
 
 | Date | On track if Studio shows at least |
 |---|---|
-| 15 Dec | ~3,480 |
-| 31 Dec | ~3,700 |
-| 15 Jan | ~3,850 |
+| 15 Dec | ~3,450 |
+| 31 Dec | ~3,680 |
+| 15 Jan | ~3,830 |
 | 31 Jan | **4,000** |
 
 If you're behind at a checkpoint, send me the number and I'll adjust.
@@ -38,8 +38,8 @@ You can film 5 videos a day, but **upload 1 long video a day, not 5.** Five uplo
 
 | Day | Do this |
 |---|---|
-| **Mon & Thu (filming days)** | Batch-film 3–4 long videos each day (20–40 min each). That's your whole week + extras in the bank |
-| **Every day (Mon–Sat)** | Upload **1 long video** at the same time (e.g. 6 pm WAT) + **2–3 Shorts cut from it**, each linked to the full video with "Related video" |
+| **Mon & Thu (filming days)** | Batch-film 5–7 long videos each day (20–40 min each). Two filming days = 10–14 videos in the bank every week |
+| **Every day (Mon–Sat)** | Upload **1 long video at 7 am WAT and, once you have a bank of 10+, a 2nd at 6 pm WAT** + 2–3 Shorts cut from them, each linked to the full video with "Related video". Never more than 2 long uploads a day |
 | **Sunday** | **1 live Q&A only** (60–90 min): "Ask Me Anything About Starting a Business". Title + thumbnail planned, replay kept public |
 | Tue/Wed/Fri spare time | Thumbnails, titles, replying to comments, sharing to WhatsApp community/Instagram/email list |
 
