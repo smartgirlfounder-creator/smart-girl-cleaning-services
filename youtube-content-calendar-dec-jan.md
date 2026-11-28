@@ -164,3 +164,55 @@ Jan 24–31: re-upload nothing. Use spare filmed videos, or repeat the best-perf
 - [ ] 2–3 Shorts cut from it, each with "Related video" pointing to it
 - [ ] Shared to WhatsApp community, Instagram story, email list
 - [ ] Pin a comment asking a question (comments help the video spread)
+
+---
+
+## 7. Added titles (from Shania Gladwell, Commercial Cleaning CEO, The Professional Cleaner, Remote Cleaning Boss)
+
+Slot these into the calendar. They replace weaker titles or run as a second daily upload.
+
+| Title | Why | Type | Thumbnail text |
+|---|---|---|---|
+| **Cleaning Business Marketing in Nigeria: My 7-Step Plan** [40–45 min, 7 chapters] | Shania Gladwell's version: 120K views, 44 min, one chapter per step. "cleaning business marketing" gets ~4,800 searches a month with **low competition**, and you barely rank for it yet | C | MY 7-STEP PLAN |
+| **How to Start a Cleaning Business in Nigeria 2027: FULL COURSE (Everything in One Video)** [2–3 hrs] | The 4-hour "22-day course in one video" format. One person can watch it for an hour. Build it by stitching together your own guide videos (#3, 5, 7, 13, 16, 27, 28, 31) with a new intro + chapters | C | FULL COURSE · 3 HOURS |
+| **How I Run My Cleaning Business in 5 Hours a Week (They Don't Need Me)** ⚠️ only if true | Commercial Cleaning CEO: 2.3K views in 1 month | A | THEY DON'T NEED ME |
+| **The Short-Let Cleaning Mistake That Costs You ₦100,000 Per Job** | Airbnb-cleaning outlier, made for Lagos short-lets | D | THE ₦100K MISTAKE |
+| **How to Grow Your Cleaning Business: What Actually Works in Nigeria** | The Professional Cleaner style. Thumbnail promise: more profit, less work | B | MORE PROFIT, LESS WORK |
+| **How to Start a Remote Cleaning Business in Nigeria (2027 Guide)** | Remote Cleaning Boss: 7.5K views. Pair with #6 | C | REMOTE = FREEDOM |
+
+**Mega videos are your watch-hour engine.** Plan at least **one 2–3 hour course every 2 weeks** (FULL COURSE, Marketing Masterclass, Pricing Masterclass). It's fine to build them from your own filmed videos. Just make them new videos with a fresh intro and chapters, not straight copies.
+
+---
+
+## 8. Channel optimization checklist
+
+### Where you rank right now (YouTube search, last 90 days)
+| Search term | Views to you | Monthly searches (all YouTube) |
+|---|---|---|
+| cleaning business start up | 564 | <750 |
+| cleaning service business | 190 | ~9,400 |
+| cleaning business | 174 | ~424,000 |
+| how to start a cleaning business | **126** | **~71,000** |
+| cleaning business marketing strategy | 25 | (related: "cleaning business marketing" ~4,800) |
+| cleaning business pricing | — | ~7,600 |
+
+You show up, but low down. You get 126 views from a phrase searched ~71,000 times a month. The fix: **put the search phrase at the start of the title**, add the curiosity part after it, and make longer videos with chapters (that's what ranks: Shania 44 min, The Professional Cleaner 14 min with 8 chapters).
+
+Example: "How to Start a Cleaning Business in Nigeria: I Started With ₦0 (Full Guide)".
+
+### Channel-level (do once, ~1 hour)
+- [ ] **Channel name:** "Kaffy Olaitan | Cleaning Business Coach", so people know what you're about in search
+- [ ] **Banner:** your face + one line ("Start & grow a profitable cleaning business in Nigeria") + upload schedule ("New video every day, 7am")
+- [ ] **Description:** first 2 lines = who you help + keywords (start a cleaning business in Nigeria, cleaning business marketing, pricing, getting clients)
+- [ ] **Channel trailer for non-subscribers:** your best "start here" video (currently "How to Start a Cleaning Business in Nigeria")
+- [ ] **Featured video for returning subscribers:** your newest mega video
+- [ ] **Homepage sections:** Start Here / Make Money / Get Clients / Pricing / My Story playlists, each with a keyword title ("How to Start a Cleaning Business in Nigeria – Start Here")
+- [ ] **Links:** one main link (Linktree) + WhatsApp community
+
+### Every video
+- [ ] Search phrase in the **first 40 characters** of the title
+- [ ] Description: first 2 lines repeat the search phrase naturally + 1 link, then chapters
+- [ ] **Chapters** (00:00 …) on every video over 10 min
+- [ ] End screen → next video + subscribe; added to a playlist
+- [ ] Pinned comment with a question
+- [ ] Tags don't matter much. Add 3–5 and move on
